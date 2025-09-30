@@ -175,8 +175,23 @@ public class Oppgave extends BaseEntitet {
         return reservasjon != null && reservasjon.erAktiv();
     }
 
-    public static <T extends Builder<T>> Builder<T> builder() {
-        return new Builder<>();
+    public void avstemMedOppgave(Oppgave other) {
+        this.behandlingOpprettet = other.behandlingOpprettet;
+        this.aktørId = other.aktørId;
+        this.behandlendeEnhet = other.behandlendeEnhet;
+        this.behandlingsfrist = other.behandlingsfrist;
+        this.saksnummer = other.saksnummer;
+        this.førsteStønadsdag = other.førsteStønadsdag;
+        this.behandlingType = other.behandlingType;
+        this.fagsakYtelseType = other.fagsakYtelseType;
+        this.system = other.system;
+        this.reservasjon = other.reservasjon;
+        this.feilutbetalingStart = other.feilutbetalingStart;
+        this.feilutbetalingBelop = other.feilutbetalingBelop;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Override
@@ -184,97 +199,90 @@ public class Oppgave extends BaseEntitet {
         return "Oppgave{" + "id=" + id + ", saksnummer=" + saksnummer + ", aktiv=" + aktiv + ", system='" + system + '\'' + '}';
     }
 
-    public static class Builder<T extends Builder<T>> {
+    public static class Builder {
         protected Oppgave tempOppgave;
 
         Builder() {
             tempOppgave = new Oppgave();
         }
 
-        @SuppressWarnings("unchecked")
-        protected T self() {
-            return (T) this;
-        }
-
-        public T medBehandlingId(BehandlingId behandlingId) {
+        public Builder medBehandlingId(BehandlingId behandlingId) {
             tempOppgave.behandlingId = behandlingId;
-            return self();
+            return this;
         }
 
-        public T medSaksnummer(Saksnummer saksnummer) {
+        public Builder medSaksnummer(Saksnummer saksnummer) {
             tempOppgave.saksnummer = saksnummer;
-            return self();
+            return this;
         }
 
-        public T medAktørId(AktørId aktørId) {
+        public Builder medAktørId(AktørId aktørId) {
             tempOppgave.aktørId = aktørId;
-            return self();
+            return this;
         }
 
-        public T medBehandlendeEnhet(String behandlendeEnhet) {
+        public Builder medBehandlendeEnhet(String behandlendeEnhet) {
             tempOppgave.behandlendeEnhet = behandlendeEnhet;
-            return self();
+            return this;
         }
 
-        public T medAktiv(Boolean aktiv) {
+        public Builder medAktiv(Boolean aktiv) {
             tempOppgave.aktiv = aktiv;
-            return self();
+            return this;
         }
 
-        public T medBehandlingType(BehandlingType behandlingType) {
+        public Builder medBehandlingType(BehandlingType behandlingType) {
             tempOppgave.behandlingType = behandlingType;
-            return self();
+            return this;
         }
 
-        public T medSystem(Fagsystem fagsystem) {
+        public Builder medSystem(Fagsystem fagsystem) {
             tempOppgave.system = fagsystem;
-            return self();
+            return this;
         }
 
-        public T medBehandlingsfrist(LocalDateTime behandlingsfrist) {
+        public Builder medBehandlingsfrist(LocalDateTime behandlingsfrist) {
             tempOppgave.behandlingsfrist = behandlingsfrist;
-            return self();
+            return this;
         }
 
-        public T medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
+        public Builder medBehandlingOpprettet(LocalDateTime behandlingOpprettet) {
             tempOppgave.behandlingOpprettet = behandlingOpprettet;
-            return self();
+            return this;
         }
 
-        public T medFørsteStønadsdag(LocalDate førsteStønadsdag) {
+        public Builder medFørsteStønadsdag(LocalDate førsteStønadsdag) {
             tempOppgave.førsteStønadsdag = førsteStønadsdag;
-            return self();
+            return this;
         }
 
 
-        public T medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
+        public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
             tempOppgave.oppgaveAvsluttet = oppgaveAvsluttet;
-            return self();
+            return this;
         }
 
-        public T medUtfortFraAdmin(Boolean utfortFraAdmin) {
+        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin) {
             tempOppgave.utfortFraAdmin = utfortFraAdmin;
-            return self();
+            return this;
         }
 
-        public T medFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
+        public Builder medFagsakYtelseType(FagsakYtelseType fagsakYtelseType) {
             tempOppgave.fagsakYtelseType = fagsakYtelseType;
-            return self();
+            return this;
         }
 
-        public T medFeilutbetalingBelop(BigDecimal feilutbetalingBelop) {
-            throw new IllegalStateException("Kan ikke benyttes direkte i expandfasen, ref TFP-6398");
-            //tempOppgave.feilutbetalingBelop = belop;
-            //return self();
+        public Builder medFeilutbetalingBelop(BigDecimal feilutbetalingBelop) {
+            tempOppgave.feilutbetalingBelop = feilutbetalingBelop;
+            return this;
         }
 
-        public T medFeilutbetalingStart(LocalDateTime feilutbetalingStart) {
-            throw new IllegalStateException("Kan ikke benyttes direkte i expandfase, ref TFP-6398");
-            //tempOppgave.feilutbetalingStart = feilutbetalingstart;
-            //return self();
+        public Builder medFeilutbetalingStart(LocalDateTime feilutbetalingStart) {
+            tempOppgave.feilutbetalingStart = feilutbetalingStart;
+            return this;
         }
 
-        public T dummyOppgave(String enhet) {
+        public Builder dummyOppgave(String enhet) {
             tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
             tempOppgave.saksnummer = new Saksnummer("3478293");
             tempOppgave.aktørId = AktørId.dummy();
@@ -284,7 +292,7 @@ public class Oppgave extends BaseEntitet {
             tempOppgave.behandlingsfrist = LocalDateTime.now();
             tempOppgave.behandlingOpprettet = LocalDateTime.now();
             tempOppgave.førsteStønadsdag = LocalDate.now().plusMonths(1);
-            return self();
+            return this;
         }
 
         public Oppgave build() {

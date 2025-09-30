@@ -17,15 +17,17 @@ import org.hibernate.jpa.HibernateHints;
 public class OppgavespørringMapper {
 
     private static final String BEHANDLINGSFRIST_FELT_SQL = "o.behandlingsfrist";
-    private static final String ORDER_BY_BEHANDLINGSFRIST_ASC = "ORDER BY o.behandlingsfrist ASC";
     private static final String BEHANDLINGOPPRETTET_FELT_SQL = "o.behandlingOpprettet";
-    private static final String ORDER_BY_BEHANDLINGOPPRETTET_ASC = "ORDER BY o.behandlingOpprettet ASC";
     private static final String FØRSTE_STØNADSDAG_FELT_SQL = "o.førsteStønadsdag";
+    private static final String FEILUTBETALINGSTART_FELT_SQL = "o.feilutbetalingStart";
+    private static final String FEILUTBETALINGBELOP_FELT_SQL = "o.feilutbetalingBelop";
+
+    private static final String ORDER_BY_BEHANDLINGSFRIST_ASC = "ORDER BY o.behandlingsfrist ASC";
+    private static final String ORDER_BY_BEHANDLINGOPPRETTET_ASC = "ORDER BY o.behandlingOpprettet ASC";
     private static final String ORDER_BY_FØRSTE_STØNADSDAG_ASC = "ORDER BY o.førsteStønadsdag ASC";
     private static final String ORDER_BY_FØRSTE_STØNADSDAG_DESC = "ORDER BY o.førsteStønadsdag DESC NULLS LAST";
-    private static final String ORDER_BY_BELØP_DESC = "ORDER BY o.belop DESC";
-    private static final String FEILUTBETALINGSTART_FELT_SQL = "o.feilutbetalingstart";
-    private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingstart ASC";
+    private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingStart ASC";
+    private static final String ORDER_BY_FEILUTBETALINGBELOP_DESC = "ORDER BY o.feilutbetalingBelop DESC";
 
     private OppgavespørringMapper() { }
 
@@ -66,11 +68,11 @@ public class OppgavespørringMapper {
         var til = oppgavespørring.getFiltrerTil();
         var numeriskFiltrering = "";
         if (fra != null) {
-            numeriskFiltrering = "AND o.belop >= :filterFra ";
+            numeriskFiltrering = "AND " + FEILUTBETALINGBELOP_FELT_SQL + " >= :filterFra ";
             parameters.put("filterFra", fra);
         }
         if (til != null) {
-            numeriskFiltrering += "AND o.belop <= :filterTil ";
+            numeriskFiltrering += "AND "+ FEILUTBETALINGBELOP_FELT_SQL + " <= :filterTil ";
             parameters.put("filterTil", til);
         }
         return numeriskFiltrering;
@@ -83,7 +85,7 @@ public class OppgavespørringMapper {
             case OPPRETT_BEHANDLING -> ORDER_BY_BEHANDLINGOPPRETTET_ASC;
             case FØRSTE_STØNADSDAG -> ORDER_BY_FØRSTE_STØNADSDAG_ASC;
             case FØRSTE_STØNADSDAG_SYNKENDE -> ORDER_BY_FØRSTE_STØNADSDAG_DESC;
-            case BELØP -> ORDER_BY_BELØP_DESC;
+            case BELØP -> ORDER_BY_FEILUTBETALINGBELOP_DESC;
             case FEILUTBETALINGSTART -> ORDER_BY_FEILUTBETALINGSTART_ASC;
         };
     }

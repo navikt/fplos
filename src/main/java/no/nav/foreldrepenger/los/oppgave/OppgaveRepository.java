@@ -32,9 +32,7 @@ public class OppgaveRepository {
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveRepository.class);
 
     private static final String SELECT_FROM_OPPGAVE = "SELECT o from Oppgave o ";
-    private static final String SELECT_FROM_TILBAKEKREVING_OPPGAVE = "SELECT o from TilbakekrevingOppgave o ";
     private static final String SELECT_COUNT_FROM_OPPGAVE = "SELECT count(1) from Oppgave o ";
-    private static final String SELECT_COUNT_FROM_TILBAKEKREVING_OPPGAVE = "SELECT count(1) from TilbakekrevingOppgave o ";
 
     public static final String BEHANDLING_ID_FELT_SQL = "behandlingId";
 
@@ -49,11 +47,7 @@ public class OppgaveRepository {
     }
 
     public int hentAntallOppgaver(Oppgavespørring oppgavespørring) {
-        var selection = SELECT_COUNT_FROM_OPPGAVE;
-        if (KøSortering.FK_TILBAKEKREVING.equalsIgnoreCase(oppgavespørring.getSortering().getFeltkategori())) {
-            selection = SELECT_COUNT_FROM_TILBAKEKREVING_OPPGAVE;
-        }
-        var oppgaveTypedQuery = OppgavespørringMapper.lagOppgavespørring(entityManager, selection, Long.class, oppgavespørring);
+        var oppgaveTypedQuery = OppgavespørringMapper.lagOppgavespørring(entityManager, SELECT_COUNT_FROM_OPPGAVE, Long.class, oppgavespørring);
         return oppgaveTypedQuery.getSingleResult().intValue();
     }
 
@@ -66,11 +60,7 @@ public class OppgaveRepository {
     }
 
     public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
-        var selection = SELECT_FROM_OPPGAVE;
-        if (KøSortering.FK_TILBAKEKREVING.equalsIgnoreCase(oppgavespørring.getSortering().getFeltkategori())) {
-            selection = SELECT_FROM_TILBAKEKREVING_OPPGAVE;
-        }
-        var query = OppgavespørringMapper.lagOppgavespørring(entityManager, selection, Oppgave.class, oppgavespørring);
+        var query = OppgavespørringMapper.lagOppgavespørring(entityManager, SELECT_FROM_OPPGAVE, Oppgave.class, oppgavespørring);
         oppgavespørring.getMaxAntallOppgaver().ifPresent(max -> query.setMaxResults(max.intValue()));
         return query.getResultList();
     }
@@ -158,7 +148,7 @@ public class OppgaveRepository {
         return oppgaveIder.size() == fortsattTilgjengelige.intValue();
     }
 
-    public TilbakekrevingOppgave opprettTilbakekrevingOppgave(TilbakekrevingOppgave oppgave) {
+    public Oppgave opprettTilbakekrevingOppgave(Oppgave oppgave) {
         lagre(oppgave);
         entityManager.refresh(oppgave);
         return oppgave;
@@ -179,13 +169,6 @@ public class OppgaveRepository {
             where oe.oppgaveId = :oppgaveId
             ORDER BY oe.id desc
             """, OppgaveEgenskap.class).setParameter("oppgaveId", oppgaveId).getResultList();
-    }
-
-    protected <T> List<T> hentOppgaver(BehandlingId behandlingId, Class<T> cls) {
-        var select = cls.equals(TilbakekrevingOppgave.class) ? SELECT_FROM_TILBAKEKREVING_OPPGAVE : SELECT_FROM_OPPGAVE;
-        return entityManager.createQuery(select + "WHERE o.behandlingId = :behandlingId", cls)
-            .setParameter(BEHANDLING_ID_FELT_SQL, behandlingId)
-            .getResultList();
     }
 
     public void settSortering(Long sakslisteId, String sortering) {

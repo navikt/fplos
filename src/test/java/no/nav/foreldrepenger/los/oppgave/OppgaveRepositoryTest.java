@@ -348,11 +348,11 @@ class OppgaveRepositoryTest {
         var oppgave1 = tilbakekrevingOppgaveBuilder()
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(2L))
             .medBehandlingId(behandlingId1)
-            .medBeløp(BigDecimal.valueOf(100L))
+            .medFeilutbetalingBelop(BigDecimal.valueOf(100L))
             .build();
         var oppgave2 = tilbakekrevingOppgaveBuilder().medBehandlingId(behandlingId2)
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(1L))
-            .medBeløp(BigDecimal.valueOf(200L))
+            .medFeilutbetalingBelop(BigDecimal.valueOf(200L))
             .build();
         oppgaveRepository.lagre(oppgave1);
         oppgaveRepository.lagre(oppgave2);
@@ -376,12 +376,12 @@ class OppgaveRepositoryTest {
         // fanger opp disse (fom/tom på feltet vil ekskludere bla).
         var oppgaveUtenStartDato = tilbakekrevingOppgaveBuilder().medBehandlingOpprettet(LocalDateTime.now().minusDays(2L))
             .medBehandlingId(behandlingId1)
-            .medBeløp(BigDecimal.valueOf(0L))
+            .medFeilutbetalingBelop(BigDecimal.valueOf(0L))
             .medFeilutbetalingStart(null)
             .build();
         var oppgaveMedStartDato = tilbakekrevingOppgaveBuilder().medBehandlingId(behandlingId2)
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(1L))
-            .medBeløp(BigDecimal.valueOf(10L))
+            .medFeilutbetalingBelop(BigDecimal.valueOf(10L))
             .medFeilutbetalingStart(LocalDateTime.now())
             .build();
         oppgaveRepository.lagre(oppgaveUtenStartDato);
@@ -494,8 +494,8 @@ class OppgaveRepositoryTest {
             .build();
     }
 
-    private TilbakekrevingOppgave.TbkBuilder tilbakekrevingOppgaveBuilder() {
-        return TilbakekrevingOppgave.tbuilder()
+    private Oppgave.Builder tilbakekrevingOppgaveBuilder() {
+        return Oppgave.builder()
             .medSaksnummer(new Saksnummer("42"))
             .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
             .medSystem(Fagsystem.FPTILBAKE)

@@ -25,7 +25,6 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
-import no.nav.foreldrepenger.los.oppgave.TilbakekrevingOppgave;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
@@ -177,19 +176,19 @@ public class TilbakekrevingHendelseHåndterer {
         }
     }
 
-    private void oppdaterOppgaveInformasjon(TilbakekrevingOppgave gjenåpnetOppgave, BehandlingId behandlingId, LosBehandlingDto bpeDto) {
+    private void oppdaterOppgaveInformasjon(Oppgave gjenåpnetOppgave, BehandlingId behandlingId, LosBehandlingDto bpeDto) {
         var tmp = oppgaveFra(behandlingId, bpeDto);
-        gjenåpnetOppgave.avstemMed(tmp);
+        gjenåpnetOppgave.avstemMedOppgave(tmp);
         oppgaveRepository.lagre(gjenåpnetOppgave);
     }
 
-    private TilbakekrevingOppgave opprettTilbakekrevingOppgave(BehandlingId behandlingId, LosBehandlingDto hendelse) {
+    private Oppgave opprettTilbakekrevingOppgave(BehandlingId behandlingId, LosBehandlingDto hendelse) {
         return oppgaveRepository.opprettTilbakekrevingOppgave(oppgaveFra(behandlingId, hendelse));
     }
 
-    private TilbakekrevingOppgave oppgaveFra(BehandlingId behandlingId, LosBehandlingDto hendelse) {
+    private Oppgave oppgaveFra(BehandlingId behandlingId, LosBehandlingDto hendelse) {
         var feilutbetaltBeløp = Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO);
-        return TilbakekrevingOppgave.tbuilder()
+        return Oppgave.builder()
             .medSystem(Fagsystem.FPTILBAKE)
             .medSaksnummer(new Saksnummer(hendelse.saksnummer()))
             .medAktørId(new AktørId(hendelse.aktørId().getAktørId()))
@@ -200,7 +199,7 @@ public class TilbakekrevingHendelseHåndterer {
             .medBehandlingOpprettet(hendelse.opprettetTidspunkt())
             .medUtfortFraAdmin(false)
             .medBehandlingId(behandlingId)
-            .medBeløp(feilutbetaltBeløp)
+            .medFeilutbetalingBelop(feilutbetaltBeløp)
             .medFeilutbetalingStart(feilutbetalingStart(hendelse))
             .build();
     }

@@ -90,8 +90,8 @@ public class OppgaveTjeneste {
         oppgaveRepository.lagre(oel);
     }
 
-    public TilbakekrevingOppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {
-        var oppgaver = oppgaveRepository.hentOppgaver(behandlingId, TilbakekrevingOppgave.class);
+    public Oppgave gjenåpneTilbakekrevingOppgave(BehandlingId behandlingId) {
+        var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
         var sisteOppgave = oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt)).orElse(null);
         if (sisteOppgave != null) {
             sisteOppgave.gjenåpneOppgave();
@@ -101,8 +101,8 @@ public class OppgaveTjeneste {
         return sisteOppgave;
     }
 
-    public Optional<TilbakekrevingOppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId) {
-        return oppgaveRepository.hentOppgaver(behandlingId, TilbakekrevingOppgave.class).stream().filter(Oppgave::getAktiv).findFirst();
+    public Optional<Oppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId) {
+        return oppgaveRepository.hentOppgaver(behandlingId).stream().filter(Oppgave::getAktiv).findFirst();
     }
 
     public <U extends BaseEntitet> void lagre(U entitet) {
