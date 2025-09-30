@@ -195,8 +195,7 @@ class TilbakekrevingHendelseHåndtererTest {
     }
 
     @Test
-    void skalSetteTilbakekrevingsEgenskapPåOppgaveIExpandFaseTFP6398() {
-        // TODO: fjern / konsolider i contract fase TFP-6398
+    void skalSetteTilbakekrevingsfelter() {
         var behandlingId = BehandlingId.random();
         var saksbehandler = hendelse(åpentAksjonspunkt, behandlingId);
 
@@ -204,8 +203,8 @@ class TilbakekrevingHendelseHåndtererTest {
         var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
 
         assertThat(oppgave)
-            .matches(o -> o.getFeilutbetalingBelop().equals(BigDecimal.valueOf(500)), "Oppgave har nytt felt feilutbetalingBelop satt")
-            .matches(o -> o.getFeilutbetalingStart() != null, "Oppgave har nytt felt feilutbetalingStart satt");
+            .matches(o -> o.getFeilutbetalingBelop().equals(BigDecimal.valueOf(500)), "Oppgave har felt feilutbetalingBelop satt")
+            .matches(o -> o.getFeilutbetalingStart() != null, "Oppgave har felt feilutbetalingStart satt");
 
 
         handler.håndterBehandling(saksbehandler); // skal gjenåpne/oppdatere eksisterende oppgave
