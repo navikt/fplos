@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;

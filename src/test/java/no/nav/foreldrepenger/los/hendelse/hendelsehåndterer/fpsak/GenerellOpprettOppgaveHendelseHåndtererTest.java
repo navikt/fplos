@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

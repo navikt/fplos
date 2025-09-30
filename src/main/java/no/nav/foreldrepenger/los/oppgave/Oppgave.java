@@ -24,7 +24,7 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
@@ -299,7 +299,7 @@ public class Oppgave extends BaseEntitet {
             Objects.requireNonNull(tempOppgave.saksnummer, "saksnummer");
             var oppgave = tempOppgave;
             tempOppgave = new Oppgave();
-            if (!"FPTILBAKE".equals(tempOppgave.system) && (tempOppgave.feilutbetalingStart != null
+            if (!Fagsystem.FPTILBAKE.equals(tempOppgave.system) && (tempOppgave.feilutbetalingStart != null
                 || tempOppgave.feilutbetalingBelop != null)) {
                 throw new IllegalArgumentException("Utviklerfeil: Angitt tilbakebetalingsinformasjon i FPSAK-oppgave");
             }

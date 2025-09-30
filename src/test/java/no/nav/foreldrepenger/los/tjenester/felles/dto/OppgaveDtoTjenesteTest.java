@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 

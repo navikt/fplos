@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
-import no.nav.foreldrepenger.los.hendelse.hendelseoppretter.hendelse.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 
 import org.assertj.core.api.Assertions;
