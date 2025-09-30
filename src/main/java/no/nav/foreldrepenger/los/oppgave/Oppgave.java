@@ -256,12 +256,6 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-
-        public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
-            tempOppgave.oppgaveAvsluttet = oppgaveAvsluttet;
-            return this;
-        }
-
         public Builder medUtfortFraAdmin(Boolean utfortFraAdmin) {
             tempOppgave.utfortFraAdmin = utfortFraAdmin;
             return this;
