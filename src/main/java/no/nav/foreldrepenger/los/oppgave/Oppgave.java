@@ -4,14 +4,18 @@ package no.nav.foreldrepenger.los.oppgave;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,7 +34,7 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED) // TODO: DENNE MÅ VEL FJERNES!
 public class Oppgave extends BaseEntitet {
 
     @Id
@@ -59,8 +63,8 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
-    @OneToMany(mappedBy = "oppgave")
-    protected Set<OppgaveEgenskap> oppgaveEgenskaper;
+    @OneToMany(mappedBy = "oppgave", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    protected Set<OppgaveEgenskap> oppgaveEgenskaper = new HashSet<>();
 
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
     @Column(name = "FAGSAK_YTELSE_TYPE")
@@ -92,6 +96,17 @@ public class Oppgave extends BaseEntitet {
 
     @Column(name = "FEILUTBETALING_START")
     protected LocalDateTime feilutbetalingStart;
+
+    public void leggTilOppgaveEgenskap(OppgaveEgenskap oppgaveEgenskap) {
+        Objects.requireNonNull(oppgaveEgenskap, "oppgaveEgenskap");
+        oppgaveEgenskaper.removeIf(oe -> oe.getAndreKriterierType().equals(oppgaveEgenskap.getAndreKriterierType()));
+        oppgaveEgenskaper.add(oppgaveEgenskap);
+        oppgaveEgenskap.setOppgave(this);
+    }
+
+    public void tilbakestillOppgaveEgenskaper() {
+        oppgaveEgenskaper.clear();
+    }
 
     public Long getId() {
         return id;
@@ -150,7 +165,7 @@ public class Oppgave extends BaseEntitet {
     }
 
     public Set<OppgaveEgenskap> getOppgaveEgenskaper() {
-        return oppgaveEgenskaper == null ? Set.of() : oppgaveEgenskaper;
+        return Collections.unmodifiableSet(oppgaveEgenskaper);
     }
 
     public BigDecimal getFeilutbetalingBelop() {

@@ -75,12 +75,6 @@ public class OppgaveRepository {
         return oppgaveFiltrering.getId();
     }
 
-    public void lagre(OppgaveEgenskap oppgaveEgenskap) {
-        entityManager.persist(oppgaveEgenskap);
-        entityManager.flush();
-        refresh(oppgaveEgenskap.getOppgave());
-    }
-
     public <U extends BaseEntitet> void slett(U entitet) {
         entityManager.remove(entitet);
         entityManager.flush();
@@ -136,14 +130,6 @@ public class OppgaveRepository {
             where oel.behandlingId = :behandlingId
             order by oel.opprettetTidspunkt desc
             """, OppgaveEventLogg.class).setParameter(BEHANDLING_ID_FELT_SQL, behandlingId).getResultList();
-    }
-
-    public List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId) {
-        return entityManager.createQuery("""
-            from OppgaveEgenskap oe
-            where oe.oppgaveId = :oppgaveId
-            ORDER BY oe.id desc
-            """, OppgaveEgenskap.class).setParameter("oppgaveId", oppgaveId).getResultList();
     }
 
     public void settSortering(Long sakslisteId, String sortering) {

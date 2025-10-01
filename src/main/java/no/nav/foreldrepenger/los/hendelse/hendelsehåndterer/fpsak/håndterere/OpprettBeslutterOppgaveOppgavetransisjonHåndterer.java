@@ -38,20 +38,15 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
     @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         håndterEksisterendeOppgave(behandlingId);
-        var oppgave = opprettOppgave(behandlingId, behandling);
-        opprettOppgaveEgenskaper(oppgave, behandling);
+        var oppgave = OppgaveUtil.oppgave(behandlingId, behandling);
+        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, new FpsakOppgaveEgenskapFinner(behandling));
+        oppgaveTjeneste.lagre(oppgave);
         opprettOppgaveEventLogg(behandlingId, behandling.behandlendeEnhetId());
     }
 
     @Override
     public Oppgavetransisjon kanHåndtere() {
         return Oppgavetransisjon.OPPRETT_BESLUTTEROPPGAVE;
-    }
-
-    private Oppgave opprettOppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
-        var oppgave = OppgaveUtil.oppgave(behandlingId, behandlingFpsak);
-        oppgaveTjeneste.lagre(oppgave);
-        return oppgave;
     }
 
     private void håndterEksisterendeOppgave(BehandlingId behandlingId) {
@@ -61,11 +56,6 @@ public class OpprettBeslutterOppgaveOppgavetransisjonHåndterer implements Fpsak
                 oppgaveTjeneste.avsluttOppgaveMedEventLogg(sbo, OppgaveEventType.LUKKET);
                 LOG.info("Avslutter saksbehandler1 oppgave");
             }, () -> LOG.info("Fant ingen aktiv saksbehandler1-oppgave"));
-    }
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
     }
 
     private void opprettOppgaveEventLogg(BehandlingId behandlingId, String enhet) {

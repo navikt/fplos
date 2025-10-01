@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
 @ApplicationScoped
 @Transactional
@@ -19,7 +19,6 @@ public class OppgaveEgenskapHåndterer {
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveEgenskapHåndterer.class);
 
-    private OppgaveRepository repository;
     private Beskyttelsesbehov beskyttelsesbehov;
 
     public OppgaveEgenskapHåndterer() {
@@ -27,8 +26,7 @@ public class OppgaveEgenskapHåndterer {
     }
 
     @Inject
-    public OppgaveEgenskapHåndterer(OppgaveRepository oppgaveRepository, Beskyttelsesbehov beskyttelsesbehov) {
-        this.repository = oppgaveRepository;
+    public OppgaveEgenskapHåndterer(Beskyttelsesbehov beskyttelsesbehov) {
         this.beskyttelsesbehov = beskyttelsesbehov;
     }
 
@@ -36,23 +34,21 @@ public class OppgaveEgenskapHåndterer {
         var andreKriterier = new ArrayList<>(aktuelleEgenskaper.getAndreKriterier());
         andreKriterier.addAll(beskyttelsesbehov.getBeskyttelsesKriterier(oppgave));
         LOG.info("Legger på oppgaveegenskaper {}", andreKriterier);
-        var eksisterendeOppgaveEgenskaper = repository.hentOppgaveEgenskaper(oppgave.getId());
 
-        // slett uaktuelle eksisterende
-        eksisterendeOppgaveEgenskaper.stream()
-            .filter(akt -> !andreKriterier.contains(akt.getAndreKriterierType()))
-            .forEach(repository::slett);
+        var ønskedeEgenskaper = andreKriterier.stream()
+            .map(ak -> lagOppgaveEgenskap(ak, aktuelleEgenskaper))
+            .collect(Collectors.toSet());
 
-        var eksisterendeTyper = eksisterendeOppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).collect(Collectors.toSet());
-        for (var type : andreKriterier) {
-            if (!eksisterendeTyper.contains(type)) {
-                var builder = OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(type);
-                if (type.erTilBeslutter()) {
-                    builder.medSisteSaksbehandlerForTotrinn(aktuelleEgenskaper.getSaksbehandlerForTotrinn());
-                }
-                repository.lagre(builder.build());
-            }
+        oppgave.tilbakestillOppgaveEgenskaper();
+        ønskedeEgenskaper.forEach(oppgave::leggTilOppgaveEgenskap);
+    }
+
+    private static OppgaveEgenskap lagOppgaveEgenskap(AndreKriterierType andreKriterierType, OppgaveEgenskapFinner aktuelleEgenskaper) {
+        var builder = OppgaveEgenskap.builder().medAndreKriterierType(andreKriterierType);
+        if (andreKriterierType.erTilBeslutter()) {
+            builder.medSisteSaksbehandlerForTotrinn(aktuelleEgenskaper.getSaksbehandlerForTotrinn());
         }
+        return builder.build();
     }
 
 }
