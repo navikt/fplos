@@ -15,9 +15,6 @@ import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-import no.nav.pdl.AdressebeskyttelseResponseProjection;
-import no.nav.pdl.FalskIdentitetIdentifiserendeInformasjonResponseProjection;
-import no.nav.pdl.FalskIdentitetResponseProjection;
 import no.nav.pdl.Folkeregisteridentifikator;
 import no.nav.pdl.FolkeregisteridentifikatorResponseProjection;
 import no.nav.pdl.HentIdenterQueryRequest;
@@ -27,13 +24,12 @@ import no.nav.pdl.IdentInformasjon;
 import no.nav.pdl.IdentInformasjonResponseProjection;
 import no.nav.pdl.Identliste;
 import no.nav.pdl.IdentlisteResponseProjection;
-import no.nav.pdl.Navn;
 import no.nav.pdl.NavnResponseProjection;
 import no.nav.pdl.PersonResponseProjection;
-import no.nav.pdl.Personnavn;
-import no.nav.pdl.PersonnavnResponseProjection;
 import no.nav.vedtak.exception.VLException;
+import no.nav.vedtak.felles.integrasjon.person.FalskIdentitet;
 import no.nav.vedtak.felles.integrasjon.person.PdlException;
+import no.nav.vedtak.felles.integrasjon.person.PersonMappers;
 import no.nav.vedtak.felles.integrasjon.person.Persondata;
 import no.nav.vedtak.util.LRUCache;
 
@@ -80,37 +76,15 @@ public class PersonTjeneste {
         var query = new HentPersonQueryRequest();
         query.setIdent(aktørId.getId());
         var projection = new PersonResponseProjection().navn(new NavnResponseProjection().fornavn().mellomnavn().etternavn())
-            .adressebeskyttelse(new AdressebeskyttelseResponseProjection().gradering())
             .folkeregisteridentifikator(new FolkeregisteridentifikatorResponseProjection().identifikasjonsnummer().status().type());
         var ytelse = utledYtelse(ytelseType);
         var person = pdl.hentPerson(ytelse, query, projection);
         var fnr = fnr(person.getFolkeregisteridentifikator(), aktørId, saksnummer);
         if (harIdentifikator(person.getFolkeregisteridentifikator())) {
-            return new Person.Builder().medFnr(fnr)
-                .medNavn(navn(person.getNavn()))
-                .build();
+            return new Person(fnr, PersonMappers.mapNavn(person).orElse("Ukjent Navn"));
         } else  {
-            return new Person.Builder().medFnr(fnr)
-                .medNavn(hentNavnForFalskIdentitet(ytelse, aktørId))
-                .build();
+            return new Person(fnr, hentNavnForFalskIdentitet(aktørId));
         }
-
-    }
-
-    private static String navn(List<Navn> navn) {
-        return navn.stream().map(PersonTjeneste::navn).findFirst().orElseThrow(() -> new IllegalArgumentException("Fant ikke navn"));
-    }
-
-    private static String navn(Navn navn) {
-        return navn.getFornavn() + leftPad(navn.getMellomnavn()) + leftPad(navn.getEtternavn());
-    }
-
-    public static String mapNavn(Personnavn navn) {
-        return navn.getFornavn() + leftPad(navn.getMellomnavn()) + leftPad(navn.getEtternavn());
-    }
-
-    private static String leftPad(String navn) {
-        return Optional.ofNullable(navn).map(n -> " " + navn).orElse("");
     }
 
     private static boolean harIdentifikator(List<Folkeregisteridentifikator> folkeregisteridentifikator) {
@@ -156,28 +130,8 @@ public class PersonTjeneste {
         return identliste.getIdenter().stream().findFirst().map(IdentInformasjon::getIdent).map(Fødselsnummer::new).orElse(null);
     }
 
-    private String hentNavnForFalskIdentitet(Persondata.Ytelse ytelse, AktørId aktørId) {
-        try {
-            var query = new HentPersonQueryRequest();
-            query.setIdent(aktørId.getId());
-            var projection = new PersonResponseProjection()
-                .falskIdentitet(new FalskIdentitetResponseProjection().erFalsk().rettIdentitetErUkjent().rettIdentitetVedIdentifikasjonsnummer()
-                    .rettIdentitetVedOpplysninger(new FalskIdentitetIdentifiserendeInformasjonResponseProjection()
-                        .personnavn(new PersonnavnResponseProjection().fornavn().mellomnavn().etternavn())));
-
-            var falskIdentitetPerson = pdl.hentPerson(ytelse, query, projection);
-            if (falskIdentitetPerson.getFalskIdentitet() != null && falskIdentitetPerson.getFalskIdentitet().getErFalsk()) {
-                if (falskIdentitetPerson.getFalskIdentitet().getRettIdentitetVedOpplysninger() != null) {
-                    return Optional.ofNullable(falskIdentitetPerson.getFalskIdentitet().getRettIdentitetVedOpplysninger().getPersonnavn())
-                        .map(PersonTjeneste::mapNavn).orElse("Falsk Identitet");
-                } else {
-                    return "Falsk Identitet";
-                }
-            }
-        } catch (Exception e) {
-            LOG.warn("Person uten folkeregisteridentifikator aktør {} - fikk feil ved oppslag falsk identitet", aktørId);
-        }
-        return "Navn Utilgjengelig";
+    private String hentNavnForFalskIdentitet(AktørId aktørId) {
+        return FalskIdentitet.finnFalskIdentitet(aktørId.getId(), pdl).map(FalskIdentitet.Informasjon::navn).orElse("Ukjent Navn");
     }
 
     private static Persondata.Ytelse utledYtelse(FagsakYtelseType ytelseType) {
