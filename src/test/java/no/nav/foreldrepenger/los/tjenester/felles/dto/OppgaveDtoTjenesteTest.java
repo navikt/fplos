@@ -11,22 +11,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
@@ -70,7 +69,7 @@ class OppgaveDtoTjenesteTest {
         });
 
         when(personTjeneste.hentPerson(any(), any(), any())).thenReturn(
-            Optional.of(new Person.Builder().medFnr(new Fødselsnummer("1233456789")).medNavn("Navn Navnesen").build()));
+            Optional.of(new Person(new Fødselsnummer("1233456789"), "Navn Navnesen")));
 
         var oppgave = Oppgave.builder()
             .dummyOppgave(AVDELING_DRAMMEN_ENHET)
