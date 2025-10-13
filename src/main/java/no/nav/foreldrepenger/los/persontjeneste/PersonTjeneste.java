@@ -81,9 +81,9 @@ public class PersonTjeneste {
         var person = pdl.hentPerson(ytelse, query, projection);
         var fnr = fnr(person.getFolkeregisteridentifikator(), aktørId, saksnummer);
         if (harIdentifikator(person.getFolkeregisteridentifikator())) {
-            return new Person(fnr, PersonMappers.mapNavn(person).orElse("Ukjent Navn"));
+            return Person.personMedFormattertNavn(fnr, PersonMappers.mapNavn(person).orElse("Ukjent Navn"));
         } else  {
-            return new Person(fnr, hentNavnForFalskIdentitet(aktørId));
+            return Person.personMedFormattertNavn(fnr, hentNavnForFalskIdentitet(aktørId));
         }
     }
 
