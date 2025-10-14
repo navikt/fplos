@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.EntityManager;
+
+import no.nav.foreldrepenger.los.DBTestUtil;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,9 +44,11 @@ class OppgaveEgenskapHåndtererTest {
     private OppgaveEgenskapFinner oppgaveEgenskapFinner;
     @Mock
     private Beskyttelsesbehov beskyttelsesbehov;
+    private EntityManager entityManager;
 
     @BeforeEach
-    void setUp() {
+    void setUp(EntityManager entityManager) {
+        this.entityManager = entityManager;
         egenskapHåndterer = new OppgaveEgenskapHåndterer(beskyttelsesbehov);
     }
 
@@ -85,12 +91,19 @@ class OppgaveEgenskapHåndtererTest {
     void kunEttAktivtTilfelleAvHverEgenskap() {
         var oppgave = lagOppgave();
         oppgave.leggTilOppgaveEgenskap(OppgaveEgenskap.builder().medAndreKriterierType(UTLANDSSAK).build());
+        entityManager.persist(oppgave);
+        entityManager.flush();
+
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(List.of(UTLANDSSAK));
 
         egenskapHåndterer.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);
+        entityManager.flush(); // sørge for å trigge orphanremoval / avdekke eventuelle feil med equals etc
+        entityManager.refresh(oppgave);
 
         assertThat(oppgave.getOppgaveEgenskaper()).size().isEqualTo(1);
         assertThat(oppgave.getOppgaveEgenskaper()).first().matches(oe -> oe.getAndreKriterierType().equals(UTLANDSSAK));
+        var oe = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
+        assertThat(oe).hasSize(1);
     }
 
     private Oppgave lagOppgave() {
