@@ -19,8 +19,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -34,7 +32,6 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
-@Inheritance(strategy = InheritanceType.JOINED) // TODO: DENNE MÅ VEL FJERNES!
 public class Oppgave extends BaseEntitet {
 
     @Id
