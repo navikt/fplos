@@ -107,12 +107,6 @@ public class OppgaveRepository {
         return oppgaveIder.size() == fortsattTilgjengelige.intValue();
     }
 
-    public Oppgave opprettTilbakekrevingOppgave(Oppgave oppgave) {
-        lagre(oppgave);
-        entityManager.refresh(oppgave);
-        return oppgave;
-    }
-
     public List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId) {
         Objects.requireNonNull(behandlingId, "behandlingId kan ikke være null");
         return entityManager.createQuery("""
@@ -195,4 +189,8 @@ public class OppgaveRepository {
         return oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt));
     }
 
+    public Oppgave opprettOppgave(Oppgave oppgave) {
+        entityManager.persist(oppgave);
+        return oppgave;
+    }
 }

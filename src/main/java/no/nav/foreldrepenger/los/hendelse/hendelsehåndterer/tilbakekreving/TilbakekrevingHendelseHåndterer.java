@@ -85,30 +85,30 @@ public class TilbakekrevingHendelseHåndterer {
             }
             case OPPRETT_OPPGAVE -> {
                 avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, behandlendeEnhet);
-                Oppgave oppgave = opprettTilbakekrevingOppgave(behandlingId, behandlingDto);
-                LOG.info("TBK Oppretter oppgave {} for behandlingId {}.", oppgave.getId(), behandlingId);
+                LOG.info("TBK Oppretter oppgave for behandlingId {}.", behandlingId);
+                var oppgave = oppgaveRepository.opprettOppgave(oppgaveFra(behandlingId, behandlingDto));
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
                 reserverForOpprettOppgave(oppgave, oppgaveHistorikk, behandlingDto, true);
                 loggEvent(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET, null, behandlendeEnhet);
             }
             case OPPRETT_BESLUTTER_OPPGAVE -> {
                 avsluttOppgaveHvisÅpen(behandlingId, oppgaveHistorikk, behandlendeEnhet);
-                Oppgave beslutterOppgave = opprettTilbakekrevingOppgave(behandlingId, behandlingDto);
                 LOG.info("TBK Oppretter beslutteroppgave.");
+                var beslutterOppgave = oppgaveRepository.opprettOppgave(oppgaveFra(behandlingId, behandlingDto));
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(beslutterOppgave, egenskapFinner);
                 loggEvent(behandlingId, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, behandlendeEnhet);
             }
             case GJENÅPNE_OPPGAVE -> {
-                var gjenåpnetOppgave = oppgaveTjeneste.gjenåpneTilbakekrevingOppgave(behandlingId);
                 LOG.info("TBK Gjenåpner oppgave for behandlingId {}.", behandlingId);
+                var gjenåpnetOppgave = oppgaveTjeneste.gjenåpneTilbakekrevingOppgave(behandlingId);
                 oppdaterOppgaveInformasjon(gjenåpnetOppgave, behandlingId, behandlingDto);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
                 reserverForOpprettOppgave(gjenåpnetOppgave, oppgaveHistorikk, behandlingDto, false);
                 loggEvent(gjenåpnetOppgave.getBehandlingId(), OppgaveEventType.GJENAPNET, null, behandlendeEnhet);
             }
             case OPPDATER_ÅPEN_OPPGAVE -> {
-                var oppdaterOppgave = oppgaveTjeneste.hentAktivTilbakekrevingOppgave(behandlingId).orElseThrow();
-                LOG.info("TBK oppdaterer åpen tilbakekrevingOppgaveId {}", oppdaterOppgave.getId());
+                var oppdaterOppgave = oppgaveTjeneste.hentAktivOppgave(behandlingId).orElseThrow();
+                LOG.info("TBK oppdaterer åpen oppgaveId {}", oppdaterOppgave.getId());
                 oppdaterOppgaveInformasjon(oppdaterOppgave, behandlingId, behandlingDto);
                 oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppdaterOppgave, egenskapFinner);
             }
@@ -176,17 +176,12 @@ public class TilbakekrevingHendelseHåndterer {
         }
     }
 
-    private void oppdaterOppgaveInformasjon(Oppgave gjenåpnetOppgave, BehandlingId behandlingId, LosBehandlingDto bpeDto) {
+    private static void oppdaterOppgaveInformasjon(Oppgave gjenåpnetOppgave, BehandlingId behandlingId, LosBehandlingDto bpeDto) {
         var tmp = oppgaveFra(behandlingId, bpeDto);
         gjenåpnetOppgave.avstemMedOppgave(tmp);
-        oppgaveRepository.lagre(gjenåpnetOppgave);
     }
 
-    private Oppgave opprettTilbakekrevingOppgave(BehandlingId behandlingId, LosBehandlingDto hendelse) {
-        return oppgaveRepository.opprettTilbakekrevingOppgave(oppgaveFra(behandlingId, hendelse));
-    }
-
-    private Oppgave oppgaveFra(BehandlingId behandlingId, LosBehandlingDto hendelse) {
+    private static Oppgave oppgaveFra(BehandlingId behandlingId, LosBehandlingDto hendelse) {
         var feilutbetaltBeløp = Optional.ofNullable(hendelse.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(BigDecimal.ZERO);
         return Oppgave.builder()
             .medSystem(Fagsystem.FPTILBAKE)
