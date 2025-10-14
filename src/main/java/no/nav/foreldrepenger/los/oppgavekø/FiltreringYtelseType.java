@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
+import java.util.Objects;
+
 @Entity(name = "FiltreringYtelseType")
 @Table(name = "FILTRERING_YTELSE_TYPE")
 public class FiltreringYtelseType extends BaseEntitet {
@@ -40,4 +42,17 @@ public class FiltreringYtelseType extends BaseEntitet {
     public FagsakYtelseType getFagsakYtelseType() {
         return fagsakYtelseType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FiltreringYtelseType other)) return false;
+        return this.fagsakYtelseType == other.fagsakYtelseType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fagsakYtelseType);
+    }
+
 }

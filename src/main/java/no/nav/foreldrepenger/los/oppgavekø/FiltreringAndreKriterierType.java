@@ -6,6 +6,8 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity(name = "FiltreringAndreKriterier")
 @Table(name = "FILTRERING_ANDRE_KRITERIER")
 public class FiltreringAndreKriterierType extends BaseEntitet {
@@ -42,6 +44,18 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
 
     public boolean isInkluder() {
         return inkluder;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FiltreringAndreKriterierType other)) return false;
+        return this.andreKriterierType == other.andreKriterierType && this.inkluder == other.inkluder;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(andreKriterierType, inkluder);
     }
 
 }

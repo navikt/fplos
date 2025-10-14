@@ -75,11 +75,6 @@ public class OppgaveRepository {
         return oppgaveFiltrering.getId();
     }
 
-    public <U extends BaseEntitet> void slett(U entitet) {
-        entityManager.remove(entitet);
-        entityManager.flush();
-    }
-
     public void oppdaterNavn(Long sakslisteId, String navn) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, sakslisteId).endreNavn(navn));
         entityManager.flush();
@@ -87,12 +82,7 @@ public class OppgaveRepository {
 
     public void slettListe(Long listeId) {
         var filtersett = entityManager.find(OppgaveFiltrering.class, listeId);
-        if (filtersett != null) {
-            filtersett.tilbakestill();
-            entityManager.merge(filtersett);
-            entityManager.flush();
-            entityManager.remove(filtersett);
-        }
+        entityManager.remove(filtersett);
     }
 
     public <U extends BaseEntitet> void refresh(U entitet) {
