@@ -65,11 +65,6 @@ public class OppgaveRepository {
         return listeTypedQuery.getResultStream().findFirst();
     }
 
-    public <U extends BaseEntitet> void lagre(U entitet) {
-        entityManager.persist(entitet);
-        entityManager.flush();
-    }
-
     public Long lagreFiltrering(OppgaveFiltrering oppgaveFiltrering) {
         lagre(oppgaveFiltrering);
         return oppgaveFiltrering.getId();
@@ -83,10 +78,6 @@ public class OppgaveRepository {
     public void slettListe(Long listeId) {
         var filtersett = entityManager.find(OppgaveFiltrering.class, listeId);
         entityManager.remove(filtersett);
-    }
-
-    public <U extends BaseEntitet> void refresh(U entitet) {
-        entityManager.refresh(entitet);
     }
 
     public boolean sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
@@ -193,4 +184,14 @@ public class OppgaveRepository {
         entityManager.persist(oppgave);
         return oppgave;
     }
+
+    public <U extends BaseEntitet> void lagre(U entitet) {
+        entityManager.persist(entitet);
+        entityManager.flush();
+    }
+
+    public <U extends BaseEntitet> void refresh(U entitet) {
+        entityManager.refresh(entitet);
+    }
+
 }
