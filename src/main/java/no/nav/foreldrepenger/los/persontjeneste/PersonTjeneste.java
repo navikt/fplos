@@ -81,9 +81,10 @@ public class PersonTjeneste {
         var person = pdl.hentPerson(ytelse, query, projection);
         var fnr = fnr(person.getFolkeregisteridentifikator(), aktørId, saksnummer);
         if (harIdentifikator(person.getFolkeregisteridentifikator())) {
-            return Person.personMedFormattertNavn(fnr, PersonMappers.mapNavn(person).orElse("Ukjent Navn"));
+            return new Person(fnr, PersonMappers.mapNavn(person).orElse("Ukjent Navn"));
         } else  {
-            return Person.personMedFormattertNavn(fnr, hentNavnForFalskIdentitet(aktørId));
+            var falskIdentitetNavn = hentNavnForFalskIdentitet(aktørId).map(PersonMappers::titlecaseNavn);
+            return new Person(fnr, falskIdentitetNavn.orElse("Ukjent Navn"));
         }
     }
 
@@ -130,8 +131,8 @@ public class PersonTjeneste {
         return identliste.getIdenter().stream().findFirst().map(IdentInformasjon::getIdent).map(Fødselsnummer::new).orElse(null);
     }
 
-    private String hentNavnForFalskIdentitet(AktørId aktørId) {
-        return FalskIdentitet.finnFalskIdentitet(aktørId.getId(), pdl).map(FalskIdentitet.Informasjon::navn).orElse("Ukjent Navn");
+    private Optional<String> hentNavnForFalskIdentitet(AktørId aktørId) {
+        return FalskIdentitet.finnFalskIdentitet(aktørId.getId(), pdl).map(FalskIdentitet.Informasjon::navn);
     }
 
     private static Persondata.Ytelse utledYtelse(FagsakYtelseType ytelseType) {
