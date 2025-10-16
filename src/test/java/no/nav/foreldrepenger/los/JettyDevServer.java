@@ -7,7 +7,7 @@ public class JettyDevServer extends JettyServer {
 
     private static final Environment ENV = Environment.current();
 
-    public static void main(String[] args) throws Exception {
+    static void main(String[] args) throws Exception {
         jettyServer(args).bootStrap();
     }
 

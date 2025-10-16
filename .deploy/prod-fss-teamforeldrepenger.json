@@ -1,8 +1,13 @@
 {
   "kafkaPool": "nav-prod",
-  "oracleconfigkv":  "/oracle/data/prod/config/fplos_p",
-  "oraclecredskv": "/oracle/data/prod/creds/fplos_p-fplos_p",
-  "ingresses":  [
+  "vault": {
+    "mountPath": "/var/run/secrets/nais.io",
+    "db": {
+      "secretsPath": "oracle/data/prod/creds/fplos_p-fplos_p",
+      "configPath": "oracle/data/prod/config/fplos_p"
+    }
+  },
+  "ingresses": [
     "https://fplos.prod-fss-pub.nais.io"
   ],
   "minReplica": "2",
@@ -16,10 +21,22 @@
     "mem": "1536Mi"
   },
   "groups": [
-    "73107205-17ec-4a07-a56e-e0a8542f90c9",
-    "77f05833-ebfd-45fb-8be7-88eca8e7418f",
-    "1a59da27-4c55-4a9d-8480-6abd1a856cd2",
-    "0d226374-4748-4367-a38a-062dcad70034"
+    {
+      "uuid": "73107205-17ec-4a07-a56e-e0a8542f90c9",
+      "kommentar": "saksbehandler"
+    },
+    {
+      "uuid": "77f05833-ebfd-45fb-8be7-88eca8e7418f",
+      "kommentar": "veileder"
+    },
+    {
+      "uuid": "1a59da27-4c55-4a9d-8480-6abd1a856cd2",
+      "kommentar": "oppgavestyrer"
+    },
+    {
+      "uuid": "0d226374-4748-4367-a38a-062dcad70034",
+      "kommentar": "drift"
+    }
   ],
   "AZURE_IAC_RULES": [
     {

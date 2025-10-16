@@ -47,14 +47,11 @@ public class JettyServer {
 
     private final Integer serverPort;
 
-    public static void main(String[] args) throws Exception {
-        jettyServer(args).bootStrap();
+    static void main() throws Exception {
+        jettyServer().bootStrap();
     }
 
-    protected static JettyServer jettyServer(String[] args) {
-        if (args.length > 0) {
-            return new JettyServer(Integer.parseUnsignedInt(args[0]));
-        }
+    protected static JettyServer jettyServer() {
         return new JettyServer(ENV.getProperty("server.port", Integer.class, 8080));
     }
 
@@ -136,8 +133,7 @@ public class JettyServer {
     }
 
     private static WebAppContext createContext() throws IOException {
-        var ctx = new WebAppContext(CONTEXT_PATH, null, simpleConstraints(), null,
-            new ErrorPageErrorHandler(), ServletContextHandler.NO_SESSIONS);
+        var ctx = new WebAppContext(CONTEXT_PATH, null, simpleConstraints(), null, new ErrorPageErrorHandler(), ServletContextHandler.NO_SESSIONS);
         ctx.setParentLoaderPriority(true);
 
         // må hoppe litt bukk for å hente web.xml fra classpath i stedet for fra filsystem.
