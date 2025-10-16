@@ -41,10 +41,15 @@ public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetr
         var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
         var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
-        oppgaveTjeneste.hentAktivOppgave(behandlingId).filter(Oppgave::getAktiv).ifPresentOrElse(o -> {
-            LOG.info("{} behandling er satt på vent, type {}. Lukker oppgave.", SYSTEM, venteType);
+
+        LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType);
+
+        var aktivOppgave = oppgaveTjeneste.hentAktivOppgave(behandlingId).filter(Oppgave::getAktiv);
+        if (aktivOppgave.isPresent()) {
+            LOG.info("Lukker aktiv oppgave for behandling {}", behandlingId);
             oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
-        }, () -> LOG.info("{} behandling er satt på vent, type {}", SYSTEM, venteType));
+        }
+
         var oel = new OppgaveEventLogg(behandlingId, venteType, null, behandlendeEnhet, aksjonspunktFrist);
         oppgaveTjeneste.lagre(oel);
     }

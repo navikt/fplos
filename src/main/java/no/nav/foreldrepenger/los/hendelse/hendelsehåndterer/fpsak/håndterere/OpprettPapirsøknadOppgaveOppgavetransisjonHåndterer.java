@@ -35,6 +35,20 @@ public class OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer implements Fp
     public OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer() {
     }
 
+    @Override
+    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
+        håndterEksisterendeOppgave(behandlingId);
+        var oppgave = OppgaveUtil.oppgave(behandlingId, behandling);
+        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, new FpsakOppgaveEgenskapFinner(behandling));
+        oppgaveTjeneste.lagre(oppgave);
+        opprettOppgaveEventLogg(oppgave);
+    }
+
+    @Override
+    public Oppgavetransisjon kanHåndtere() {
+        return Oppgavetransisjon.OPPRETT_PAPIRSØKNADOPPGAVE;
+    }
+
     private void håndterEksisterendeOppgave(BehandlingId behandlingId) {
         oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
     }
@@ -48,30 +62,6 @@ public class OpprettPapirsøknadOppgaveOppgavetransisjonHåndterer implements Fp
             .build();
         oppgaveTjeneste.lagre(oel);
         LOG.info("Oppretter {}-oppgave med id {} og av type {}", SYSTEM, oppgave.getId(), AndreKriterierType.PAPIRSØKNAD.getKode());
-    }
-
-    @Override
-    public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
-        håndterEksisterendeOppgave(behandlingId);
-        var oppgave = opprettOppgave(behandlingId, behandling);
-        opprettOppgaveEgenskaper(oppgave, behandling);
-        opprettOppgaveEventLogg(oppgave);
-    }
-
-    @Override
-    public Oppgavetransisjon kanHåndtere() {
-        return Oppgavetransisjon.OPPRETT_PAPIRSØKNADOPPGAVE;
-    }
-
-    private Oppgave opprettOppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
-        var oppgave = OppgaveUtil.oppgave(behandlingId, behandlingFpsak);
-        oppgaveTjeneste.lagre(oppgave);
-        return oppgave;
-    }
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
     }
 
 }

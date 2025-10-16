@@ -47,7 +47,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
         oppgaveRepository = new OppgaveRepository(entityManager);
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste); //mock(ReservasjonTjeneste.class));
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository, Mockito.mock(Beskyttelsesbehov.class));
+        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(Mockito.mock(Beskyttelsesbehov.class));
         behandlingFpsak = behandlingFpsak();
         behandlingId = new BehandlingId(behandlingFpsak.behandlingUuid());
         var eksisterendeOppgave = Oppgave.builder().dummyOppgave("1111").medAktiv(true).medBehandlingId(behandlingId).build();

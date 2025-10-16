@@ -42,7 +42,9 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         var eksisterendeOppgave = oppgaveTjeneste.hentAktivOppgave(behandlingId)
             .orElseThrow(() -> new IllegalStateException("Fant ikke eksisterende oppgave"));
-        var nyOppgave = lagOppgave(behandlingId, behandling);
+        var nyOppgave = OppgaveUtil.oppgave(behandlingId, behandling);
+        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(nyOppgave, new FpsakOppgaveEgenskapFinner(behandling));
+        oppgaveTjeneste.lagre(nyOppgave);
         flyttReservasjon(eksisterendeOppgave, nyOppgave);
         oppgaveTjeneste.avsluttOppgaveMedEventLogg(eksisterendeOppgave, OppgaveEventType.GJENAPNET);
     }
@@ -67,18 +69,6 @@ public class OppdaterOppgaveOppgavetransisjonHåndterer implements FpsakOppgavet
             reservasjonTjeneste.slettReservasjon(gammelReservasjon);
             LOG.info("Overfører oppgave til ny enhet. Avslutter eksisterende reservasjon.");
         }
-    }
-
-    private Oppgave lagOppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
-        var nyOppgave = OppgaveUtil.oppgave(behandlingId, behandlingFpsak);
-        oppgaveTjeneste.lagre(nyOppgave);
-        oppdaterOppgaveEgenskaper(nyOppgave, behandlingFpsak);
-        return nyOppgave;
-    }
-
-    private void oppdaterOppgaveEgenskaper(Oppgave gjenåpnetOppgave, LosBehandlingDto behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(gjenåpnetOppgave, egenskapFinner);
     }
 
 }

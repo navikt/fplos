@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
+import java.util.Objects;
+
 @Entity(name = "FiltreringBehandlingType")
 @Table(name = "FILTRERING_BEHANDLING_TYPE")
 public class FiltreringBehandlingType extends BaseEntitet {
@@ -40,4 +42,17 @@ public class FiltreringBehandlingType extends BaseEntitet {
     public BehandlingType getBehandlingType() {
         return behandlingType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FiltreringBehandlingType other)) return false;
+        return this.behandlingType == other.behandlingType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(behandlingType);
+    }
+
 }

@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 
@@ -48,12 +47,13 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
 
     @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
-        var oppgaveHistorikk = oppgaveRepository.hentOppgaver(behandlingId);
-        sjekkForAktivOppgave(oppgaveHistorikk);
+        var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
+        guardEksisterendeOppgave(oppgaver);
+
         var nyOppgave = OppgaveUtil.oppgave(behandlingId, behandling);
+        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(nyOppgave, new FpsakOppgaveEgenskapFinner(behandling));
         oppgaveRepository.lagre(nyOppgave);
-        opprettOppgaveEgenskaper(nyOppgave, behandling);
-        videreførNyligUtløptReservasjon(oppgaveHistorikk, nyOppgave, behandling, eventHistorikk);
+        videreførNyligUtløptReservasjon(oppgaver, nyOppgave, behandling, eventHistorikk);
         oppdaterOppgaveEventLogg(behandlingId, behandling);
         LOG.info("Gjenåpnet {} oppgaveId {}", SYSTEM, nyOppgave.getId());
     }
@@ -79,11 +79,6 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
         }
     }
 
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
-    }
-
     private void oppdaterOppgaveEventLogg(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
         var oel = OppgaveEventLogg.builder()
             .behandlingId(behandlingId)
@@ -93,7 +88,7 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
         oppgaveRepository.lagre(oel);
     }
 
-    private static void sjekkForAktivOppgave(List<Oppgave> eksisterendeOppgaver) {
+    private static void guardEksisterendeOppgave(List<Oppgave> eksisterendeOppgaver) {
         eksisterendeOppgaver.stream().filter(Oppgave::getAktiv).findAny().ifPresent(o -> {
             throw new IllegalStateException("Fant eksisterende oppgave, avslutter behandling av hendelse");
         });

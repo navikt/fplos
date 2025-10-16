@@ -76,13 +76,11 @@ class OppgaveDtoTjenesteTest {
             .medSystem(Fagsystem.FPSAK)
             .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
             .build();
-        var oppgaveEgenskaper = OppgaveEgenskap.builder()
-            .medOppgave(oppgave)
+        oppgave.leggTilOppgaveEgenskap(OppgaveEgenskap.builder()
             .medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER)
             .medSisteSaksbehandlerForTotrinn("IDENT")
-            .build();
+            .build());
         oppgaveRepository.lagre(oppgave);
-        oppgaveRepository.lagre(oppgaveEgenskaper);
         oppgaveRepository.lagre(new OppgaveEventLogg(oppgave.getBehandlingId(), OppgaveEventType.OPPRETTET,
             AndreKriterierType.TIL_BESLUTTER, oppgave.getBehandlendeEnhet()));
         reservasjonTjeneste.reserverOppgave(oppgave);

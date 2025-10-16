@@ -61,7 +61,7 @@ class TilbakekrevingHendelseHåndtererTest {
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
-        var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository, Mockito.mock(Beskyttelsesbehov.class));
+        var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(Mockito.mock(Beskyttelsesbehov.class));
         var oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, Mockito.mock(ReservasjonTjeneste.class));
         handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, oppgaveTjeneste, Mockito.mock(ReservasjonTjeneste.class));
     }
