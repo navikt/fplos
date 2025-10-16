@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 
+import java.util.Objects;
+
 @Entity(name = "OppgaveEgenskap")
 @Table(name = "OPPGAVE_EGENSKAP")
 public class OppgaveEgenskap extends BaseEntitet {
@@ -38,6 +40,10 @@ public class OppgaveEgenskap extends BaseEntitet {
         //CDI
     }
 
+    void setOppgave(Oppgave oppgave) {
+        this.oppgave = oppgave;
+    }
+
     public Oppgave getOppgave() {
         return oppgave;
     }
@@ -46,19 +52,25 @@ public class OppgaveEgenskap extends BaseEntitet {
         return andreKriterierType;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OppgaveEgenskap that)) return false;
+        return andreKriterierType == that.andreKriterierType && Objects.equals(sisteSaksbehandlerForTotrinn, that.sisteSaksbehandlerForTotrinn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(andreKriterierType, sisteSaksbehandlerForTotrinn);
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
-        private Oppgave oppgave;
         private AndreKriterierType andreKriterierType;
         private String sisteSaksbehandlerForTotrinn;
-
-        public Builder medOppgave(Oppgave oppgave) {
-            this.oppgave = oppgave;
-            return this;
-        }
 
         public Builder medAndreKriterierType(AndreKriterierType andreKriterierType) {
             this.andreKriterierType = andreKriterierType;
@@ -74,8 +86,8 @@ public class OppgaveEgenskap extends BaseEntitet {
         }
 
         public OppgaveEgenskap build() {
-            if (oppgave == null || andreKriterierType == null) {
-                throw new IllegalStateException("Oppgave og/eller AndreKriterierType kan ikke være null");
+            if (andreKriterierType == null) {
+                throw new IllegalStateException("AndreKriterierType kan ikke være null");
             }
 
             if (andreKriterierType.erTilBeslutter() && sisteSaksbehandlerForTotrinn == null) {
@@ -83,7 +95,6 @@ public class OppgaveEgenskap extends BaseEntitet {
             }
 
             var oppgaveEgenskap = new OppgaveEgenskap();
-            oppgaveEgenskap.oppgave = oppgave;
             oppgaveEgenskap.andreKriterierType = andreKriterierType;
             oppgaveEgenskap.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
             return oppgaveEgenskap;

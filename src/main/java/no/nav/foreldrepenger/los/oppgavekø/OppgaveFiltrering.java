@@ -46,13 +46,13 @@ public class OppgaveFiltrering extends BaseEntitet {
     @Convert(converter = KøSortering.KodeverdiConverter.class)
     private KøSortering sortering;
 
-    @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FiltreringBehandlingType> filtreringBehandlingTyper = new HashSet<>();
 
-    @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FiltreringYtelseType> filtreringYtelseTyper = new HashSet<>();
 
-    @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FiltreringAndreKriterierType> andreKriterierTyper = new HashSet<>();
 
     @ManyToOne
@@ -181,13 +181,6 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     public void fjernFilter(BehandlingType behandlingType) {
         this.filtreringBehandlingTyper.removeIf(fbt -> fbt.getBehandlingType() == behandlingType);
-    }
-
-    public void tilbakestill() {
-        this.saksbehandlere.clear();
-        this.filtreringYtelseTyper.clear();
-        this.andreKriterierTyper.clear();
-        this.filtreringBehandlingTyper.clear();
     }
 
     public static OppgaveFiltrering.Builder builder() {

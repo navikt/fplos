@@ -65,25 +65,9 @@ public class OppgaveRepository {
         return listeTypedQuery.getResultStream().findFirst();
     }
 
-    public <U extends BaseEntitet> void lagre(U entitet) {
-        entityManager.persist(entitet);
-        entityManager.flush();
-    }
-
     public Long lagreFiltrering(OppgaveFiltrering oppgaveFiltrering) {
         lagre(oppgaveFiltrering);
         return oppgaveFiltrering.getId();
-    }
-
-    public void lagre(OppgaveEgenskap oppgaveEgenskap) {
-        entityManager.persist(oppgaveEgenskap);
-        entityManager.flush();
-        refresh(oppgaveEgenskap.getOppgave());
-    }
-
-    public <U extends BaseEntitet> void slett(U entitet) {
-        entityManager.remove(entitet);
-        entityManager.flush();
     }
 
     public void oppdaterNavn(Long sakslisteId, String navn) {
@@ -93,16 +77,7 @@ public class OppgaveRepository {
 
     public void slettListe(Long listeId) {
         var filtersett = entityManager.find(OppgaveFiltrering.class, listeId);
-        if (filtersett != null) {
-            filtersett.tilbakestill();
-            entityManager.merge(filtersett);
-            entityManager.flush();
-            entityManager.remove(filtersett);
-        }
-    }
-
-    public <U extends BaseEntitet> void refresh(U entitet) {
-        entityManager.refresh(entitet);
+        entityManager.remove(filtersett);
     }
 
     public boolean sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
@@ -123,12 +98,6 @@ public class OppgaveRepository {
         return oppgaveIder.size() == fortsattTilgjengelige.intValue();
     }
 
-    public Oppgave opprettTilbakekrevingOppgave(Oppgave oppgave) {
-        lagre(oppgave);
-        entityManager.refresh(oppgave);
-        return oppgave;
-    }
-
     public List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId) {
         Objects.requireNonNull(behandlingId, "behandlingId kan ikke være null");
         return entityManager.createQuery("""
@@ -136,14 +105,6 @@ public class OppgaveRepository {
             where oel.behandlingId = :behandlingId
             order by oel.opprettetTidspunkt desc
             """, OppgaveEventLogg.class).setParameter(BEHANDLING_ID_FELT_SQL, behandlingId).getResultList();
-    }
-
-    public List<OppgaveEgenskap> hentOppgaveEgenskaper(Long oppgaveId) {
-        return entityManager.createQuery("""
-            from OppgaveEgenskap oe
-            where oe.oppgaveId = :oppgaveId
-            ORDER BY oe.id desc
-            """, OppgaveEgenskap.class).setParameter("oppgaveId", oppgaveId).getResultList();
     }
 
     public void settSortering(Long sakslisteId, String sortering) {
@@ -217,6 +178,20 @@ public class OppgaveRepository {
             LOG.warn("Flere enn én aktive oppgaver for behandlingId {}", behandlingId);
         }
         return oppgaver.stream().max(Comparator.comparing(Oppgave::getOpprettetTidspunkt));
+    }
+
+    public Oppgave opprettOppgave(Oppgave oppgave) {
+        entityManager.persist(oppgave);
+        return oppgave;
+    }
+
+    public <U extends BaseEntitet> void lagre(U entitet) {
+        entityManager.persist(entitet);
+        entityManager.flush();
+    }
+
+    public <U extends BaseEntitet> void refresh(U entitet) {
+        entityManager.refresh(entitet);
     }
 
 }

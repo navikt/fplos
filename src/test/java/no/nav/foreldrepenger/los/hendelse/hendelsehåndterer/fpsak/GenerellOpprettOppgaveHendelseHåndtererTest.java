@@ -48,7 +48,7 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, Mockito.mock(ReservasjonTjeneste.class));
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository, Mockito.mock(Beskyttelsesbehov.class));
+        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(Mockito.mock(Beskyttelsesbehov.class));
         opprettOppgaveHåndterer = new GenerellOpprettOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, Mockito.mock(ReservasjonTjeneste.class));
     }
 

@@ -4,6 +4,7 @@ import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_E
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,21 +68,13 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         entityManager.persist(klageOppgave);
         entityManager.persist(innsynOppgave);
 
+        beslutterOppgave.leggTilOppgaveEgenskap(
+            OppgaveEgenskap.builder().medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER).medSisteSaksbehandlerForTotrinn("IDENT").build());
         entityManager.persist(beslutterOppgave);
-        var oppgaveEgenskapBeslutterOppgave1 = OppgaveEgenskap.builder()
-            .medOppgave(beslutterOppgave)
-            .medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER)
-            .medSisteSaksbehandlerForTotrinn("IDENT")
-            .build();
-        entityManager.persist(oppgaveEgenskapBeslutterOppgave1);
 
+        beslutterOppgave2.leggTilOppgaveEgenskap(
+            OppgaveEgenskap.builder().medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER).medSisteSaksbehandlerForTotrinn("IDENT").build());
         entityManager.persist(beslutterOppgave2);
-        var oppgaveEgenskapBeslutterOppgave2 = OppgaveEgenskap.builder()
-            .medOppgave(beslutterOppgave2)
-            .medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER)
-            .medSisteSaksbehandlerForTotrinn("IDENT")
-            .build();
-        entityManager.persist(oppgaveEgenskapBeslutterOppgave2);
 
         entityManager.persist(lukketOppgave);
 
@@ -158,8 +151,21 @@ class OppgaveBeholdningStatistikkTjenesteTest {
     private void leggTilOppgave(Oppgave oppgave, int startTilbakeITid, int sluttTilbakeITid) {
         entityManager.persist(oppgave);
         entityManager.flush();
-        entityManager.createNativeQuery(
-            "UPDATE OPPGAVE " + "SET OPPRETTET_TID = (sysdate - " + startTilbakeITid + "), " + "ENDRET_TID = (sysdate - " + sluttTilbakeITid + "), "
-                + "AKTIV = 'N' " + "WHERE ID = " + oppgave.getId()).executeUpdate();
+
+        var now = LocalDateTime.now();
+        var opprettetTid = now.minusDays(startTilbakeITid);
+        var endretTid = now.minusDays(sluttTilbakeITid);
+
+        entityManager.createQuery("""
+        UPDATE Oppgave o
+           SET o.opprettetTidspunkt = :opprettetTid,
+               o.endretTidspunkt    = :endretTid,
+               o.aktiv        = 'N'
+         WHERE o.id = :oppgaveId
+        """)
+            .setParameter("opprettetTid", opprettetTid)
+            .setParameter("endretTid", endretTid)
+            .setParameter("oppgaveId", oppgave.getId())
+            .executeUpdate();
     }
 }

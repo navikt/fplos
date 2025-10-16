@@ -69,10 +69,10 @@ public class AvdelingslederTjeneste {
 
     public void endreFiltreringBehandlingType(Long oppgavefiltreringId, BehandlingType behandlingType, boolean checked) {
         var filtre = oppgaveRepository.hentOppgaveFilterSett(oppgavefiltreringId).orElseThrow();
-        if (checked) {
-            filtre.leggTilFilter(behandlingType);
-        } else {
+        if (!checked) {
             filtre.fjernFilter(behandlingType);
+        } else {
+            filtre.leggTilFilter(behandlingType);
         }
         boolean gammelSorteringGjelderTilbakebetaling = filtre.getSortering().getFeltkategori().equals(KøSortering.FK_TILBAKEKREVING);
         boolean tilbakekrevingSorteringIkkeAktuell =
@@ -85,8 +85,9 @@ public class AvdelingslederTjeneste {
 
     public void endreFagsakYtelseType(Long oppgavefiltreringId, FagsakYtelseType fagsakYtelseType, boolean checked) {
         var filter = hentFiltrering(oppgavefiltreringId);
-        filter.fjernFilter(fagsakYtelseType);
-        if (checked) {
+        if (!checked) {
+            filter.fjernFilter(fagsakYtelseType);
+        } else {
             filter.leggTilFilter(fagsakYtelseType);
         }
         oppgaveRepository.lagre(filter);
@@ -97,8 +98,9 @@ public class AvdelingslederTjeneste {
                                                   boolean checked,
                                                   boolean inkluder) {
         var filterSett = hentFiltrering(oppgavefiltreringId);
-        filterSett.fjernFilter(andreKriterierType);
-        if (checked) {
+        if (!checked) {
+            filterSett.fjernFilter(andreKriterierType);
+        } else {
             var kriterie = new FiltreringAndreKriterierType(filterSett, andreKriterierType, inkluder);
             filterSett.leggTilFilter(kriterie);
         }

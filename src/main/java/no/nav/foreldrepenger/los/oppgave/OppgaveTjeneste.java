@@ -103,10 +103,6 @@ public class OppgaveTjeneste {
         return sisteOppgave;
     }
 
-    public Optional<Oppgave> hentAktivTilbakekrevingOppgave(BehandlingId behandlingId) {
-        return oppgaveRepository.hentOppgaver(behandlingId).stream().filter(Oppgave::getAktiv).findFirst();
-    }
-
     public <U extends BaseEntitet> void lagre(U entitet) {
         oppgaveRepository.lagre(entitet);
     }

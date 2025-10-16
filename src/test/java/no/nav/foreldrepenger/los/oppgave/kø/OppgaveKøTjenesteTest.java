@@ -135,13 +135,13 @@ class OppgaveKøTjenesteTest {
 
 
     private void leggtilOppgaveMedEkstraEgenskaper(Oppgave oppgave, AndreKriterierType andreKriterierType) {
-        oppgaveRepository.lagre(oppgave);
-        oppgaveRepository.refresh(oppgave);
-        var oppgaveEgenskapBuilder = OppgaveEgenskap.builder().medOppgave(oppgave).medAndreKriterierType(andreKriterierType);
+        var oppgaveEgenskapBuilder = OppgaveEgenskap.builder().medAndreKriterierType(andreKriterierType);
         if (andreKriterierType.erTilBeslutter()) {
             oppgaveEgenskapBuilder.medSisteSaksbehandlerForTotrinn("IDENT");
         }
-        oppgaveRepository.lagre(oppgaveEgenskapBuilder.build());
+        oppgave.leggTilOppgaveEgenskap(oppgaveEgenskapBuilder.build());
+        oppgaveRepository.lagre(oppgave);
+        oppgaveRepository.refresh(oppgave);
     }
 
     private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister) {
