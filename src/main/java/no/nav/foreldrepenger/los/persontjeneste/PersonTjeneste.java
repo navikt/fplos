@@ -83,7 +83,8 @@ public class PersonTjeneste {
         if (harIdentifikator(person.getFolkeregisteridentifikator())) {
             return new Person(fnr, PersonMappers.mapNavn(person).orElse("Ukjent Navn"));
         } else  {
-            var falskIdentitetNavn = hentNavnForFalskIdentitet(aktørId).map(PersonMappers::titlecaseNavn);
+            // Falsk Identitet har navn i objekt. Utgått Identitet har Navn i Person
+            var falskIdentitetNavn = hentNavnForFalskIdentitet(aktørId).or(() -> PersonMappers.mapNavn(person));
             return new Person(fnr, falskIdentitetNavn.orElse("Ukjent Navn"));
         }
     }
@@ -102,7 +103,7 @@ public class PersonTjeneste {
         if (fraHentPerson.isEmpty()) {
             var fnr = hentFødselsnummerForAktørId(aktørId);
             if (fnr != null) {
-                LOG.warn("PDL mangler fnr i hentPerson for sak {} , fant FNR fra hentIdenter", saksnummer);
+                LOG.info("PDL mangler fnr i hentPerson for sak {} , fant FNR fra hentIdenter", saksnummer);
             } else {
                 LOG.warn("PDL mangler fnr i hentPerson for sak {} , ingen FNR fra hentIdenter", saksnummer);
             }
