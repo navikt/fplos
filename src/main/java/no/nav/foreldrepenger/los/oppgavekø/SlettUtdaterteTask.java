@@ -48,7 +48,7 @@ public class SlettUtdaterteTask implements ProsessTaskHandler {
         int batchSize = 10_000;
         int totalDeleted = 0;
 
-        while (true) {
+        while (LocalDateTime.now().isBefore(kjøretidDeadline)) {
             var query = entityManager.createNativeQuery("""
                 delete from OPPGAVE_EVENT_LOGG oel
                 where ROWID in (
@@ -66,9 +66,7 @@ public class SlettUtdaterteTask implements ProsessTaskHandler {
             entityManager.flush();
             totalDeleted += deleted;
 
-            if (deleted < batchSize || LocalDateTime.now().isAfter(kjøretidDeadline)) {
-                break;
-            }
+            if (deleted < batchSize) break;
         }
 
         return totalDeleted;
