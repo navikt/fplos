@@ -1,13 +1,13 @@
 package no.nav.foreldrepenger.los.konfig;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-
-import java.io.IOException;
 
 
 /**
@@ -41,8 +41,8 @@ public class JacksonKodeverdiSerializer extends StdSerializer<Kodeverdi> {
         jgen.writeStringField("kodeverk", value.getKodeverk());
         jgen.writeStringField("navn", value.getNavn());
         if (value instanceof KøSortering køSortering) {
-            jgen.writeStringField("felttype", køSortering.getFelttype());
-            jgen.writeStringField("feltkategori", køSortering.getFeltkategori());
+            jgen.writeStringField("felttype", køSortering.getFelttype().name());
+            jgen.writeStringField("feltkategori", køSortering.getFeltkategori().name());
         }
 
         jgen.writeEndObject();

@@ -1,12 +1,16 @@
 package no.nav.foreldrepenger.los.avdelingsleder;
 
+import static java.util.function.Predicate.not;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -16,11 +20,6 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static java.util.function.Predicate.not;
 
 
 @ApplicationScoped
@@ -74,7 +73,7 @@ public class AvdelingslederTjeneste {
         } else {
             filtre.leggTilFilter(behandlingType);
         }
-        boolean gammelSorteringGjelderTilbakebetaling = filtre.getSortering().getFeltkategori().equals(KøSortering.FK_TILBAKEKREVING);
+        boolean gammelSorteringGjelderTilbakebetaling = filtre.getSortering().getFeltkategori().equals(KøSortering.FeltKategori.TILBAKEKREVING);
         boolean tilbakekrevingSorteringIkkeAktuell =
             filtre.getBehandlingTyper().isEmpty() || filtre.getBehandlingTyper().stream().anyMatch(not(BehandlingType::gjelderTilbakebetaling));
         if (gammelSorteringGjelderTilbakebetaling && tilbakekrevingSorteringIkkeAktuell) {
