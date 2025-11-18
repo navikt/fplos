@@ -1,14 +1,14 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Arrays;
+import java.util.Optional;
 
-import no.nav.foreldrepenger.los.felles.Kodeverdi;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-
-import java.util.Arrays;
-import java.util.Optional;
+import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum KøSortering implements Kodeverdi {
 
@@ -16,30 +16,32 @@ public enum KøSortering implements Kodeverdi {
     OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
     FØRSTE_STØNADSDAG("FORSTONAD", "Dato for første stønadsdag"),
     FØRSTE_STØNADSDAG_SYNKENDE("FORSTONAD_SYNK", "Dato for første stønadsdag synkende"),
-    BELØP("BELOP", "Feilutbetalt beløp", "HELTALL", "TILBAKEKREVING"),
-    FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", "DATO", "TILBAKEKREVING");
+    BELØP("BELOP", "Feilutbetalt beløp", FeltType.HELTALL, FeltKategori.TILBAKEKREVING),
+    FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", FeltType.DATO, FeltKategori.TILBAKEKREVING),;
+
+    public enum FeltType { HELTALL, DATO }
+
+    public enum FeltKategori { UNIVERSAL, TILBAKEKREVING }
 
     @JsonValue
     private String kode;
+    @JsonIgnore
     private final String navn;
-    private final String felttype;
-    private final String feltkategori;
+    @JsonIgnore
+    private final FeltType felttype;
+    @JsonIgnore
+    private final FeltKategori feltkategori;
 
     public static final String KODEVERK = "KO_SORTERING";
-    public static final String FT_HELTALL = "HELTALL";
-    public static final String FT_DATO = "DATO";
-
-    public static final String FK_UNIVERSAL = "UNIVERSAL";
-    public static final String FK_TILBAKEKREVING = "TILBAKEKREVING";
 
     KøSortering(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
-        this.felttype = FT_DATO;
-        this.feltkategori = FK_UNIVERSAL;
+        this.felttype = FeltType.DATO;
+        this.feltkategori = FeltKategori.UNIVERSAL;
     }
 
-    KøSortering(String kode, String navn, String felttype, String feltkategori) {
+    KøSortering(String kode, String navn, FeltType felttype, FeltKategori feltkategori) {
         this.kode = kode;
         this.navn = navn;
         this.felttype = felttype;
@@ -58,11 +60,11 @@ public enum KøSortering implements Kodeverdi {
         return KODEVERK;
     }
 
-    public String getFelttype() {
+    public FeltType getFelttype() {
         return felttype;
     }
 
-    public String getFeltkategori() {
+    public FeltKategori getFeltkategori() {
         return feltkategori;
     }
 

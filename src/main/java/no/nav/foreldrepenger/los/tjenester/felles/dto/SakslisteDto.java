@@ -14,11 +14,12 @@ public record SakslisteDto(Long sakslisteId,
                            List<BehandlingType> behandlingTyper,
                            List<FagsakYtelseType> fagsakYtelseTyper,
                            List<AndreKriterierDto> andreKriterier,
+                           List<KøSorteringFeltDto> sorteringTyper,
                            List<String> saksbehandlerIdenter) {
 
     public SakslisteDto(OppgaveFiltrering of) {
         this(of.getId(), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
-            AndreKriterierDto.listeFra(of.getFiltreringAndreKriterierTyper()), saksbehandlerIdenter(of.getSaksbehandlere()));
+            AndreKriterierDto.listeFra(of.getFiltreringAndreKriterierTyper()), KøSorteringFeltDto.alle(), saksbehandlerIdenter(of.getSaksbehandlere()));
     }
 
     private static List<String> saksbehandlerIdenter(List<Saksbehandler> saksbehandlere) {
