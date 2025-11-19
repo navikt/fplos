@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotNull;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
@@ -14,7 +15,7 @@ public record SakslisteDto(Long sakslisteId,
                            List<BehandlingType> behandlingTyper,
                            List<FagsakYtelseType> fagsakYtelseTyper,
                            List<AndreKriterierDto> andreKriterier,
-                           List<KøSorteringFeltDto> sorteringTyper,
+                           @NotNull List<KøSorteringFeltDto> sorteringTyper,
                            List<String> saksbehandlerIdenter) {
 
     public SakslisteDto(OppgaveFiltrering of) {
