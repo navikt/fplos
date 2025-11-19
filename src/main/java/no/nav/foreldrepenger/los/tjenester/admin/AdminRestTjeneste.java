@@ -52,7 +52,7 @@ public class AdminRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Oppretter task for synkronisering av behandling med fpsak", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
-    public Response synkroniserHendelser(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
+    public Response synkroniserHendelser(@NotNull List<@Valid EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream()
             .map(EnkelBehandlingIdDto::getBehandlingId)
             .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPSAK, b))
@@ -67,7 +67,7 @@ public class AdminRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Oppretter task for synkronisering av behandling med fptilbake", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
-    public Response synkroniserHendelserTilbake(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
+    public Response synkroniserHendelserTilbake(@NotNull List<@Valid EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream()
             .map(EnkelBehandlingIdDto::getBehandlingId)
             .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPTILBAKE, b))
