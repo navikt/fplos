@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
-import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
 
 /**
@@ -18,11 +17,8 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
  */
 public class JacksonKodeverdiSerializer extends StdSerializer<Kodeverdi> {
 
-    private boolean serialiserKodelisteNavn;
-
-    public JacksonKodeverdiSerializer(boolean serialiserKodelisteNavn) {
+    public JacksonKodeverdiSerializer() {
         super(Kodeverdi.class);
-        this.serialiserKodelisteNavn = serialiserKodelisteNavn;
     }
 
     @Override
@@ -30,22 +26,7 @@ public class JacksonKodeverdiSerializer extends StdSerializer<Kodeverdi> {
         /*
          * Midlertidig til vi helt skiller vanlig serialisering (JsonValue) fra custom kodemapserialisering
          */
-        if (!serialiserKodelisteNavn) {
-            jgen.writeString(value.getKode());
-            return;
-        }
-
-        jgen.writeStartObject();
-
-        jgen.writeStringField("kode", value.getKode());
-        jgen.writeStringField("kodeverk", value.getKodeverk());
-        jgen.writeStringField("navn", value.getNavn());
-        if (value instanceof KøSortering køSortering) {
-            jgen.writeStringField("felttype", køSortering.getFelttype().name());
-            jgen.writeStringField("feltkategori", køSortering.getFeltkategori().name());
-        }
-
-        jgen.writeEndObject();
+        jgen.writeString(value.getKode());
     }
 
 }
