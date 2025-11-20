@@ -32,8 +32,6 @@ public enum KøSortering implements Kodeverdi {
     @JsonIgnore
     private final FeltKategori feltkategori;
 
-    public static final String KODEVERK = "KO_SORTERING";
-
     KøSortering(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
@@ -56,9 +54,6 @@ public enum KøSortering implements Kodeverdi {
         return kode;
     }
 
-    public String getKodeverk() {
-        return KODEVERK;
-    }
 
     public FeltType getFelttype() {
         return felttype;

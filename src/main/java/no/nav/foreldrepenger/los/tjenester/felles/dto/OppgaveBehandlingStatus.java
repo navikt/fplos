@@ -13,7 +13,6 @@ public enum OppgaveBehandlingStatus implements Kodeverdi {
     @JsonValue
     private String kode;
     private final String navn;
-    public static final String KODEVERK = "OPPGAVE_BEHANDLING_STATUS";
 
     OppgaveBehandlingStatus(String kode, String navn) {
         this.kode = kode;
@@ -28,10 +27,5 @@ public enum OppgaveBehandlingStatus implements Kodeverdi {
     @Override
     public String getNavn() {
         return navn;
-    }
-
-    @Override
-    public String getKodeverk() {
-        return KODEVERK;
     }
 }
