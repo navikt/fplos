@@ -1,13 +1,12 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Optional;
-
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum FagsakYtelseType implements Kodeverdi {
@@ -15,9 +14,6 @@ public enum FagsakYtelseType implements Kodeverdi {
     FORELDREPENGER("FP", "Foreldrepenger"),
     SVANGERSKAPSPENGER("SVP", "Svangerskapspenger");
 
-    public static final String KODEVERK = "FAGSAK_YTELSE_TYPE";
-    private static final Map<String, FagsakYtelseType> KODEVERDI_MAP = Map.of(ENGANGSTØNAD.getKode(), ENGANGSTØNAD, FORELDREPENGER.getKode(),
-        FORELDREPENGER, SVANGERSKAPSPENGER.getKode(), SVANGERSKAPSPENGER);
     @JsonValue
     private final String kode;
     private final String navn;
@@ -31,7 +27,10 @@ public enum FagsakYtelseType implements Kodeverdi {
         if (kode == null) {
             return null;
         }
-        return Optional.ofNullable(kode).map(KODEVERDI_MAP::get).orElseThrow(() -> new IllegalArgumentException("Ukjent FagsakYtelseType: " + kode));
+        return Arrays.stream(values())
+            .filter(v -> v.kode.equals(kode))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Ukjent FagsakYtelseType: " + kode));
     }
 
     public String getKode() {
@@ -42,9 +41,6 @@ public enum FagsakYtelseType implements Kodeverdi {
         return navn;
     }
 
-    public String getKodeverk() {
-        return KODEVERK;
-    }
 
     @Converter(autoApply = true)
     public static class KodeverdiConverter implements AttributeConverter<FagsakYtelseType, String> {

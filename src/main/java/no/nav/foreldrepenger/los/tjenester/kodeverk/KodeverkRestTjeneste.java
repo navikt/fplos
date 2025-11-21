@@ -2,10 +2,8 @@ package no.nav.foreldrepenger.los.tjenester.kodeverk;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,7 +13,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
-import no.nav.foreldrepenger.los.konfig.JacksonJsonConfig;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakStatus;
@@ -31,7 +28,15 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 @ApplicationScoped
 public class KodeverkRestTjeneste {
 
-    private static final String KODELISTE_JSON = jsonKodeverk();
+    private static final Map<String, List<KodeverdiMedNavnDto>> KODEVERDIER = Map.ofEntries(
+        lagEnumEntry(AndreKriterierType.class),
+        lagEnumEntry(BehandlingType.class),
+        lagEnumEntry(BehandlingVenteStatus.class),
+        lagEnumEntry(FagsakStatus.class),
+        lagEnumEntry(FagsakYtelseType.class),
+        lagEnumEntry(KøSortering.class),
+        lagEnumEntry(OppgaveBehandlingStatus.class)
+    );
 
     KodeverkRestTjeneste() {
         // for cdi
@@ -42,30 +47,20 @@ public class KodeverkRestTjeneste {
     @Operation(description = "Henter kodeliste", tags = "Kodeverk")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public Response hentGruppertKodeliste() {
-        return Response.ok().entity(KODELISTE_JSON).type(MediaType.APPLICATION_JSON).build();
+        return Response.ok().entity(KODEVERDIER).build();
     }
 
-    private static String jsonKodeverk() {
-        var jsonMapper = new JacksonJsonConfig(true); // generere fulle kodeverdi-objekt
-        var mapper = jsonMapper.getObjectMapper();
-        try {
-            return mapper.writeValueAsString(gruppertKodeliste());
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Kunne ikke generere kodeliste");
+
+    private static Map.Entry<String, List<KodeverdiMedNavnDto>> lagEnumEntry(Class<? extends Kodeverdi> kodeverkClass) {
+        if (!Enum.class.isAssignableFrom(kodeverkClass)) {
+            throw new IllegalArgumentException("Ikke enum: " + kodeverkClass.getSimpleName());
         }
+        var dtos = Arrays.stream(kodeverkClass.getEnumConstants())
+            .map(k -> new KodeverdiMedNavnDto(k.getKode(), k.getNavn()))
+            .sorted(Comparator.comparing(KodeverdiMedNavnDto::navn))
+            .toList();
+        return Map.entry(kodeverkClass.getSimpleName(), dtos);
     }
 
-    private static Map<String, Kodeverdi[]> gruppertKodeliste() {
-        var map = new HashMap<String, Kodeverdi[]>();
-        map.put(BehandlingType.class.getSimpleName(), BehandlingType.values());
-        map.put(FagsakYtelseType.class.getSimpleName(), FagsakYtelseType.values());
-        map.put(KøSortering.class.getSimpleName(), KøSortering.values());
-        map.put(FagsakStatus.class.getSimpleName(), FagsakStatus.values()); // brukes kun i fagsaksøk mot fpsak, frontend bør gå over til fpsak-kodeverk
-        map.put(AndreKriterierType.class.getSimpleName(), Arrays.stream(AndreKriterierType.values())
-            .sorted(Comparator.comparing(AndreKriterierType::getNavn)).toArray(AndreKriterierType[]::new));
-        map.put(BehandlingVenteStatus.class.getSimpleName(), BehandlingVenteStatus.values());
-        map.put(OppgaveBehandlingStatus.class.getSimpleName(), OppgaveBehandlingStatus.values());
-        return map;
-    }
 
 }
