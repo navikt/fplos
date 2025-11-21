@@ -45,7 +45,6 @@ public enum AndreKriterierType implements Kodeverdi {
     @JsonValue
     private String kode;
     private final String navn;
-    public static final String KODEVERK = "ANDRE_KRITERIER";
 
     AndreKriterierType(String kode, String navn) {
         this.kode = kode;
@@ -60,19 +59,9 @@ public enum AndreKriterierType implements Kodeverdi {
         return kode;
     }
 
-    public String getKodeverk() {
-        return KODEVERK;
-    }
 
     public boolean erTilBeslutter() {
         return this.equals(TIL_BESLUTTER);
-    }
-
-    public static AndreKriterierType fraKode(String kode) {
-        return Arrays.stream(values())
-            .filter(v -> v.kode.equals(kode))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
     }
 
     @Converter(autoApply = true)
@@ -84,7 +73,14 @@ public enum AndreKriterierType implements Kodeverdi {
 
         @Override
         public AndreKriterierType convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData).map(AndreKriterierType::fraKode).orElse(null);
+            return Optional.ofNullable(dbData).map(AndreKriterierType.KodeverdiConverter::fraKode).orElse(null);
+        }
+
+        private static AndreKriterierType fraKode(String kode) {
+            return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
         }
     }
 }
