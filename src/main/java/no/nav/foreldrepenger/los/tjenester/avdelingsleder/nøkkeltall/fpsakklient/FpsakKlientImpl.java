@@ -22,7 +22,7 @@ import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
 @RestClientConfig(tokenConfig = TokenFlow.ADAPTIVE, application = FpApplication.FPSAK)
 public class FpsakKlientImpl implements FpsakKlient {
     private static final String ÅPNE_BEHANDLING_PATH = "/api/los/los-nokkeltall";
-    private static final String FRISTUTLOP_PATH = "/api/los/los-fristutlop";
+    private static final String FRISTUTLOP_PATH = "/api/los/los-fristutlop-uke";
     private static final Logger LOG = LoggerFactory.getLogger(FpsakKlientImpl.class);
 
     private final RestClient klient;

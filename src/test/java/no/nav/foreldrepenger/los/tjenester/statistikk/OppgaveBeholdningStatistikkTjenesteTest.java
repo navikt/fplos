@@ -3,8 +3,11 @@ package no.nav.foreldrepenger.los.tjenester.statistikk;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.temporal.ChronoField;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -145,6 +148,30 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         var resultater = nøkkeltallRepository.hentOppgaverPerFørsteStønadsdag(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(1);
         assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(LocalDate.now().plusMonths(1));
+        assertThat(resultater.get(0).antall()).isEqualTo(4L);
+    }
+
+    @Test
+    void hentOppgaverPerFørsteStønadsdagUke() {
+        leggInnEttSettMedOppgaver();
+        var idag = LocalDate.now();
+        var idagPlusMnd = idag.plusMonths(1);
+        var resultater = nøkkeltallRepository.hentOppgaverPerFørsteStønadsdagUke(AVDELING_DRAMMEN_ENHET);
+        assertThat(resultater).hasSize(1);
+        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(idagPlusMnd.with(DayOfWeek.MONDAY));
+        assertThat(resultater.get(0).førsteStønadsdagTekst()).isEqualTo(Year.from(idagPlusMnd) + "-" + idagPlusMnd.get(ChronoField.ALIGNED_WEEK_OF_YEAR));
+        assertThat(resultater.get(0).antall()).isEqualTo(4L);
+    }
+
+    @Test
+    void hentOppgaverPerFørsteStønadsdagMåned() {
+        leggInnEttSettMedOppgaver();
+        var idag = LocalDate.now();
+        var idagPlusMnd = idag.plusMonths(1);
+        var resultater = nøkkeltallRepository.hentOppgaverPerFørsteStønadsdagMåned(AVDELING_DRAMMEN_ENHET);
+        assertThat(resultater).hasSize(1);
+        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(idagPlusMnd.withDayOfMonth(1));
+        assertThat(resultater.get(0).førsteStønadsdagTekst()).isEqualTo(Year.from(idagPlusMnd) + "-" + String.format("%02d", idagPlusMnd.getMonthValue()));
         assertThat(resultater.get(0).antall()).isEqualTo(4L);
     }
 
