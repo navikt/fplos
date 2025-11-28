@@ -4,26 +4,25 @@ import java.util.Set;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.AktørPipKlient;
-import no.nav.foreldrepenger.los.persontjeneste.PersonTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.server.abac.RutingKlient;
+import no.nav.vedtak.felles.integrasjon.ruting.RutingResultat;
 
 @Dependent
 public class Beskyttelsesbehov {
 
-    private final AktørPipKlient pipKlient;
-    private final PersonTjeneste personTjeneste;
+    private final RutingKlient rutingKlient;
 
     @Inject
-    public Beskyttelsesbehov(AktørPipKlient pipKlient, PersonTjeneste personTjeneste) {
-        this.pipKlient = pipKlient;
-        this.personTjeneste = personTjeneste;
+    public Beskyttelsesbehov(RutingKlient rutingKlient) {
+        this.rutingKlient = rutingKlient;
     }
 
     public Set<AndreKriterierType> getBeskyttelsesKriterier(Oppgave oppgave) {
-        var aktører = pipKlient.hentAktørIderSomString(new Saksnummer(String.valueOf(oppgave.getFagsakSaksnummer())));
-        return personTjeneste.harNoenKode7MenIngenHarKode6(oppgave.getFagsakYtelseType(), aktører) ? Set.of(AndreKriterierType.KODE7_SAK) : Set.of();
+        var ruting = rutingKlient.finnRutingEgenskaper(oppgave.getSaksnummer().getVerdi());
+        var harKode6 = ruting.contains(RutingResultat.STRENGTFORTROLIG);
+        var harKode7 = ruting.contains(RutingResultat.FORTROLIG);
+        return harKode7 && !harKode6 ? Set.of(AndreKriterierType.KODE7_SAK) : Set.of();
     }
 }

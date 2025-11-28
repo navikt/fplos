@@ -7,13 +7,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
@@ -52,9 +54,10 @@ class OppgaveKøTjenesteTest {
     @BeforeEach
     void setup(EntityManager entityManager) {
         oppgaveRepository = new OppgaveRepository(entityManager);
+        var oppgaveKøRepository = new OppgaveKøRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
-        oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, organisasjonRepository);
+        oppgaveKøTjeneste = new OppgaveKøTjeneste(oppgaveRepository, oppgaveKøRepository, organisasjonRepository);
         this.entityManager = entityManager;
     }
 
@@ -63,7 +66,7 @@ class OppgaveKøTjenesteTest {
         var listeId = leggeInnEtSettMedOppgaver();
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
         avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.KLAGE, true);
-        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId, 100);
         assertThat(oppgaver).hasSize(2);
     }
 
@@ -72,21 +75,21 @@ class OppgaveKøTjenesteTest {
         var listeId = leggeInnEtSettMedAndreKriterierOppgaver();
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.PAPIRSØKNAD, true, true);
-        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId, 100);
         assertThat(oppgaver).hasSize(1);
     }
 
     @Test
     void testUtenFiltreringpåBehandlingstype() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        var oppgaver = oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId);
+        var oppgaver = oppgaveKøTjeneste.hentOppgaver(oppgaveFiltreringId, 100);
         assertThat(oppgaver).hasSize(3);
     }
 
     @Test
     void hentAlleOppgaveFiltrering() {
         var lagtInnLister = leggInnEtSettMedLister(3);
-        var saksbehandler = new Saksbehandler("1234567");
+        var saksbehandler = new Saksbehandler("1234567", UUID.randomUUID());
         entityManager.persist(saksbehandler);
         entityManager.flush();
 
@@ -132,9 +135,13 @@ class OppgaveKøTjenesteTest {
 
 
     private void leggtilOppgaveMedEkstraEgenskaper(Oppgave oppgave, AndreKriterierType andreKriterierType) {
+        var oppgaveEgenskapBuilder = OppgaveEgenskap.builder().medAndreKriterierType(andreKriterierType);
+        if (andreKriterierType.erTilBeslutter()) {
+            oppgaveEgenskapBuilder.medSisteSaksbehandlerForTotrinn("IDENT");
+        }
+        oppgave.leggTilOppgaveEgenskap(oppgaveEgenskapBuilder.build());
         oppgaveRepository.lagre(oppgave);
         oppgaveRepository.refresh(oppgave);
-        oppgaveRepository.lagre(new OppgaveEgenskap(oppgave, andreKriterierType));
     }
 
     private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister) {

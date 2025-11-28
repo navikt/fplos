@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.admin;
 
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,7 +9,6 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.SaksbehandlerGruppe;
@@ -19,18 +20,20 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 @ProsessTask(value = "vedlikehold.slettavdeling", maxFailedRuns = 1)
 public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
 
+    static final String ENHETSNR = "enhetsnummer";
+
     private static final Logger LOG = LoggerFactory.getLogger(SlettDeaktiverteAvdelingerTask.class);
+    private final OppgaveKøRepository oppgaveKøRepository;
     private final OrganisasjonRepository organisasjonsRepository;
     private final AvdelingslederTjeneste avdelingslederTjeneste;
     private final AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
-    private OppgaveRepository oppgaveRepository;
 
     @Inject
-    public SlettDeaktiverteAvdelingerTask(OppgaveRepository oppgaveRepository,
+    public SlettDeaktiverteAvdelingerTask(OppgaveKøRepository oppgaveKøRepository,
                                           OrganisasjonRepository organisasjonRepository,
                                           AvdelingslederTjeneste avdelingslederTjeneste,
                                           AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste) {
-        this.oppgaveRepository = oppgaveRepository;
+        this.oppgaveKøRepository = oppgaveKøRepository;
         this.organisasjonsRepository = organisasjonRepository;
         this.avdelingslederTjeneste = avdelingslederTjeneste;
         this.avdelingslederSaksbehandlerTjeneste = avdelingslederSaksbehandlerTjeneste;
@@ -38,7 +41,7 @@ public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var enhetsnummer = prosessTaskData.getPropertyValue("enhetsnummer");
+        var enhetsnummer = prosessTaskData.getPropertyValue(ENHETSNR);
 
         var avdeling = organisasjonsRepository.hentAvdelingFraEnhet(enhetsnummer).orElse(null);
         if (avdeling == null || avdeling.getErAktiv()) {
@@ -46,7 +49,7 @@ public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
             return;
         }
 
-        var antallÅpneOppgaver = oppgaveRepository.hentAntallOppgaverForAvdeling(avdeling.getId());
+        var antallÅpneOppgaver = oppgaveKøRepository.hentAntallOppgaverForAvdeling(avdeling.getAvdelingEnhet());
         if (antallÅpneOppgaver > 0) {
             LOG.warn("Fant {} aktive oppgaver tilknyttet enhetsnummer {}, avbryter avdelingssletting.", antallÅpneOppgaver, enhetsnummer);
             return;
@@ -62,6 +65,7 @@ public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
         køer.forEach(avdelingslederTjeneste::slettOppgaveFiltrering);
 
         organisasjonsRepository.slettAvdeling(avdeling);
+        organisasjonsRepository.slettØvrigeEnhetsdata(enhetsnummer);
         LOG.info("Slettet enhet {}", enhetsnummer);
     }
 }

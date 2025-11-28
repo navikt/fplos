@@ -1,21 +1,20 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjenesteFeil;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 import no.nav.vedtak.exception.IntegrasjonException;
 
 @ApplicationScoped
@@ -46,49 +45,43 @@ public class SaksbehandlerDtoTjeneste {
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
         var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
             .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
-        return filtrering.getSaksbehandlere().stream().map(this::tilSaksbehandlerDto).flatMap(Optional::stream).toList();
+        return filtrering.getSaksbehandlere().stream().map(this::saksbehandlerDto).flatMap(Optional::stream).toList();
     }
 
-    public Optional<SaksbehandlerMedAvdelingerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
+    public Optional<SaksbehandlerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
-            .map(Saksbehandler::getSaksbehandlerIdent)
-            .filter(sb -> !oppgaveKøTjeneste.hentAlleOppgaveFiltrering(sb).isEmpty())
-            .flatMap(this::lagSaksbehandlerMedAvdelingerDto);
+            .filter(sb -> !oppgaveKøTjeneste.hentAlleOppgaveFiltrering(sb.getSaksbehandlerIdent()).isEmpty())
+            .flatMap(this::saksbehandlerDto);
     }
 
-    public Optional<SaksbehandlerMedAvdelingerDto> lagSaksbehandlerMedAvdelingerDto(String ident) {
-        return Optional.ofNullable(ident).flatMap(this::tilSaksbehandlerDto).flatMap(sb -> tilSaksbehandlerMedAvdelingerDto(ident, sb));
-    }
-
-    private Optional<SaksbehandlerMedAvdelingerDto> tilSaksbehandlerMedAvdelingerDto(String ident, SaksbehandlerDto saksbehandlerDto) {
-        return Optional.of(ident).map(ansattTjeneste::hentAvdelingerNavnForAnsatt).map(a -> new SaksbehandlerMedAvdelingerDto(saksbehandlerDto, a));
-    }
-
-    public SaksbehandlerMedAvdelingerDto lagKjentOgUkjentSaksbehandlerMedAvdelingerDto(Saksbehandler saksbehandler) {
-        // saksbehandler kan eksistere i basen men være ukjent i ldap
+    public SaksbehandlerDto lagKjentOgUkjentSaksbehandler(Saksbehandler saksbehandler) {
+        // saksbehandler kan eksistere i basen men være ukjent i azuread
         var ident = saksbehandler.getSaksbehandlerIdent();
-        var saksbehandlerDto = tilSaksbehandlerDto(ident);
-        if (saksbehandlerDto.isPresent()) {
-            var avdelinger = ansattTjeneste.hentAvdelingerNavnForAnsatt(ident);
-            return new SaksbehandlerMedAvdelingerDto(saksbehandlerDto.get(), avdelinger);
-        }
-        var ukjent = new SaksbehandlerDto(new SaksbehandlerBrukerIdentDto(ident), "Ukjent saksbehandler " + ident);
-        return new SaksbehandlerMedAvdelingerDto(ukjent, Collections.emptyList());
+        var saksbehandlerDto = saksbehandlerDto(saksbehandler);
+        return saksbehandlerDto.orElseGet(() -> SaksbehandlerDto.ukjentSaksbehandler(ident));
     }
 
-    public Optional<SaksbehandlerDto> tilSaksbehandlerDto(Saksbehandler saksbehandler) {
-        var ident = saksbehandler.getSaksbehandlerIdent();
-        return tilSaksbehandlerDto(ident);
+    public Optional<SaksbehandlerDto> saksbehandlerDto(Saksbehandler saksbehandler) {
+        var identDto = new SaksbehandlerBrukerIdentDto(saksbehandler.getSaksbehandlerIdent());
+        return hentBrukerProfil(saksbehandler)
+            .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
     }
 
-    private Optional<SaksbehandlerDto> tilSaksbehandlerDto(String ident) {
-        var identDto = new SaksbehandlerBrukerIdentDto(ident);
-        return hentSaksbehandlerNavn(ident).map(navn -> new SaksbehandlerDto(identDto, navn));
-    }
-
-    public Optional<String> hentSaksbehandlerNavn(String ident) {
+    // Denne skal hente Brukerprofil dersom saksbehandler ikke er lagret
+    public Optional<SaksbehandlerDto> saksbehandlerDtoForNavIdent(String saksbehandlerIdent) {
         try {
-            return Optional.of(ansattTjeneste.hentAnsattNavn(ident));
+            var identDto = new SaksbehandlerBrukerIdentDto(saksbehandlerIdent);
+            return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).flatMap(this::hentBrukerProfil)
+                .or(() -> ansattTjeneste.hentBrukerProfil(saksbehandlerIdent))
+                .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
+        } catch (IntegrasjonException e) {
+            return Optional.empty();
+        }
+
+    }
+    public Optional<BrukerProfil> hentBrukerProfil(Saksbehandler saksbehandler) {
+        try {
+            return ansattTjeneste.hentBrukerProfil(saksbehandler);
         } catch (IntegrasjonException e) {
             LOG.info("Henting av ansattnavn feilet, fortsetter med empty.", e);
             return Optional.empty();

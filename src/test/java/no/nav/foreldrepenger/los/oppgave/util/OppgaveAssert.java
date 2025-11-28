@@ -6,12 +6,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
+
 import org.assertj.core.api.AbstractAssert;
 
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -28,12 +29,12 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
 
     public OppgaveAssert harSaksnummer(Saksnummer saksnummer) {
         isNotNull();
-        assertThat(actual.getFagsakSaksnummer()).overridingErrorMessage("Forventet saksnummer <%s> men fikk <%s>", saksnummer,
-            actual.getFagsakSaksnummer()).isEqualTo(saksnummer.longValue());
+        assertThat(actual.getSaksnummer()).overridingErrorMessage("Forventet saksnummer <%s> men fikk <%s>", saksnummer,
+            actual.getSaksnummer()).isEqualTo(saksnummer);
         return this;
     }
 
-    public OppgaveAssert harSystem(String system) {
+    public OppgaveAssert harSystem(Fagsystem system) {
         isNotNull();
         assertThat(actual.getSystem()).overridingErrorMessage("Forventet system <%s> men fikk <%s>", system, actual.getSystem()).isEqualTo(system);
         return this;
@@ -92,13 +93,6 @@ public class OppgaveAssert extends AbstractAssert<OppgaveAssert, Oppgave> {
         isNotNull();
         assertThat(actual.getOppgaveAvsluttet()).overridingErrorMessage("Forventet oppgaveAvsluttet <%s> men fikk <%s>", oppgaveAvsluttet,
             actual.getOppgaveAvsluttet()).isEqualTo(oppgaveAvsluttet);
-        return this;
-    }
-
-    public OppgaveAssert harBehandlingStatus(BehandlingStatus behandlingStatus) {
-        isNotNull();
-        assertThat(actual.getBehandlingStatus()).overridingErrorMessage("Forventet behandlingStatus <%s> men fikk <%s>", behandlingStatus,
-            actual.getBehandlingStatus()).isEqualTo(behandlingStatus);
         return this;
     }
 

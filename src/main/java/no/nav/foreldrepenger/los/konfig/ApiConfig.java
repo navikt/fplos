@@ -1,5 +1,15 @@
 package no.nav.foreldrepenger.los.konfig;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.glassfish.jersey.server.ServerProperties;
+
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.GenericOpenApiContextBuilder;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
@@ -7,6 +17,8 @@ import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.server.exceptions.ConstraintViolationMapper;
 import no.nav.foreldrepenger.los.server.exceptions.GeneralRestExceptionMapper;
@@ -23,28 +35,17 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.Avdeling
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.kodeverk.KodeverkRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.reservasjon.ReservasjonRestTjeneste;
-import no.nav.foreldrepenger.los.tjenester.reservasjon.TempReservasjonRestTjeneste;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.enhet.SaksbehandlerEnhetRestTjeneste;
-import no.nav.foreldrepenger.los.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
 import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
-
-import org.glassfish.jersey.server.ServerProperties;
-
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @ApplicationPath(ApiConfig.API_URI)
 public class ApiConfig extends Application {
 
     private static final Environment ENV = Environment.current();
 
-    static final String API_URI = "/api";
+    public static final String API_URI = "/api";
 
     public ApiConfig() {
 
@@ -65,6 +66,9 @@ public class ApiConfig extends Application {
     public Set<Class<?>> getClasses() {
         // eksponert grensesnitt
         Set<Class<?>> classes = new HashSet<>(getAllClasses());
+
+        // Autentisering
+        classes.add(AuthenticationFilter.class);
 
         // swagger
         classes.add(OpenApiResource.class);
@@ -93,14 +97,11 @@ public class ApiConfig extends Application {
         classes.add(AvdelingslederSaksbehandlerRestTjeneste.class);
         classes.add(AvdelingReservasjonerRestTjeneste.class);
         classes.add(ReservasjonRestTjeneste.class);
-        classes.add(TempReservasjonRestTjeneste.class);
         classes.add(NøkkeltallRestTjeneste.class);
         classes.add(NøkkeltallÅpneBehandlingerRestTjeneste.class);
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
         classes.add(AdminRestTjeneste.class);
-        classes.add(SaksbehandlerEnhetRestTjeneste.class);
-        classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
         return classes;
     }

@@ -9,20 +9,20 @@ import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 public class Aksjonspunkt {
-    public static final String STATUSKODE_AKTIV = "OPPR";
-    public static final String STATUSKODE_AVBRUTT = "AVBR";
-    public static final String STATUSKODE_UTFØRT = "UTFO";
+    private static final String STATUSKODE_AKTIV = "OPPR";
+    private static final String STATUSKODE_AVBRUTT = "AVBR";
+    private static final String STATUSKODE_UTFØRT = "UTFO";
 
-    public static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
-    public static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
-    public static final String TIL_BESLUTTER_KODE = "5016";
-    protected static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
-    protected static final List<String> VURDER_FORMKRAV_GRUPPE = List.of("5082");
+    private static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
+    private static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
+    private static final String TIL_BESLUTTER_KODE = "5016";
 
-    public static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
-    public static final String ARBEID_INNTEKT = "5085";
-
-    public static final List<String> RELEVANT_NÆRING = List.of("5039", "5049", "5058", "5046", "5051", "5089", "5082", "5035");
+    private static final String KONTROLLER_TERMINBEKREFTELSE_KODE = "5001";
+    private static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
+    private static final String ARBEID_INNTEKT = "5085";
+    private static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
+    private static final List<String> VURDER_FORMKRAV_GRUPPE = List.of("5082");
+    private static final List<String> RELEVANT_NÆRING = List.of("5039", "5049", "5058", "5046", "5051", "5089", "5082", "5035");
 
     private String definisjonKode;
     private String statusKode;
@@ -67,11 +67,15 @@ public class Aksjonspunkt {
     }
 
     public boolean erAvbrutt() {
-        return STATUSKODE_AVBRUTT.equals(definisjonKode);
+        return STATUSKODE_AVBRUTT.equals(statusKode);
     }
 
     public boolean erTilBeslutter() {
         return TIL_BESLUTTER_KODE.equals(definisjonKode) && erAktiv();
+    }
+
+    public boolean erReturnertFraBeslutter() {
+        return TIL_BESLUTTER_KODE.equals(definisjonKode) && erAvbrutt();
     }
 
     public boolean erRegistrerPapirSøknad() {
@@ -80,6 +84,10 @@ public class Aksjonspunkt {
 
     public boolean skalVurdereInnhentingAvSED() {
         return erAktiv() && AUTOMATISK_MARKERING_SOM_UTLAND.equals(definisjonKode);
+    }
+
+    public boolean skalKontrollereTerminbekreftelse() {
+        return erAktiv() && KONTROLLER_TERMINBEKREFTELSE_KODE.equals(definisjonKode);
     }
 
     public boolean skalVurdereArbeidInntekt() {

@@ -2,15 +2,16 @@ package no.nav.foreldrepenger.los.avdelingsleder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.organisasjon.SaksbehandlerGruppe;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
 import no.nav.vedtak.exception.TekniskException;
 
 @ApplicationScoped
@@ -18,15 +19,19 @@ public class AvdelingslederSaksbehandlerTjeneste {
 
     private OrganisasjonRepository organisasjonRepository;
     private OppgaveRepository oppgaveRepository;
+    private AnsattTjeneste ansattTjeneste;
 
     AvdelingslederSaksbehandlerTjeneste() {
         // for CDI proxy
     }
 
     @Inject
-    public AvdelingslederSaksbehandlerTjeneste(OppgaveRepository oppgaveRepository, OrganisasjonRepository organisasjonRepository) {
+    public AvdelingslederSaksbehandlerTjeneste(OppgaveRepository oppgaveRepository,
+                                               OrganisasjonRepository organisasjonRepository,
+                                               AnsattTjeneste ansattTjeneste) {
         this.organisasjonRepository = organisasjonRepository;
         this.oppgaveRepository = oppgaveRepository;
+        this.ansattTjeneste = ansattTjeneste;
     }
 
     public List<Saksbehandler> hentAvdelingensSaksbehandlere(String avdelingEnhet) {
@@ -48,6 +53,11 @@ public class AvdelingslederSaksbehandlerTjeneste {
         saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow());
         organisasjonRepository.persistFlush(saksbehandler);
 
+        var grupper =  organisasjonRepository.hentSaksbehandlerGrupper(avdelingEnhet);
+        grupper.stream()
+            .filter(g -> g.getSaksbehandlere().stream().anyMatch(s -> Objects.equals(saksbehandlerIdent, s.getSaksbehandlerIdent())))
+            .forEach(g -> organisasjonRepository.fjernSaksbehandlerFraGruppe(saksbehandlerIdent, g.getId(), avdelingEnhet));
+
         var avdeling = hentAvdeling(avdelingEnhet);
         var oppgaveFiltreringList = avdeling.getOppgaveFiltrering();
         for (var oppgaveFiltrering : oppgaveFiltreringList) {
@@ -62,7 +72,8 @@ public class AvdelingslederSaksbehandlerTjeneste {
     }
 
     private Saksbehandler opprettSaksbehandler(String ident) {
-        var saksbehandler = new Saksbehandler(ident.toUpperCase());
+        var ansattProfil = ansattTjeneste.hentBrukerProfil(ident).orElseThrow();
+        var saksbehandler = new Saksbehandler(ident.trim().toUpperCase(), ansattProfil.uid());
         organisasjonRepository.persistFlush(saksbehandler);
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
             .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(ident));

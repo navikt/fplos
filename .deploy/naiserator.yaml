@@ -45,17 +45,27 @@ spec:
       memory: "{{requests.mem}}"
   kafka:
       pool: {{kafkaPool}}
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+      destinations:
+        - id: "grafana-lgtm"
+        - id: "elastic-apm"
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   vault:
     enabled: true
     paths:
-      - kvPath: {{oraclecredskv}}
-        mountPath: /var/run/secrets/nais.io/defaultDS
-      - kvPath: {{oracleconfigkv}}
-        mountPath: /var/run/secrets/nais.io/defaultDSconfig
-      - kvPath: {{serviceuserkv}}
-        mountPath: /var/run/secrets/nais.io/serviceuser
-      - kvPath: {{ldapuserkv}}
-        mountPath: /var/run/secrets/nais.io/ldap
+      - mountPath: {{vault.mountPath}}/defaultDSconfig
+        kvPath: {{vault.db.configPath}}
+      - mountPath: {{vault.mountPath}}/defaultDS
+        kvPath: {{vault.db.secretsPath}}
+  env:
+    - name: VAULT_MOUNT_PATH
+      value: "{{vault.mountPath}}"
   azure:
     application:
       enabled: true
@@ -65,7 +75,7 @@ spec:
           - "azp_name"
         groups:
           {{#each groups as |group|}}
-          - id: "{{group}}"
+          - id: "{{group.uuid}}"
           {{/each}}
   {{#if AZURE_IAC_RULES}}
   accessPolicy:

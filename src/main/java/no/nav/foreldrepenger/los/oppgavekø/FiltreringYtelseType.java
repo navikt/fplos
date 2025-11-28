@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
+import java.util.Objects;
+
 @Entity(name = "FiltreringYtelseType")
 @Table(name = "FILTRERING_YTELSE_TYPE")
 public class FiltreringYtelseType extends BaseEntitet {
@@ -23,12 +25,6 @@ public class FiltreringYtelseType extends BaseEntitet {
     @ManyToOne
     @JoinColumn(name = "OPPGAVE_FILTRERING_ID", nullable = false)
     private OppgaveFiltrering oppgaveFiltrering;
-
-    @Column(name = "OPPGAVE_FILTRERING_ID", updatable = false, insertable = false)
-    private Long oppgaveFiltreringId;
-
-    @Column(name = "FAGSAK_YTELSE_TYPE", updatable = false, insertable = false)
-    private String fagsakYtelseTypeKode;
 
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
     @Column(name = "FAGSAK_YTELSE_TYPE")
@@ -43,11 +39,20 @@ public class FiltreringYtelseType extends BaseEntitet {
         this.fagsakYtelseType = fagsakYtelseTypeKode;
     }
 
-    public OppgaveFiltrering getOppgaveFiltrering() {
-        return oppgaveFiltrering;
-    }
-
     public FagsakYtelseType getFagsakYtelseType() {
         return fagsakYtelseType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FiltreringYtelseType other)) return false;
+        return this.fagsakYtelseType == other.fagsakYtelseType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fagsakYtelseType);
+    }
+
 }

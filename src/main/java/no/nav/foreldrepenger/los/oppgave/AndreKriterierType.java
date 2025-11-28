@@ -12,10 +12,10 @@ import no.nav.foreldrepenger.los.felles.Kodeverdi;
 public enum AndreKriterierType implements Kodeverdi {
 
     TIL_BESLUTTER("TIL_BESLUTTER", "Til beslutter"),
+    RETURNERT_FRA_BESLUTTER("RETURNERT_FRA_BESLUTTER", "Returnert fra beslutter"),
     PAPIRSØKNAD("PAPIRSOKNAD", "Registrer papirsøknad"),
     UTBETALING_TIL_BRUKER("UTBETALING_TIL_BRUKER", "Utbetaling til bruker"),
     UTLANDSSAK("UTLANDSSAK", "Bosatt utland"),
-    SØKT_GRADERING("SOKT_GRADERING", "Søkt gradering"),
     VURDER_SYKDOM("VURDER_SYKDOM", "Vurder sykdom"),
     PLEIEPENGER("PLEIEPENGER", "Pleiepenger"),
     VURDER_FARESIGNALER("VURDER_FARESIGNALER", "Vurder faresignaler"),
@@ -30,13 +30,21 @@ public enum AndreKriterierType implements Kodeverdi {
     ARBEID_INNTEKT("ARBEID_INNTEKT", "Arbeid og inntekt"),
     DØD("DØD", "Død eller dødfødsel"),
     NÆRING("NÆRING", "Selvstendig næringsdrivende"),
-    PRAKSIS_UTSETTELSE("PRAKSIS_UTSETTELSE", "Praksis utsettelse")
+    PRAKSIS_UTSETTELSE("PRAKSIS_UTSETTELSE", "Praksis utsettelse"),
+    BARE_FAR_RETT("BARE_FAR_RETT", "Bare far har rett"),
+    MOR_UKJENT_UTLAND("MOR_UKJENT_UTLAND", "Gruppe 2"),
+    REVURDERING_INNTEKTSMELDING("REVURDERING_INNTEKTSMELDING", "Revurdering inntektsmelding"),
+    TERMINBEKREFTELSE("TERMINBEKREFTELSE", "Terminbekreftelse"),
+    NYTT_VEDTAK("NYTT_VEDTAK", "Ny stønadsperiode"),
+    UTSATT_START("UTSATT_START", "Utsatt start"),
+    IKKE_VARSLET("IKKE_VARSLET", "Ikke varslet"),
+    OVER_FIRE_RETTSGEBYR("OVER_FIRE_RETTSGEBYR", "Over 4 rettsgebyr"),
+    HASTER("HASTER", "Haster")
     ;
 
     @JsonValue
     private String kode;
     private final String navn;
-    public static final String KODEVERK = "ANDRE_KRITERIER";
 
     AndreKriterierType(String kode, String navn) {
         this.kode = kode;
@@ -51,19 +59,9 @@ public enum AndreKriterierType implements Kodeverdi {
         return kode;
     }
 
-    public String getKodeverk() {
-        return KODEVERK;
-    }
 
     public boolean erTilBeslutter() {
         return this.equals(TIL_BESLUTTER);
-    }
-
-    public static AndreKriterierType fraKode(String kode) {
-        return Arrays.stream(values())
-            .filter(v -> v.kode.equals(kode))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
     }
 
     @Converter(autoApply = true)
@@ -75,9 +73,14 @@ public enum AndreKriterierType implements Kodeverdi {
 
         @Override
         public AndreKriterierType convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData).map(AndreKriterierType::fraKode).orElse(null);
+            return Optional.ofNullable(dbData).map(AndreKriterierType.KodeverdiConverter::fraKode).orElse(null);
         }
 
-
+        private static AndreKriterierType fraKode(String kode) {
+            return Arrays.stream(values())
+                .filter(v -> v.kode.equals(kode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
+        }
     }
 }

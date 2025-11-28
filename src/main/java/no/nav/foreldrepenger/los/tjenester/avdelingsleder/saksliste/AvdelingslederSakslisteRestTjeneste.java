@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -14,11 +16,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteAndreKriterierDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteBehandlingstypeDto;
@@ -44,12 +42,10 @@ public class AvdelingslederSakslisteRestTjeneste {
 
     public static final String AVDELINGSLEDER_SAKSLISTER = "AvdelingslederSakslister";
     private AvdelingslederTjeneste avdelingslederTjeneste;
-    private OppgaveKøTjeneste oppgaveKøTjeneste;
 
     @Inject
-    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste, OppgaveKøTjeneste oppgaveKøTjeneste) {
+    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste) {
         this.avdelingslederTjeneste = avdelingslederTjeneste;
-        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
     }
 
     AvdelingslederSakslisteRestTjeneste() {
@@ -61,12 +57,12 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
-        return filtersett.stream().map(o -> new SakslisteDto(o, oppgaveKøTjeneste.hentAntallOppgaver(o.getId(), true))).toList();
+        return filtersett.stream().map(SakslisteDto::new).toList();
     }
 
     @POST
     @Operation(description = "Lag ny saksliste", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public SakslisteIdDto opprettNySaksliste(@NotNull @Parameter(description = "enhet til avdelingsenheten som det skal opprettes ny saksliste for") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return new SakslisteIdDto(avdelingslederTjeneste.lagNyOppgaveFiltrering(avdelingEnhetDto.getAvdelingEnhet()));
     }
@@ -74,7 +70,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/slett")
     @Operation(description = "Fjern saksliste", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING, sporingslogg = false)
     public void slettSaksliste(@NotNull @Parameter(description = "id til sakslisten som skal slettes") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
         avdelingslederTjeneste.slettOppgaveFiltrering(sakslisteOgAvdelingDto.getSakslisteId().getVerdi());
     }
@@ -82,7 +78,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/navn")
     @Operation(description = "Lagre sakslistens navn", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreNavn(@NotNull @Parameter(description = "Sakslistens navn") @Valid SakslisteNavnDto sakslisteNavn) {
         avdelingslederTjeneste.giListeNyttNavn(sakslisteNavn.getSakslisteId(), sakslisteNavn.getNavn());
     }
@@ -90,7 +86,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/behandlingstype")
     @Operation(description = "Lagre sakslistens behandlingstype", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreBehandlingstype(@NotNull @Parameter(description = "Sakslistens behandlingstype") @Valid SakslisteBehandlingstypeDto sakslisteBehandlingstype) {
         avdelingslederTjeneste.endreFiltreringBehandlingType(sakslisteBehandlingstype.getSakslisteId(), sakslisteBehandlingstype.getBehandlingType(),
             sakslisteBehandlingstype.isChecked());
@@ -99,16 +95,16 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/ytelsetyper")
     @Operation(description = "Lagre behandlingstyper", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreFagsakYtelseTyper(@NotNull @Parameter(description = "Ytelsestyper") @Valid SakslisteFagsakYtelseTyperDto dto) {
-        avdelingslederTjeneste.endreFyt(dto.getSakslisteId(), dto.getFagsakYtelseType(), dto.isChecked());
+        avdelingslederTjeneste.endreFagsakYtelseType(dto.getSakslisteId(), dto.getFagsakYtelseType(), dto.isChecked());
     }
 
 
     @POST
     @Path("/andre-kriterier")
     @Operation(description = "Lagre sakslistens 'Andre kriterier'", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreAndreKriterierType(@NotNull @Parameter(description = "Sakslistens 'andre kriterier'") @Valid SakslisteAndreKriterierDto sakslisteAndreKriterierDto) {
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(sakslisteAndreKriterierDto.getSakslisteId(),
             sakslisteAndreKriterierDto.getAndreKriterierType(), sakslisteAndreKriterierDto.isChecked(), sakslisteAndreKriterierDto.isInkluder());
@@ -117,7 +113,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/sortering")
     @Operation(description = "Sett sakslistens sortering", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreSortering(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringDto sakslisteSortering) {
         avdelingslederTjeneste.settSortering(sakslisteSortering.getSakslisteId(), sakslisteSortering.getSakslisteSorteringValg());
     }
@@ -125,7 +121,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/sortering-tidsintervall-dato")
     @Operation(description = "Sett sakslistens sorteringintervall ved start og slutt datoer", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreSorteringTidsintervallDato(@NotNull @Parameter(description = "Sakslistens sorteringsintervall gitt datoer") @Valid SakslisteSorteringIntervallDatoDto sakslisteSorteringIntervallDato) {
         avdelingslederTjeneste.settSorteringTidsintervallDato(sakslisteSorteringIntervallDato.getSakslisteId(),
             sakslisteSorteringIntervallDato.getFomDato(), sakslisteSorteringIntervallDato.getTomDato());
@@ -134,7 +130,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/sortering-numerisk-intervall")
     @Operation(description = "Sett sakslistens sorteringsintervall", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreSorteringTidsintervall(@NotNull @Parameter(description = "Intervall som filtrererer/sorterer numerisk") @Valid SakslisteSorteringIntervallDto intervall) {
         avdelingslederTjeneste.settSorteringNumeriskIntervall(intervall.getSakslisteId(), intervall.getFra(), intervall.getTil());
     }
@@ -142,7 +138,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/sortering-tidsintervall-type")
     @Operation(description = "Sett sakslistens sorteringsintervall i dager", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreSorteringTidsintervallValg(@NotNull @Parameter(description = "id til sakslisten") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
         var sakslisteId = sakslisteOgAvdelingDto.getSakslisteId().getVerdi();
         var oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
@@ -155,7 +151,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @POST
     @Path("/saksbehandler")
     @Operation(description = "Legger til eller fjerner koblingen mellom saksliste og saksbehandler", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void leggSaksbehandlerTilSaksliste(@NotNull @Parameter(description = "Knytning mellom saksbehandler og saksliste") @Valid SakslisteSaksbehandlerDto sakslisteSaksbehandler) {
         var sakslisteId = sakslisteSaksbehandler.getSakslisteId();
         var saksbehandlerIdent = sakslisteSaksbehandler.getBrukerIdent().getVerdi();

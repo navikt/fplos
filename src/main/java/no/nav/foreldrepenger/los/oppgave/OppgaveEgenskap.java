@@ -11,7 +11,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+
+import java.util.Objects;
 
 @Entity(name = "OppgaveEgenskap")
 @Table(name = "OPPGAVE_EGENSKAP")
@@ -31,30 +32,16 @@ public class OppgaveEgenskap extends BaseEntitet {
     @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
     private AndreKriterierType andreKriterierType;
 
+    // feltet brukes i query for å ekskludere egne oppgaver i beslutterkøer
     @Column(name = "SISTE_SAKSBEHANDLER_FOR_TOTR")
     private String sisteSaksbehandlerForTotrinn;
-
-    @Convert(converter = BooleanToStringConverter.class)
-    @Column(name = "AKTIV")
-    private Boolean aktiv = Boolean.TRUE;
 
     public OppgaveEgenskap() {
         //CDI
     }
 
-    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType andreKriterierType) {
+    void setOppgave(Oppgave oppgave) {
         this.oppgave = oppgave;
-        this.andreKriterierType = andreKriterierType;
-    }
-
-    public OppgaveEgenskap(Oppgave oppgave, AndreKriterierType type, String sisteSaksbehandlerForTotrinn) {
-        this.oppgave = oppgave;
-        this.andreKriterierType = type;
-        this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
-    }
-
-    public OppgaveEgenskap beslutterEgenskapFra(Oppgave oppgave, String sisteSaksbehandlerForTotrinn) {
-        return new OppgaveEgenskap(oppgave, AndreKriterierType.TIL_BESLUTTER, sisteSaksbehandlerForTotrinn);
     }
 
     public Oppgave getOppgave() {
@@ -65,23 +52,52 @@ public class OppgaveEgenskap extends BaseEntitet {
         return andreKriterierType;
     }
 
-    public String getSisteSaksbehandlerForTotrinn() {
-        return sisteSaksbehandlerForTotrinn;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OppgaveEgenskap that)) return false;
+        return andreKriterierType == that.andreKriterierType && Objects.equals(sisteSaksbehandlerForTotrinn, that.sisteSaksbehandlerForTotrinn);
     }
 
-    public Boolean getAktiv() {
-        return aktiv;
+    @Override
+    public int hashCode() {
+        return Objects.hash(andreKriterierType, sisteSaksbehandlerForTotrinn);
     }
 
-    public void deaktiverOppgaveEgenskap() {
-        aktiv = false;
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public void aktiverOppgaveEgenskap() {
-        aktiv = true;
-    }
+    public static class Builder {
+        private AndreKriterierType andreKriterierType;
+        private String sisteSaksbehandlerForTotrinn;
 
-    public void setSisteSaksbehandlerForTotrinn(String sisteSaksbehandlerForTotrinn) {
-        this.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
+        public Builder medAndreKriterierType(AndreKriterierType andreKriterierType) {
+            this.andreKriterierType = andreKriterierType;
+            return this;
+        }
+
+        public Builder medSisteSaksbehandlerForTotrinn(String sisteSaksbehandler) {
+            if (sisteSaksbehandler == null || sisteSaksbehandler.isBlank()) {
+                throw new IllegalArgumentException("sisteSaksbehandlerForTotrinn kan ikke være null eller blank");
+            }
+            this.sisteSaksbehandlerForTotrinn = sisteSaksbehandler.toUpperCase();
+            return this;
+        }
+
+        public OppgaveEgenskap build() {
+            if (andreKriterierType == null) {
+                throw new IllegalStateException("AndreKriterierType kan ikke være null");
+            }
+
+            if (andreKriterierType.erTilBeslutter() && sisteSaksbehandlerForTotrinn == null) {
+                throw new IllegalStateException("Mangler sisteSaksbehandlerForTotrinn for AndreKriterierType " + AndreKriterierType.TIL_BESLUTTER);
+            }
+
+            var oppgaveEgenskap = new OppgaveEgenskap();
+            oppgaveEgenskap.andreKriterierType = andreKriterierType;
+            oppgaveEgenskap.sisteSaksbehandlerForTotrinn = sisteSaksbehandlerForTotrinn;
+            return oppgaveEgenskap;
+        }
     }
 }

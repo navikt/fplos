@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,8 +22,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøOppgaveHendelse;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
+
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 @ApplicationScoped
@@ -33,17 +31,14 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
 
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
-    private KøStatistikkTjeneste køStatistikk;
     private ReservasjonTjeneste reservasjonTjeneste;
 
     @Inject
     public GjenåpneOppgaveOppgavetransisjonHåndterer(OppgaveRepository oppgaveRepository,
                                                      OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer,
-                                                     KøStatistikkTjeneste køStatistikk,
                                                      ReservasjonTjeneste reservasjonTjeneste) {
         this.oppgaveRepository = oppgaveRepository;
         this.oppgaveEgenskapHåndterer = oppgaveEgenskapHåndterer;
-        this.køStatistikk = køStatistikk;
         this.reservasjonTjeneste = reservasjonTjeneste;
     }
 
@@ -52,14 +47,14 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
 
     @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
-        var oppgaveHistorikk = oppgaveRepository.hentOppgaver(behandlingId);
-        sjekkForAktivOppgave(oppgaveHistorikk);
+        var oppgaver = oppgaveRepository.hentOppgaver(behandlingId);
+        guardEksisterendeOppgave(oppgaver);
+
         var nyOppgave = OppgaveUtil.oppgave(behandlingId, behandling);
+        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(nyOppgave, new FpsakOppgaveEgenskapFinner(behandling));
         oppgaveRepository.lagre(nyOppgave);
-        opprettOppgaveEgenskaper(nyOppgave, behandling);
-        videreførNyligUtløptReservasjon(oppgaveHistorikk, nyOppgave, behandling, eventHistorikk);
+        videreførNyligUtløptReservasjon(oppgaver, nyOppgave, behandling, eventHistorikk);
         oppdaterOppgaveEventLogg(behandlingId, behandling);
-        køStatistikk.lagre(nyOppgave, KøOppgaveHendelse.ÅPNET_OPPGAVE);
         LOG.info("Gjenåpnet {} oppgaveId {}", SYSTEM, nyOppgave.getId());
     }
 
@@ -74,7 +69,7 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
             .max(Comparator.comparing(Oppgave::getOpprettetTidspunkt))
             .filter(o -> o.getBehandlendeEnhet().equals(behandling.behandlendeEnhetId()))
             .map(Oppgave::getReservasjon)
-            .filter(r -> r.getReservertTil().isAfter(LocalDateTime.now().minus(15, ChronoUnit.MINUTES)));
+            .filter(r -> r.getReservertTil().isAfter(LocalDateTime.now().minusMinutes(15)));
         finnesreservasjon.ifPresent(r -> {
             LOG.info("Viderefører reservasjon");
             reservasjonTjeneste.reserverBasertPåAvsluttetReservasjon(nyOppgave, r);
@@ -82,11 +77,6 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
         if (finnesreservasjon.isEmpty() && behandling.ansvarligSaksbehandlerIdent() != null && eventHistorikk.erPåVent()) {
             reservasjonTjeneste.reserverOppgave(nyOppgave, behandling.ansvarligSaksbehandlerIdent());
         }
-    }
-
-    private void opprettOppgaveEgenskaper(Oppgave oppgave, LosBehandlingDto behandlingFpsak) {
-        var egenskapFinner = new FpsakOppgaveEgenskapFinner(behandlingFpsak);
-        oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(oppgave, egenskapFinner);
     }
 
     private void oppdaterOppgaveEventLogg(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
@@ -98,7 +88,7 @@ public class GjenåpneOppgaveOppgavetransisjonHåndterer implements FpsakOppgave
         oppgaveRepository.lagre(oel);
     }
 
-    private static void sjekkForAktivOppgave(List<Oppgave> eksisterendeOppgaver) {
+    private static void guardEksisterendeOppgave(List<Oppgave> eksisterendeOppgaver) {
         eksisterendeOppgaver.stream().filter(Oppgave::getAktiv).findAny().ifPresent(o -> {
             throw new IllegalStateException("Fant eksisterende oppgave, avslutter behandling av hendelse");
         });

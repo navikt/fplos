@@ -14,7 +14,6 @@ public enum FagsakStatus implements Kodeverdi {
     @JsonValue
     private String kode;
     private final String navn;
-    public static final String KODEVERK = "FAGSAK_STATUS";
 
     FagsakStatus(String kode, String navn) {
         this.kode = kode;
@@ -29,8 +28,5 @@ public enum FagsakStatus implements Kodeverdi {
         return kode;
     }
 
-    public String getKodeverk() {
-        return KODEVERK;
-    }
 
 }

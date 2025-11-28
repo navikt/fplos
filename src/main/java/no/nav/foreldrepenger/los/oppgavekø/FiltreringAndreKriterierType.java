@@ -6,6 +6,8 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity(name = "FiltreringAndreKriterier")
 @Table(name = "FILTRERING_ANDRE_KRITERIER")
 public class FiltreringAndreKriterierType extends BaseEntitet {
@@ -17,12 +19,6 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
     @JoinColumn(name = "OPPGAVE_FILTRERING_ID", nullable = false)
     private OppgaveFiltrering oppgaveFiltrering;
 
-    @Column(name = "OPPGAVE_FILTRERING_ID", updatable = false, insertable = false)
-    private Long oppgaveFiltreringId;
-
-    @Column(name = "ANDRE_KRITERIER_TYPE", updatable = false, insertable = false)
-    private String andreKriterier;
-
     @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
     @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
     private AndreKriterierType andreKriterierType;
@@ -33,17 +29,13 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
     private boolean inkluder = true;
 
     public FiltreringAndreKriterierType() {
-        //CDI
+        //hibernate
     }
 
     public FiltreringAndreKriterierType(OppgaveFiltrering oppgaveFiltrering, AndreKriterierType andreKriterierType, boolean inkluder) {
         this.oppgaveFiltrering = oppgaveFiltrering;
         this.andreKriterierType = andreKriterierType;
         this.inkluder = inkluder;
-    }
-
-    public OppgaveFiltrering getOppgaveFiltrering() {
-        return oppgaveFiltrering;
     }
 
     public AndreKriterierType getAndreKriterierType() {
@@ -54,7 +46,16 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
         return inkluder;
     }
 
-    public boolean isEkskluder() {
-        return !inkluder;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FiltreringAndreKriterierType other)) return false;
+        return this.andreKriterierType == other.andreKriterierType && this.inkluder == other.inkluder;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(andreKriterierType, inkluder);
+    }
+
 }

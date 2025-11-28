@@ -3,16 +3,10 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-
-import jakarta.persistence.EntityManager;
-
-import no.nav.foreldrepenger.los.DBTestUtil;
-import no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
@@ -32,16 +28,15 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.Op
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
 class GjenåpneOppgaveHendelseHåndtererTest {
-    private final KøStatistikkTjeneste køStatistikk = Mockito.mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
@@ -57,7 +52,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository, Mockito.mock(Beskyttelsesbehov.class));
+        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(Mockito.mock(Beskyttelsesbehov.class));
         reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
 
@@ -68,8 +63,7 @@ class GjenåpneOppgaveHendelseHåndtererTest {
         oppgaveRepository.lagre(eksisterendeOppgave);
 
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
-        gjenåpneOppgaveHåndterer = new GjenåpneOppgaveOppgavetransisjonHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, køStatistikk,
-            reservasjonTjeneste);
+        gjenåpneOppgaveHåndterer = new GjenåpneOppgaveOppgavetransisjonHåndterer(oppgaveRepository, oppgaveEgenskapHåndterer, reservasjonTjeneste);
     }
 
     @Test
@@ -94,13 +88,12 @@ class GjenåpneOppgaveHendelseHåndtererTest {
     void skalIkkeVidereReservasjonVedNyEnhet() {
         // arrange
         reservasjonTjeneste.reserverOppgave(eksisterendeOppgave);
-        eksisterendeOppgave.setAktiv(true);
         oppgaveRepository.lagre(eksisterendeOppgave);
         var b = behandlingFpsak;
         new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste).avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId);
         var nyEnhetBehandlingFpsak = new LosBehandlingDto(b.behandlingUuid(), b.kildesystem(), b.saksnummer(), b.ytelse(), b.aktørId(),
             b.behandlingstype(), b.behandlingsstatus(), b.opprettetTidspunkt(), "1000", b.behandlingsfrist(), b.ansvarligSaksbehandlerIdent(),
-            b.aksjonspunkt(), b.behandlingsårsaker(), b.faresignaler(), b.refusjonskrav(), null, b.foreldrepengerDto(), b.tilbakeDto());
+            b.aksjonspunkt(), b.behandlingsårsaker(), b.faresignaler(), b.refusjonskrav(), List.of(), b.foreldrepengerDto(), List.of(), b.tilbakeDto());
 
         // act
         gjenåpneOppgaveHåndterer.håndter(behandlingId, nyEnhetBehandlingFpsak, new OppgaveHistorikk(List.of()));

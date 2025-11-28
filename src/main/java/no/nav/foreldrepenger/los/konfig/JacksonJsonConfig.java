@@ -15,17 +15,14 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+
 @Provider
 public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
 
     private final ObjectMapper objectMapper;
 
     public JacksonJsonConfig() {
-        this(false);
-    }
-
-    public JacksonJsonConfig(boolean serialiserKodeverdiSomObjekt) {
-        objectMapper = createbjectMapper(createModule(serialiserKodeverdiSomObjekt));
+        objectMapper = createbjectMapper(createModule());
     }
 
     private ObjectMapper createbjectMapper(SimpleModule simpleModule) {
@@ -45,10 +42,10 @@ public class JacksonJsonConfig implements ContextResolver<ObjectMapper> {
         return objectMapper;
     }
 
-    private static SimpleModule createModule(boolean serialiserKodeverdiSomObjekt) {
+    private static SimpleModule createModule() {
         var module = new SimpleModule("VL-REST", new Version(1, 0, 0, null, null, null));
 
-        module.addSerializer(new JacksonKodeverdiSerializer(serialiserKodeverdiSomObjekt));
+        module.addSerializer(new JacksonKodeverdiSerializer());
 
         return module;
     }

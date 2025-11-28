@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,7 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.los.DBTestUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,21 +18,21 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingHendelseHåndterer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
@@ -42,7 +40,6 @@ import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
-import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto.FagsakMarkering;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -64,9 +61,9 @@ class TilbakekrevingHendelseHåndtererTest {
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
-        var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(oppgaveRepository, Mockito.mock(Beskyttelsesbehov.class));
+        var oppgaveEgenskapHandler = new OppgaveEgenskapHåndterer(Mockito.mock(Beskyttelsesbehov.class));
         var oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, Mockito.mock(ReservasjonTjeneste.class));
-        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, oppgaveTjeneste, Mockito.mock(KøStatistikkTjeneste.class), Mockito.mock(ReservasjonTjeneste.class));
+        handler = new TilbakekrevingHendelseHåndterer(oppgaveEgenskapHandler, oppgaveRepository, oppgaveTjeneste, Mockito.mock(ReservasjonTjeneste.class));
     }
 
     @Test
@@ -190,18 +187,38 @@ class TilbakekrevingHendelseHåndtererTest {
     @Test
     void skalHaEgenskapUtlandVedFagsakMarkering() {
         var behandlingId = BehandlingId.random();
-        var fagsakEgenskaper = new LosFagsakEgenskaperDto(FagsakMarkering.BOSATT_UTLAND);
-        var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fagsakEgenskaper);
+        var fagsakEgenskaper = new LosFagsakEgenskaperDto(List.of("BOSATT_UTLAND"), null);
+        var hendelse = hendelse(åpentAksjonspunkt, behandlingId);
         handler.håndterBehandling(hendelse, fagsakEgenskaper);
         var oppgaveEgenskaper = DBTestUtil.hentUnik(entityManager, OppgaveEgenskap.class);
         assertThat(oppgaveEgenskaper.getAndreKriterierType()).isEqualTo(AndreKriterierType.UTLANDSSAK);
     }
 
     @Test
+    void skalSetteTilbakekrevingsfelter() {
+        var behandlingId = BehandlingId.random();
+        var saksbehandler = hendelse(åpentAksjonspunkt, behandlingId);
+
+        handler.håndterBehandling(saksbehandler);
+        var oppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class);
+
+        assertThat(oppgave)
+            .matches(o -> o.getFeilutbetalingBelop().equals(BigDecimal.valueOf(500)), "Oppgave har felt feilutbetalingBelop satt")
+            .matches(o -> o.getFeilutbetalingStart() != null, "Oppgave har felt feilutbetalingStart satt");
+
+
+        handler.håndterBehandling(saksbehandler); // skal gjenåpne/oppdatere eksisterende oppgave
+
+        var oppdatertOppgave = DBTestUtil.hentUnik(entityManager, Oppgave.class); // vi forventer oppdatert oppgave, henter på nytt
+        assertThat(oppdatertOppgave).matches(o -> o.getFeilutbetalingBelop() != null && o.getFeilutbetalingStart() != null,
+                "Oppgave har nye felt satt etter ny hendelse");
+    }
+
+    @Test
     void skalFåEgenskapEøsSakNårMarkertSomEøs() {
         var behandlingId = BehandlingId.random();
-        var fpsakEgenskaper = new LosFagsakEgenskaperDto(FagsakMarkering.EØS_BOSATT_NORGE);
-        var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fpsakEgenskaper);
+        var fpsakEgenskaper = new LosFagsakEgenskaperDto(List.of("EØS_BOSATT_NORGE"), null);
+        var hendelse = hendelse(åpentAksjonspunkt, behandlingId);
         handler.håndterBehandling(hendelse, fpsakEgenskaper);
         var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
         var kriterieTyper = oppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType);
@@ -211,8 +228,8 @@ class TilbakekrevingHendelseHåndtererTest {
     @Test
     void skalIkkeFåEgenskapEøsSakNårIkkeEøsMarkert() {
         var behandlingId = BehandlingId.random();
-        var fpsakEgenskaper = new LosFagsakEgenskaperDto(FagsakMarkering.BOSATT_UTLAND);
-        var hendelse = hendelse(åpentAksjonspunkt, behandlingId, fpsakEgenskaper);
+        var fpsakEgenskaper = new LosFagsakEgenskaperDto(List.of("BOSATT_UTLAND"), null);
+        var hendelse = hendelse(åpentAksjonspunkt, behandlingId);
         handler.håndterBehandling(hendelse, fpsakEgenskaper);
         var oppgaveEgenskaper = DBTestUtil.hentAlle(entityManager, OppgaveEgenskap.class);
         var kriterieTyper = oppgaveEgenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType);
@@ -261,10 +278,6 @@ class TilbakekrevingHendelseHåndtererTest {
     }
 
     private static LosBehandlingDto hendelse(List<Aksjonspunkt> aksjonspunkter, BehandlingId behandlingId) {
-        return hendelse(aksjonspunkter, behandlingId, null);
-    }
-
-    private static LosBehandlingDto hendelse(List<Aksjonspunkt> aksjonspunkter, BehandlingId behandlingId, LosFagsakEgenskaperDto fagsakEgenskaperDto) {
         var ap = aksjonspunkter.stream()
             .map(a -> new LosBehandlingDto.LosAksjonspunktDto(
                 a.getDefinisjonKode(),
@@ -276,7 +289,7 @@ class TilbakekrevingHendelseHåndtererTest {
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPTILBAKE, "123", Ytelse.FORELDREPENGER,
             new no.nav.vedtak.hendelser.behandling.AktørId(AktørId.dummy().getId()), Behandlingstype.TILBAKEBETALING, Behandlingsstatus.OPPRETTET,
             LocalDateTime.now(), "0300", null, "saksbehandler", ap, List.of(),
-            false, false, fagsakEgenskaperDto, null,
+            false, false, List.of(), null, List.of(),
             new LosBehandlingDto.LosTilbakeDto(BigDecimal.valueOf(500), LocalDate.now()));
     }
 

@@ -3,14 +3,10 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.behandlingFpsak;
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveTestUtil.førsteUttaksDag;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-
-import no.nav.foreldrepenger.los.DBTestUtil;
-import no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
@@ -28,20 +26,18 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere.G
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
-import no.nav.foreldrepenger.los.oppgave.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
+import no.nav.foreldrepenger.los.oppgave.util.OppgaveAssert;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
 class GenerellOpprettOppgaveHendelseHåndtererTest {
-    private final KøStatistikkTjeneste køStatistikk = Mockito.mock(KøStatistikkTjeneste.class);
     private EntityManager entityManager;
     private OppgaveEgenskapHåndterer oppgaveEgenskapHåndterer;
     private OppgaveTjeneste oppgaveTjeneste;
@@ -52,8 +48,8 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
         this.entityManager = entityManager;
         var oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, Mockito.mock(ReservasjonTjeneste.class));
-        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(oppgaveRepository, Mockito.mock(Beskyttelsesbehov.class));
-        opprettOppgaveHåndterer = new GenerellOpprettOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, køStatistikk, Mockito.mock(ReservasjonTjeneste.class));
+        oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(Mockito.mock(Beskyttelsesbehov.class));
+        opprettOppgaveHåndterer = new GenerellOpprettOppgaveOppgavetransisjonHåndterer(oppgaveTjeneste, oppgaveEgenskapHåndterer, Mockito.mock(ReservasjonTjeneste.class));
     }
 
     @Test
@@ -70,9 +66,8 @@ class GenerellOpprettOppgaveHendelseHåndtererTest {
                      .harFørsteStønadsdag(førsteUttaksDag())
                      .harSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
                      .harOppgaveAvsluttet(null)
-                     .harBehandlingStatus(BehandlingStatus.OPPRETTET)
                      .harBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
-                     .harSystem("FPSAK")
+                     .harSystem(Fagsystem.FPSAK)
                      .harFagsakYtelseType(FagsakYtelseType.FORELDREPENGER);
     }
 

@@ -6,15 +6,15 @@ import static no.nav.vedtak.felles.jpa.HibernateVerktøy.hentUniktResultat;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.vedtak.felles.jpa.TomtResultatException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 @ApplicationScoped
@@ -53,7 +53,7 @@ public class OrganisasjonRepository {
         return entityManager.createQuery("""
             FROM saksbehandler s
             WHERE upper(s.saksbehandlerIdent) = upper( :ident )
-            """, Saksbehandler.class).setParameter("ident", saksbehandlerIdent.toUpperCase());
+            """, Saksbehandler.class).setParameter("ident", saksbehandlerIdent.trim().toUpperCase());
     }
 
     public void slettSaksbehandlereUtenKnytninger() {
@@ -68,9 +68,41 @@ public class OrganisasjonRepository {
                     select avd
                     from avdeling avd
                     where s member of avd.saksbehandlere
+                )
+                and not exists (
+                   select gruppe
+                   from saksbehandlerGruppe gruppe
+                   where s member of gruppe.saksbehandlere
                 )""")
             .executeUpdate();
         LOG.info("Slettet {} saksbehandlere uten knytninger til køer", slettedeRader);
+    }
+
+    public void slettLøseGruppeKnytninger() {
+        int slettedeRader = entityManager.createNativeQuery("""
+                delete from gruppe_tilknytning gt
+                where not exists (select *
+                                  from avdeling_saksbehandler avd join SAKSBEHANDLER_GRUPPE sg on sg.avdeling_id = avd.avdeling_id
+                                  where avd.saksbehandler_id = gt.saksbehandler_id)
+                """)
+            .executeUpdate();
+        LOG.info("Slettet {} løse gruppe-knytninger", slettedeRader);
+    }
+
+
+    public void slettØvrigeEnhetsdata(String avdelingEnhet) {
+        var avdeling = hentAvdelingFraEnhet(avdelingEnhet).orElse(null);
+        if (avdeling != null && avdeling.getErAktiv()) {
+            LOG.info("Enhet er aktiv {}, avslutter.", avdelingEnhet);
+            return;
+        }
+        entityManager.createNativeQuery("DELETE FROM RESERVASJON_EVENT_LOGG where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM RESERVASJON where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM TILBAKEKREVING_EGENSKAPER where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EGENSKAP where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EVENT_LOGG where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM OPPGAVE where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.flush();
     }
 
     public Optional<Avdeling> hentAvdelingFraEnhet(String avdelingEnhet) {
@@ -106,7 +138,7 @@ public class OrganisasjonRepository {
     public void fjernSaksbehandlerFraGruppe(String saksbehandlerIdent, long gruppeId, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
         sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
-        gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equals(saksbehandlerIdent));
+        gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equalsIgnoreCase(saksbehandlerIdent));
         entityManager.merge(gruppe);
     }
 
@@ -124,6 +156,17 @@ public class OrganisasjonRepository {
         entityManager.merge(gruppe);
         entityManager.remove(gruppe);
         entityManager.flush();
+    }
+
+    public void opprettEllerReaktiverAvdeling(String avdelingEnhet, String avdelingNavn) {
+        var avdeling = hentAvdelingFraEnhet(avdelingEnhet);
+        if (avdeling.isPresent()) {
+            avdeling.get().setErAktiv(true);
+            entityManager.persist(avdeling.get());
+        } else {
+            var nyAvdeling = new Avdeling(avdelingEnhet, avdelingNavn, false);
+            entityManager.persist(nyAvdeling);
+        }
     }
 
     public void deaktiverAvdeling(String avdelingEnhet) {

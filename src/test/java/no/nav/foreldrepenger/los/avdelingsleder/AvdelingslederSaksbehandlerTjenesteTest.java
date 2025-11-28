@@ -1,18 +1,27 @@
 package no.nav.foreldrepenger.los.avdelingsleder;
 
-import no.nav.foreldrepenger.los.JpaExtension;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.JpaExtension;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 
-import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
-import static org.assertj.core.api.Assertions.assertThat;
-
+@ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
 class AvdelingslederSaksbehandlerTjenesteTest {
 
@@ -20,11 +29,15 @@ class AvdelingslederSaksbehandlerTjenesteTest {
 
     private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
 
+    @Mock
+    private AnsattTjeneste ansattTjeneste;
+
     @BeforeEach
     void setup(EntityManager entityManager) {
         var oppgaveRepository = new OppgaveRepository(entityManager);
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
-        avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository);
+        when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867")));
+        avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository, ansattTjeneste);
     }
 
     @Test

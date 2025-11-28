@@ -4,6 +4,4 @@ public interface Kodeverdi {
     String getNavn();
 
     String getKode();
-
-    String getKodeverk();
 }

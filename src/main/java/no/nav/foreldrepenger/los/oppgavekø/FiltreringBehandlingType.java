@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
+import java.util.Objects;
+
 @Entity(name = "FiltreringBehandlingType")
 @Table(name = "FILTRERING_BEHANDLING_TYPE")
 public class FiltreringBehandlingType extends BaseEntitet {
@@ -23,12 +25,6 @@ public class FiltreringBehandlingType extends BaseEntitet {
     @ManyToOne
     @JoinColumn(name = "OPPGAVE_FILTRERING_ID", nullable = false)
     private OppgaveFiltrering oppgaveFiltrering;
-
-    @Column(name = "OPPGAVE_FILTRERING_ID", updatable = false, insertable = false)
-    private Long oppgaveFiltreringId;
-
-    @Column(name = "behandling_type", updatable = false, insertable = false)
-    private String behandlingTypeKode;
 
     @Convert(converter = BehandlingType.KodeverdiConverter.class)
     @Column(name = "BEHANDLING_TYPE")
@@ -43,11 +39,20 @@ public class FiltreringBehandlingType extends BaseEntitet {
         this.behandlingType = behandlingType;
     }
 
-    public OppgaveFiltrering getOppgaveFiltrering() {
-        return oppgaveFiltrering;
-    }
-
     public BehandlingType getBehandlingType() {
         return behandlingType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FiltreringBehandlingType other)) return false;
+        return this.behandlingType == other.behandlingType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(behandlingType);
+    }
+
 }

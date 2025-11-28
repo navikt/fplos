@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -18,6 +17,7 @@ import jakarta.ws.rs.core.Response;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftAvdelingEnhetDto;
+import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftOpprettAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -51,8 +51,8 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Oppretter task for synkronisering av behandling med fpsak", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
-    public Response synkroniserHendelser(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response synkroniserHendelser(@NotNull List<@Valid EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream()
             .map(EnkelBehandlingIdDto::getBehandlingId)
             .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPSAK, b))
@@ -66,8 +66,8 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Oppretter task for synkronisering av behandling med fptilbake", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
-    public Response synkroniserHendelserTilbake(@NotNull @Valid List<EnkelBehandlingIdDto> behandlingIdListe) {
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response synkroniserHendelserTilbake(@NotNull List<@Valid EnkelBehandlingIdDto> behandlingIdListe) {
         var behandlinger = behandlingIdListe.stream()
             .map(EnkelBehandlingIdDto::getBehandlingId)
             .map(b -> new SynkroniseringHendelseTaskOppretterTjeneste.KildeBehandlingId(Kildesystem.FPTILBAKE, b))
@@ -81,7 +81,7 @@ public class AdminRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Setter tidligste inaktiv der flere aktive", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response slettTidligsteMultiAktiv(@NotNull @Valid EnkelBehandlingIdDto behandlingId) {
         var behandlinger = behandlingId.getBehandlingId();
         oppgaveTjeneste.adminAvsluttMultiOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlinger);
@@ -89,21 +89,46 @@ public class AdminRestTjeneste {
     }
 
     @POST
+    @Path("/opprett-avdeling")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Opprett avdeling", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response opprettAvdeling(@NotNull @Valid DriftOpprettAvdelingEnhetDto avdelingEnhetDto) {
+        organisasjonRepository.opprettEllerReaktiverAvdeling(avdelingEnhetDto.enhetsnummer(), avdelingEnhetDto.enhetsnavn());
+        return Response.ok().build();
+    }
+
+    @POST
     @Path("/deaktiver-avdeling")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Deaktiverer avdeling", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response deaktiverAvdeling(@NotNull @Valid DriftAvdelingEnhetDto avdelingEnhetDto) {
         organisasjonRepository.deaktiverAvdeling(avdelingEnhetDto.avdelingEnhet());
         return Response.ok().build();
     }
 
-    @DELETE
+    @POST
     @Path("/slett-saksbehandlere")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Sletter saksbehandlere uten knytning til køer eller avdeling", tags = "admin")
-    @BeskyttetRessurs(actionType = ActionType.DELETE, resourceType = ResourceType.DRIFT)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response slettSaksbehandlereUtenKnytninger() {
         organisasjonRepository.slettSaksbehandlereUtenKnytninger();
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/slett-lose-gruppe-knytninger")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Fjerne saksbehandlere fra grupper når saksbehandler mangler i avdeling", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response slettLøseGruppeKnytninger() {
+        organisasjonRepository.slettLøseGruppeKnytninger();
         return Response.ok().build();
     }
 

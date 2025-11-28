@@ -1,8 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall;
 
 import java.math.BigDecimal;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -14,6 +13,7 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdeling;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdag;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagUkeMåned;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @ApplicationScoped
@@ -66,7 +66,6 @@ public class NøkkeltallRepository {
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdag> hentOppgaverPerFørsteStønadsdag(String avdeling) {
-        // Tilpass til tidligste dato før termin - 18u = 1296. Vurder trunc('IW') + 4 (=fredag) for evt ukesvisning
         return entityManager.createNativeQuery("""
             select ytre.DATO as DATO, sum(ytre.ANTALL) as ANTALL from (
                select case when indre.fstonad < sysdate - 120 then trunc(sysdate-120)
@@ -81,10 +80,49 @@ public class NøkkeltallRepository {
             .getResultStream().map(row -> mapOppgaverForFørsteStønadsdag((Object[]) row)).toList();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<OppgaverForFørsteStønadsdagUkeMåned> hentOppgaverPerFørsteStønadsdagUke(String avdeling) {
+        return entityManager.createNativeQuery("""
+            select trunc(ytre.DATO, 'IW') as DATO, to_char(ytre.DATO, 'YYYY-IW') as YWSTRING, sum(ytre.ANTALL) as ANTALL from (
+               select case when indre.fstonad < sysdate - 245 then trunc(sysdate-245)
+                           when indre.fstonad > sysdate + 126 then trunc(sysdate+126)
+                           else indre.fstonad end as DATO, Count(1) AS ANTALL from (
+                  select trunc(o.FORSTE_STONADSDAG) as fstonad FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+                  WHERE a.AVDELING_ENHET = :avdelingEnhet AND o.AKTIV='J' AND o.FORSTE_STONADSDAG IS NOT NULL and o.behandling_type = :behandlingType
+               ) indre GROUP BY indre.fstonad
+            ) ytre group by dato order by dato
+            """).setParameter(AVDELING_ENHET, avdeling)
+            .setParameter("behandlingType", BehandlingType.FØRSTEGANGSSØKNAD.getKode())
+            .getResultStream().map(row -> mapOppgaverForFørsteStønadsdagUkeMåned((Object[]) row)).toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<OppgaverForFørsteStønadsdagUkeMåned> hentOppgaverPerFørsteStønadsdagMåned(String avdeling) {
+        return entityManager.createNativeQuery("""
+            select trunc(ytre.DATO, 'MM') as DATO, to_char(ytre.DATO, 'YYYY-MM') as YMSTRING, sum(ytre.ANTALL) as ANTALL from (
+               select case when indre.fstonad < sysdate - 245 then trunc(sysdate-245)
+                           when indre.fstonad > sysdate + 126 then trunc(sysdate+126)
+                           else indre.fstonad end as DATO, Count(1) AS ANTALL from (
+                  select trunc(o.FORSTE_STONADSDAG) as fstonad FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
+                  WHERE a.AVDELING_ENHET = :avdelingEnhet AND o.AKTIV='J' AND o.FORSTE_STONADSDAG IS NOT NULL and o.behandling_type = :behandlingType
+               ) indre GROUP BY indre.fstonad
+            ) ytre group by dato order by dato
+            """).setParameter(AVDELING_ENHET, avdeling)
+            .setParameter("behandlingType", BehandlingType.FØRSTEGANGSSØKNAD.getKode())
+            .getResultStream().map(row -> mapOppgaverForFørsteStønadsdagUkeMåned((Object[]) row)).toList();
+    }
+
     private static OppgaverForFørsteStønadsdag mapOppgaverForFørsteStønadsdag(Object[] row) {
-        var date = ((Date) row[0]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        var date = ((LocalDateTime) row[0]).toLocalDate();
         var resultat = ((BigDecimal) row[1]).longValue();
         return new OppgaverForFørsteStønadsdag(date, resultat);
+    }
+
+    private static OppgaverForFørsteStønadsdagUkeMåned mapOppgaverForFørsteStønadsdagUkeMåned(Object[] row) {
+        var date = ((LocalDateTime) row[0]).toLocalDate();
+        var datotekst = (String) row[1];
+        var resultat = ((BigDecimal) row[2]).longValue();
+        return new OppgaverForFørsteStønadsdagUkeMåned(date, datotekst, resultat);
     }
 
     private static OppgaverForAvdeling mapOppgaverForAvdeling(Object[] row) {
@@ -98,7 +136,7 @@ public class NøkkeltallRepository {
     private static OppgaverForAvdelingPerDato mapOppgaverForAvdelingPerDato(Object[] row) {
         var fagsakYtelseType = FagsakYtelseType.fraKode((String) row[0]);  // NOSONAR
         var behandlingType = BehandlingType.fraKode((String) row[1]);  // NOSONAR
-        var opprettetDato = ((Date) row[2]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();  // NOSONAR
+        var opprettetDato = ((LocalDateTime) row[2]).toLocalDate();  // NOSONAR
         var antall = ((BigDecimal) row[3]).longValue();  // NOSONAR
         return new OppgaverForAvdelingPerDato(fagsakYtelseType, behandlingType, opprettetDato, antall);
     }

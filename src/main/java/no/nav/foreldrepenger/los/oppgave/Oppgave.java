@@ -1,11 +1,16 @@
 package no.nav.foreldrepenger.los.oppgave;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
@@ -14,29 +19,27 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 @Entity(name = "Oppgave")
 @Table(name = "OPPGAVE")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Oppgave extends BaseEntitet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE")
     protected Long id;
 
-    @Column(name = "FAGSAK_SAKSNR")
-    protected Long fagsakSaksnummer;
+    @Embedded
+    protected Saksnummer saksnummer; // Denne er de-facto non-null
 
     @Embedded
     protected AktørId aktørId;
@@ -53,16 +56,12 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "FORSTE_STONADSDAG")
     protected LocalDate førsteStønadsdag;
 
-    @Convert(converter = BehandlingStatus.KodeverdiConverter.class)
-    @Column(name = "BEHANDLING_STATUS")
-    protected BehandlingStatus behandlingStatus;
-
     @Convert(converter = BehandlingType.KodeverdiConverter.class)
     @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
-    @OneToMany(mappedBy = "oppgave", fetch = FetchType.LAZY)
-    protected Set<OppgaveEgenskap> oppgaveEgenskaper;
+    @OneToMany(mappedBy = "oppgave", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    protected Set<OppgaveEgenskap> oppgaveEgenskaper = new HashSet<>();
 
     @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
     @Column(name = "FAGSAK_YTELSE_TYPE")
@@ -72,8 +71,9 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "AKTIV")
     protected Boolean aktiv = Boolean.TRUE;
 
+    @Convert(converter = Fagsystem.FagSystemConverter.class)
     @Column(name = "SYSTEM")
-    protected String system;
+    protected Fagsystem system;
 
     @Column(name = "OPPGAVE_AVSLUTTET")
     protected LocalDateTime oppgaveAvsluttet;
@@ -85,15 +85,32 @@ public class Oppgave extends BaseEntitet {
     @Embedded
     protected BehandlingId behandlingId;
 
-    @OneToOne(mappedBy = "oppgave", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "oppgave")
     protected Reservasjon reservasjon;
+
+    @Column(name = "FEILUTBETALING_BELOP")
+    protected BigDecimal feilutbetalingBelop;
+
+    @Column(name = "FEILUTBETALING_START")
+    protected LocalDateTime feilutbetalingStart;
+
+    public void leggTilOppgaveEgenskap(OppgaveEgenskap oppgaveEgenskap) {
+        Objects.requireNonNull(oppgaveEgenskap, "oppgaveEgenskap");
+        oppgaveEgenskaper.removeIf(oe -> oe.getAndreKriterierType().equals(oppgaveEgenskap.getAndreKriterierType()));
+        oppgaveEgenskaper.add(oppgaveEgenskap);
+        oppgaveEgenskap.setOppgave(this);
+    }
+
+    public void tilbakestillOppgaveEgenskaper() {
+        oppgaveEgenskaper.clear();
+    }
 
     public Long getId() {
         return id;
     }
 
-    public Long getFagsakSaksnummer() {
-        return fagsakSaksnummer;
+    public Saksnummer getSaksnummer() {
+        return saksnummer;
     }
 
     public AktørId getAktørId() {
@@ -116,7 +133,7 @@ public class Oppgave extends BaseEntitet {
         return aktiv != null && aktiv;
     }
 
-    public String getSystem() {
+    public Fagsystem getSystem() {
         return system;
     }
 
@@ -136,10 +153,6 @@ public class Oppgave extends BaseEntitet {
         return førsteStønadsdag;
     }
 
-    public BehandlingStatus getBehandlingStatus() {
-        return behandlingStatus;
-    }
-
     public LocalDateTime getOppgaveAvsluttet() {
         return oppgaveAvsluttet;
     }
@@ -149,19 +162,15 @@ public class Oppgave extends BaseEntitet {
     }
 
     public Set<OppgaveEgenskap> getOppgaveEgenskaper() {
-        return oppgaveEgenskaper == null ? Set.of() : oppgaveEgenskaper;
+        return Collections.unmodifiableSet(oppgaveEgenskaper);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public BigDecimal getFeilutbetalingBelop() {
+        return feilutbetalingBelop;
     }
 
-    public void setAktiv(boolean aktiv) {
-        this.aktiv = aktiv;
-    }
-
-    public void setOppgaveAvsluttet(LocalDateTime avsluttet) {
-        this.oppgaveAvsluttet = avsluttet;
+    public LocalDateTime getFeilutbetalingStart() {
+        return feilutbetalingStart;
     }
 
     public void avsluttOppgave() {
@@ -178,15 +187,34 @@ public class Oppgave extends BaseEntitet {
         return reservasjon != null && reservasjon.erAktiv();
     }
 
+    public void avstemMedOppgave(Oppgave other) {
+        this.behandlingOpprettet = other.behandlingOpprettet;
+        this.aktørId = other.aktørId;
+        this.behandlendeEnhet = other.behandlendeEnhet;
+        this.behandlingsfrist = other.behandlingsfrist;
+        this.saksnummer = other.saksnummer;
+        this.førsteStønadsdag = other.førsteStønadsdag;
+        this.behandlingType = other.behandlingType;
+        this.fagsakYtelseType = other.fagsakYtelseType;
+        this.system = other.system;
+        this.reservasjon = other.reservasjon;
+        this.feilutbetalingStart = other.feilutbetalingStart;
+        this.feilutbetalingBelop = other.feilutbetalingBelop;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @Override
     public String toString() {
-        return "Oppgave{" + "id=" + id + ", fagsakSaksnummer=" + fagsakSaksnummer + ", aktiv=" + aktiv + ", system='" + system + '\'' + '}';
+        return "Oppgave{" + "id=" + id + ", saksnummer=" + saksnummer + ", aktiv=" + aktiv + ", system='" + system + '\'' + '}';
     }
 
     public static class Builder {
-        private Oppgave tempOppgave;
+        protected Oppgave tempOppgave;
 
-        private Builder() {
+        Builder() {
             tempOppgave = new Oppgave();
         }
 
@@ -195,8 +223,8 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medFagsakSaksnummer(Long faksagSaksnummer) {
-            tempOppgave.fagsakSaksnummer = faksagSaksnummer;
+        public Builder medSaksnummer(Saksnummer saksnummer) {
+            tempOppgave.saksnummer = saksnummer;
             return this;
         }
 
@@ -220,8 +248,8 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medSystem(String system) {
-            tempOppgave.system = system;
+        public Builder medSystem(Fagsystem fagsystem) {
+            tempOppgave.system = fagsystem;
             return this;
         }
 
@@ -240,17 +268,6 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medBehandlingStatus(BehandlingStatus behandlingStatus) {
-            tempOppgave.behandlingStatus = behandlingStatus;
-            return this;
-        }
-
-
-        public Builder medOppgaveAvsluttet(LocalDateTime oppgaveAvsluttet) {
-            tempOppgave.oppgaveAvsluttet = oppgaveAvsluttet;
-            return this;
-        }
-
         public Builder medUtfortFraAdmin(Boolean utfortFraAdmin) {
             tempOppgave.utfortFraAdmin = utfortFraAdmin;
             return this;
@@ -261,9 +278,19 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
+        public Builder medFeilutbetalingBelop(BigDecimal feilutbetalingBelop) {
+            tempOppgave.feilutbetalingBelop = feilutbetalingBelop;
+            return this;
+        }
+
+        public Builder medFeilutbetalingStart(LocalDateTime feilutbetalingStart) {
+            tempOppgave.feilutbetalingStart = feilutbetalingStart;
+            return this;
+        }
+
         public Builder dummyOppgave(String enhet) {
             tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
-            tempOppgave.fagsakSaksnummer = 3478293L;
+            tempOppgave.saksnummer = new Saksnummer("3478293");
             tempOppgave.aktørId = AktørId.dummy();
             tempOppgave.fagsakYtelseType = FagsakYtelseType.FORELDREPENGER;
             tempOppgave.behandlingType = BehandlingType.FØRSTEGANGSSØKNAD;
@@ -271,12 +298,17 @@ public class Oppgave extends BaseEntitet {
             tempOppgave.behandlingsfrist = LocalDateTime.now();
             tempOppgave.behandlingOpprettet = LocalDateTime.now();
             tempOppgave.førsteStønadsdag = LocalDate.now().plusMonths(1);
-            tempOppgave.behandlingStatus = BehandlingStatus.UTREDES;
             return this;
         }
 
         public Oppgave build() {
+            Objects.requireNonNull(tempOppgave.saksnummer, "saksnummer");
             var oppgave = tempOppgave;
+            tempOppgave = new Oppgave();
+            if (!Fagsystem.FPTILBAKE.equals(tempOppgave.system) && (tempOppgave.feilutbetalingStart != null
+                || tempOppgave.feilutbetalingBelop != null)) {
+                throw new IllegalArgumentException("Utviklerfeil: Angitt tilbakebetalingsinformasjon i FPSAK-oppgave");
+            }
             tempOppgave = new Oppgave();
             return oppgave;
         }

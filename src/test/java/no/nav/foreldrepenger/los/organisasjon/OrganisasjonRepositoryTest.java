@@ -1,16 +1,18 @@
 package no.nav.foreldrepenger.los.organisasjon;
 
-import jakarta.persistence.EntityManager;
-import no.nav.foreldrepenger.los.JpaExtension;
+import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
+import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static no.nav.foreldrepenger.los.DBTestUtil.avdelingDrammen;
-import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
-import static org.assertj.core.api.Assertions.assertThat;
+import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.JpaExtension;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(JpaExtension.class)
@@ -40,10 +42,10 @@ class OrganisasjonRepositoryTest {
 
     @Test
     void skalSletteSaksbehandlereUtenKnytninger() {
-        var saksbehandlerUtenKnytning = new Saksbehandler("ikke-knyttet");
+        var saksbehandlerUtenKnytning = new Saksbehandler("ikke-knyttet", UUID.randomUUID());
         entityManager.persist(saksbehandlerUtenKnytning);
 
-        var saksbehandlerMedKnytning = new Saksbehandler("knyttet");
+        var saksbehandlerMedKnytning = new Saksbehandler("knyttet", UUID.randomUUID());
         saksbehandlerMedKnytning.leggTilAvdeling(avdelingDrammen(entityManager));
         entityManager.persist(saksbehandlerMedKnytning);
         entityManager.flush();

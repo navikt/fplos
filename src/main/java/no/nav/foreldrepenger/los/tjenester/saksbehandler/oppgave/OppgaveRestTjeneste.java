@@ -5,9 +5,6 @@ import static no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste.
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -45,8 +42,6 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 @Transactional
 public class OppgaveRestTjeneste {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OppgaveRestTjeneste.class);
-
     public static final String OPPGAVER_BASE_PATH = "/saksbehandler/oppgaver";
     public static final String OPPGAVER_STATUS_PATH = "/status";
     public static final String OPPGAVER_RESULTAT_PATH = "/resultat";
@@ -72,7 +67,7 @@ public class OppgaveRestTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Init hent oppgaver", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "202", description = "Hent oppgaver initiert, Returnerer link til å polle etter nye oppgaver", headers = {@Header(name = "Location")})})
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public Response hentOppgaver(@Context HttpServletRequest request,
                                  @NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                  @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaveIder) throws URISyntaxException {
@@ -82,19 +77,19 @@ public class OppgaveRestTjeneste {
     @GET
     @Path(OPPGAVER_STATUS_PATH)
     @Operation(description = "Url for å polle på oppgaver asynkront", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "200", description = "Returnerer Status", content = @Content(schema = @Schema(implementation = AsyncPollingStatus.class))), @ApiResponse(responseCode = "303", description = "Nye oppgaver tilgjenglig", headers = {@Header(name = "Location")})})
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public Response hentNesteOppgaverOgSjekkOmDisseErNye(@Context HttpServletRequest request,
                                                          @NotNull @Valid @QueryParam("sakslisteId") SakslisteIdDto sakslisteId,
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
         if (oppgaveIderSomVises.isEmpty()) {
-            if (!oppgaveDtoTjeneste.finnesTilgjengeligeOppgaver(sakslisteId)) {
+            var finnesOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), false) > 0;
+            if (!finnesOppgaver) {
                 return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
             }
             return Redirect.sendTilResultat(request, sakslisteId);
         }
         if (oppgaveTjeneste.erAlleOppgaverFortsattTilgjengelig(oppgaveIderSomVises)) {
-            LOG.debug("Alle oppgaver fortsatt tilgjengelig for sakliste {}: {}", sakslisteId.getVerdi(), oppgaveIderSomVises);
             return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
         }
         return Redirect.sendTilResultat(request, sakslisteId);
@@ -105,11 +100,9 @@ public class OppgaveRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Hent " + ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER
         + " neste oppgaver", tags = "Saksbehandler", responses = {@ApiResponse(responseCode = "200", description = "Returnerer Oppgaver", content = @Content(schema = @Schema(implementation = OppgaveDto.class))),})
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<OppgaveDto> getOppgaverTilBehandling(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        var oppgaverTilBehandling = oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
-        LOG.debug("Oppgaver til behandling for saksliste {}: {}", sakslisteId.getVerdi(), oppgaverTilBehandling);
-        return oppgaverTilBehandling;
+        return oppgaveDtoTjeneste.getOppgaverTilBehandling(sakslisteId.getVerdi());
     }
 
     @GET

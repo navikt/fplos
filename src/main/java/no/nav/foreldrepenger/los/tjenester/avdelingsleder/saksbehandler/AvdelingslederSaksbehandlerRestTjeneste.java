@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -14,9 +16,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.SaksbehandlerOgAvdelingDto;
@@ -26,8 +25,8 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.Saks
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.SaksbehandlerGruppeSletteRequestDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.SaksbehandlereOgSaksbehandlerGrupper;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerMedAvdelingerDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
@@ -56,24 +55,24 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @GET
     @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public List<SaksbehandlerMedAvdelingerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
+    public List<SaksbehandlerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
             .stream()
-            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandlerMedAvdelingerDto)
+            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
             .toList();
     }
 
     @POST
     @Path("/søk")
     @Operation(description = "Søk etter saksbehandler", tags = "AvdelingslederSaksbehandlere")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
-    public SaksbehandlerMedAvdelingerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        return saksbehandlerDtoTjeneste.lagSaksbehandlerMedAvdelingerDto(brukerIdent.getVerdi()).orElse(null);
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
+        return saksbehandlerDtoTjeneste.saksbehandlerDtoForNavIdent(brukerIdent.getVerdi()).orElse(null);
     }
 
     @POST
     @Operation(description = "Legg til ny saksbehandler", tags = "AvdelingslederSaksbehandlere")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void leggTilNySaksbehandler(@NotNull @Parameter(description = "Brukeridentifikasjon og avdelingsid") @Valid SaksbehandlerOgAvdelingDto saksbehandlerOgAvdeling) {
         avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(),
             saksbehandlerOgAvdeling.getAvdelingEnhet().getAvdelingEnhet());
@@ -82,7 +81,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @POST
     @Path("/slett")
     @Operation(description = "Fjern saksbehandler", tags = "AvdelingslederSaksbehandlere")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void slettSaksbehandler(@NotNull @Parameter(description = "Brukeridentifikasjon og avdelingsid") @Valid SaksbehandlerOgAvdelingDto saksbehandlerOgAvdeling) {
         avdelingslederSaksbehandlerTjeneste.fjernSaksbehandlerFraAvdeling(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi(),
             saksbehandlerOgAvdeling.getAvdelingEnhet().getAvdelingEnhet());
@@ -95,18 +94,18 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     public SaksbehandlereOgSaksbehandlerGrupper hentSaksbehandlerGrupper(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         var avdelingensSaksbehandlere = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
             .stream()
-            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandlerMedAvdelingerDto)
+            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
             .toList();
         // Litt dobbeltarbeid her i overgangsfase - vi henter saksbehandlere og mapper som før i tillegg til å gjøre samme med gruppene
         var saksbehandlereGruppe =  avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlereOgGrupper(avdelingEnhetDto.getAvdelingEnhet())
-            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(), g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandlerMedAvdelingerDto).toList())).toList();
+            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(), g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList())).toList();
         return new SaksbehandlereOgSaksbehandlerGrupper(avdelingensSaksbehandlere, saksbehandlereGruppe);
     }
 
     @POST
     @Path("/grupper/opprett-gruppe")
     @Operation(description = "Oppretter gruppe", tags = "AvdelingslederSaksbehandlergrupper")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public SaksbehandlerGruppeDto opprettSaksbehandlerGruppe(@Valid AvdelingEnhetDto dto) {
         var sbg = avdelingslederSaksbehandlerTjeneste.opprettSaksbehandlerGruppe(dto.getAvdelingEnhet());
         return new SaksbehandlerGruppeDto(sbg.getId(), sbg.getGruppeNavn(), List.of());
@@ -115,7 +114,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @POST
     @Path("/grupper/endre-gruppenavn")
     @Operation(description = "Gir nytt navn til gruppe", tags = "AvdelingslederSaksbehandlergrupper")
-    @BeskyttetRessurs(actionType = ActionType.UPDATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.UPDATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void endreSaksbehandlerGruppe(@Valid SaksbehandlerGruppeNavneEndringRequestDto dto) {
         avdelingslederSaksbehandlerTjeneste.endreSaksbehandlerGruppeNavn(dto.gruppeId(), dto.gruppeNavn(), dto.avdelingEnhet().getAvdelingEnhet());
     }
@@ -123,7 +122,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @POST
     @Path("/grupper/legg-til-saksbehandler")
     @Operation(description = "Legger saksbehandler til gruppe", tags = "AvdelingslederSaksbehandlergrupper")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void leggSaksbehandlerTilGruppe(@Valid SaksbehandlerOgGruppeDto dto) {
         avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilGruppe(dto.brukerIdent().getVerdi(), dto.gruppeId(), dto.avdelingEnhet().getAvdelingEnhet());
     }
@@ -131,7 +130,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @POST
     @Path("/grupper/fjern-saksbehandler")
     @Operation(description = "Fjerner saksbehandler fra gruppe", tags = "AvdelingslederSaksbehandlergrupper")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void fjernSaksbehandlerFraGruppe(@Valid SaksbehandlerOgGruppeDto dto) {
         avdelingslederSaksbehandlerTjeneste.fjernSaksbehandlerFraGruppe(dto.brukerIdent().getVerdi(), dto.gruppeId(), dto.avdelingEnhet().getAvdelingEnhet());
     }
@@ -139,7 +138,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @POST
     @Path("/grupper/slett-saksbehandlergruppe")
     @Operation(description = "Sletter saksbehandlergruppe", tags = "AvdelingslederSaksbehandlergrupper")
-    @BeskyttetRessurs(actionType = ActionType.DELETE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET)
+    @BeskyttetRessurs(actionType = ActionType.DELETE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void slettSaksbehandlerGruppe(@Valid SaksbehandlerGruppeSletteRequestDto dto) {
         avdelingslederSaksbehandlerTjeneste.slettSaksbehandlerGruppe(dto.gruppeId(), dto.avdelingEnhet().getAvdelingEnhet());
     }

@@ -1,14 +1,17 @@
 package no.nav.foreldrepenger.los.server;
 
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import javax.sql.DataSource;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.konfig.Environment;
 
-import javax.sql.DataSource;
-
-import java.util.Properties;
+import static no.nav.foreldrepenger.los.server.VaultUtil.lesFilVerdi;
 
 class DataSourceUtil {
     private static final Environment ENV = Environment.current();
@@ -16,13 +19,13 @@ class DataSourceUtil {
     private DataSourceUtil() {
     }
 
-    static DataSource createDataSource(int maxPoolSize) {
+    static DataSource createDataSource(int maxPoolSize, int minIdle) {
         var config = new HikariConfig();
-        config.setJdbcUrl(ENV.getRequiredProperty("defaultDS.url"));
-        config.setUsername(ENV.getRequiredProperty("defaultDS.username"));
-        config.setPassword(ENV.getRequiredProperty("defaultDS.password"));
-        config.setConnectionTimeout(1000);
-        config.setMinimumIdle(2);
+        config.setJdbcUrl(hentEllerBeregnVerdiHvisMangler("defaultDS.url", "defaultDSconfig", "jdbc_url"));
+        config.setUsername(hentEllerBeregnVerdiHvisMangler("defaultDS.username", "defaultDS", "username"));
+        config.setPassword(hentEllerBeregnVerdiHvisMangler("defaultDS.password", "defaultDS", "password"));
+        config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(2));
+        config.setMinimumIdle(minIdle);
         config.setMaximumPoolSize(maxPoolSize);
         config.setConnectionTestQuery("select 1 from dual");
         config.setDriverClassName("oracle.jdbc.OracleDriver");
@@ -32,5 +35,13 @@ class DataSourceUtil {
         config.setDataSourceProperties(dsProperties);
 
         return new HikariDataSource(config);
+    }
+
+    /* Denne gir lazy loading og feiler ikke ved lokalt kjøring uten vault mount */
+    private static String hentEllerBeregnVerdiHvisMangler(String key, String mappeNavn, String filNavn) {
+        if (ENV.getProperty(key) == null) {
+            System.getProperties().computeIfAbsent(key, _ -> VaultUtil.lesFilVerdi(mappeNavn, filNavn));
+        }
+        return ENV.getRequiredProperty(key);
     }
 }

@@ -3,7 +3,11 @@ package no.nav.foreldrepenger.los.tjenester.statistikk;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.temporal.ChronoField;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,11 +71,13 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         entityManager.persist(klageOppgave);
         entityManager.persist(innsynOppgave);
 
+        beslutterOppgave.leggTilOppgaveEgenskap(
+            OppgaveEgenskap.builder().medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER).medSisteSaksbehandlerForTotrinn("IDENT").build());
         entityManager.persist(beslutterOppgave);
-        entityManager.persist(new OppgaveEgenskap(beslutterOppgave, AndreKriterierType.TIL_BESLUTTER));
 
+        beslutterOppgave2.leggTilOppgaveEgenskap(
+            OppgaveEgenskap.builder().medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER).medSisteSaksbehandlerForTotrinn("IDENT").build());
         entityManager.persist(beslutterOppgave2);
-        entityManager.persist(new OppgaveEgenskap(beslutterOppgave2, AndreKriterierType.TIL_BESLUTTER));
 
         entityManager.persist(lukketOppgave);
 
@@ -145,11 +151,48 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         assertThat(resultater.get(0).antall()).isEqualTo(4L);
     }
 
+    @Test
+    void hentOppgaverPerFørsteStønadsdagUke() {
+        leggInnEttSettMedOppgaver();
+        var idag = LocalDate.now();
+        var idagPlusMnd = idag.plusMonths(1);
+        var resultater = nøkkeltallRepository.hentOppgaverPerFørsteStønadsdagUke(AVDELING_DRAMMEN_ENHET);
+        assertThat(resultater).hasSize(1);
+        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(idagPlusMnd.with(DayOfWeek.MONDAY));
+        assertThat(resultater.get(0).førsteStønadsdagTekst()).isEqualTo(Year.from(idagPlusMnd) + "-" + idagPlusMnd.get(ChronoField.ALIGNED_WEEK_OF_YEAR));
+        assertThat(resultater.get(0).antall()).isEqualTo(4L);
+    }
+
+    @Test
+    void hentOppgaverPerFørsteStønadsdagMåned() {
+        leggInnEttSettMedOppgaver();
+        var idag = LocalDate.now();
+        var idagPlusMnd = idag.plusMonths(1);
+        var resultater = nøkkeltallRepository.hentOppgaverPerFørsteStønadsdagMåned(AVDELING_DRAMMEN_ENHET);
+        assertThat(resultater).hasSize(1);
+        assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(idagPlusMnd.withDayOfMonth(1));
+        assertThat(resultater.get(0).førsteStønadsdagTekst()).isEqualTo(Year.from(idagPlusMnd) + "-" + String.format("%02d", idagPlusMnd.getMonthValue()));
+        assertThat(resultater.get(0).antall()).isEqualTo(4L);
+    }
+
     private void leggTilOppgave(Oppgave oppgave, int startTilbakeITid, int sluttTilbakeITid) {
         entityManager.persist(oppgave);
         entityManager.flush();
-        entityManager.createNativeQuery(
-            "UPDATE OPPGAVE " + "SET OPPRETTET_TID = (sysdate - " + startTilbakeITid + "), " + "ENDRET_TID = (sysdate - " + sluttTilbakeITid + "), "
-                + "AKTIV = 'N' " + "WHERE ID = " + oppgave.getId()).executeUpdate();
+
+        var now = LocalDateTime.now();
+        var opprettetTid = now.minusDays(startTilbakeITid);
+        var endretTid = now.minusDays(sluttTilbakeITid);
+
+        entityManager.createQuery("""
+        UPDATE Oppgave o
+           SET o.opprettetTidspunkt = :opprettetTid,
+               o.endretTidspunkt    = :endretTid,
+               o.aktiv        = 'N'
+         WHERE o.id = :oppgaveId
+        """)
+            .setParameter("opprettetTid", opprettetTid)
+            .setParameter("endretTid", endretTid)
+            .setParameter("oppgaveId", oppgave.getId())
+            .executeUpdate();
     }
 }

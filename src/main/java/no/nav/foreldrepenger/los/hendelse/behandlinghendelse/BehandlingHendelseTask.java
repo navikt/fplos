@@ -2,16 +2,15 @@ package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import java.util.UUID;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveHendelseHåndterer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingHendelseHåndterer;
+import no.nav.vedtak.felles.prosesstask.api.CommonTaskProperties;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
@@ -24,7 +23,7 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
     private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseTask.class);
 
     public static final String HENDELSE_UUID = "hendelseUuid";
-    public static final String BEHANDLING_UUID = "behandlingUuid";
+    public static final String BEHANDLING_UUID = CommonTaskProperties.BEHANDLING_UUID;
     public static final String HENDELSE_TYPE = "hendelseType";
     public static final String KILDE = "kildesystem";
 
