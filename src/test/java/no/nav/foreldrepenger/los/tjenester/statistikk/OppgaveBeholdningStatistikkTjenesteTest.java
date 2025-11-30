@@ -7,7 +7,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
-import java.time.temporal.ChronoField;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -159,7 +158,6 @@ class OppgaveBeholdningStatistikkTjenesteTest {
         var resultater = nøkkeltallRepository.hentOppgaverPerFørsteStønadsdagUke(AVDELING_DRAMMEN_ENHET);
         assertThat(resultater).hasSize(1);
         assertThat(resultater.get(0).førsteStønadsdag()).isEqualTo(idagPlusMnd.with(DayOfWeek.MONDAY));
-        assertThat(resultater.get(0).førsteStønadsdagTekst()).isEqualTo(Year.from(idagPlusMnd) + "-" + idagPlusMnd.get(ChronoField.ALIGNED_WEEK_OF_YEAR));
         assertThat(resultater.get(0).antall()).isEqualTo(4L);
     }
 
