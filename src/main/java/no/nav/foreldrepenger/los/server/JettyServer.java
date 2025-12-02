@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.server;
 
 import static org.eclipse.jetty.ee11.webapp.MetaInfConfiguration.CONTAINER_JAR_PATTERN;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,7 @@ import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.konfig.ApiConfig;
@@ -60,38 +60,24 @@ public class JettyServer {
     }
 
     protected void bootStrap() throws Exception {
-        konfigurerSikkerhet();
+        konfigurerLogging();
         var dataSource = DataSourceUtil.createDataSource(30, 2);
         konfigurerDataSource(dataSource);
         migrerDatabase(dataSource);
         start();
     }
 
-    private static void konfigurerSikkerhet() {
-        if (ENV.isLocal()) {
-            initTrustStore();
-        }
+    /**
+     * Vi bruker SLF4J + logback, Jersey brukes JUL for logging.
+     * Setter opp en bridge til å få Jersey til å logge gjennom Logback også.
+     */
+    private void konfigurerLogging() {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
     }
 
     private static void konfigurerDataSource(DataSource dataSource) throws NamingException {
         new EnvEntry("jdbc/defaultDS", dataSource);
-    }
-
-    private static void initTrustStore() {
-        final var trustStorePathProp = "javax.net.ssl.trustStore";
-        final var trustStorePasswordProp = "javax.net.ssl.trustStorePassword";
-
-        var defaultLocation = ENV.getProperty("user.home", ".") + "/.modig/truststore.jks";
-        var storePath = ENV.getProperty(trustStorePathProp, defaultLocation);
-        var storeFile = new File(storePath);
-        if (!storeFile.exists()) {
-            throw new IllegalStateException(
-                "Finner ikke truststore i " + storePath + "\n\tKonfigurer enten som System property '" + trustStorePathProp
-                    + "' eller environment variabel '" + trustStorePathProp.toUpperCase().replace('.', '_') + "'");
-        }
-        var password = ENV.getProperty(trustStorePasswordProp, "changeit");
-        System.setProperty(trustStorePathProp, storeFile.getAbsolutePath());
-        System.setProperty(trustStorePasswordProp, password);
     }
 
     private static void migrerDatabase(DataSource dataSource) {
