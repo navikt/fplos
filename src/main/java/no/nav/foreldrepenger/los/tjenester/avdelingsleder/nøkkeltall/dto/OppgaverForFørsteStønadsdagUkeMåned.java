@@ -7,6 +7,5 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 public record OppgaverForFørsteStønadsdagUkeMåned(String behandlendeEnhet,
                                                   FagsakYtelseType fagsakYtelseType,
                                                   LocalDate førsteStønadsdag,
-                                                  String førsteStønadsdagTekst,
                                                   Long antall) {
 }
