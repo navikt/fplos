@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
@@ -32,7 +30,7 @@ public class OppgaveEventLogg extends BaseEntitet {
     private OppgaveEventType eventType;
 
     @Column(name = "ANDRE_KRITERIER_TYPE")
-    @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
+    @Enumerated(EnumType.STRING)
     private AndreKriterierType andreKriterierType;
 
     @Column(name = "BEHANDLENDE_ENHET")

@@ -1,19 +1,19 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-
-import java.util.Objects;
 
 @Entity(name = "FiltreringYtelseType")
 @Table(name = "FILTRERING_YTELSE_TYPE")
@@ -26,7 +26,7 @@ public class FiltreringYtelseType extends BaseEntitet {
     @JoinColumn(name = "OPPGAVE_FILTRERING_ID", nullable = false)
     private OppgaveFiltrering oppgaveFiltrering;
 
-    @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "FAGSAK_YTELSE_TYPE")
     private FagsakYtelseType fagsakYtelseType;
 

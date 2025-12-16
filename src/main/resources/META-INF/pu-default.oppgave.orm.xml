@@ -27,5 +27,6 @@
     <entity class="no.nav.foreldrepenger.los.organisasjon.Saksbehandler"/>
     <entity class="no.nav.foreldrepenger.los.hendelse.behandlinghendelse.MottattHendelse" />
     <entity class="no.nav.foreldrepenger.los.organisasjon.SaksbehandlerGruppe" />
+    <entity class="no.nav.foreldrepenger.los.statistikk.StatistikkEnhetYtelseBehandling" />
     <entity class="no.nav.foreldrepenger.los.tjenester.admin.driftsmelding.Driftsmelding" />
 </entity-mappings>

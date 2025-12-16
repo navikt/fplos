@@ -1,12 +1,8 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
+import jakarta.persistence.EnumeratedValue;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum AndreKriterierType implements Kodeverdi {
@@ -43,7 +39,8 @@ public enum AndreKriterierType implements Kodeverdi {
     ;
 
     @JsonValue
-    private String kode;
+    @EnumeratedValue
+    private final String kode;
     private final String navn;
 
     AndreKriterierType(String kode, String navn) {
@@ -62,25 +59,5 @@ public enum AndreKriterierType implements Kodeverdi {
 
     public boolean erTilBeslutter() {
         return this.equals(TIL_BESLUTTER);
-    }
-
-    @Converter(autoApply = true)
-    public static class KodeverdiConverter implements AttributeConverter<AndreKriterierType, String> {
-        @Override
-        public String convertToDatabaseColumn(AndreKriterierType attribute) {
-            return Optional.ofNullable(attribute).map(AndreKriterierType::getKode).orElse(null);
-        }
-
-        @Override
-        public AndreKriterierType convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData).map(AndreKriterierType.KodeverdiConverter::fraKode).orElse(null);
-        }
-
-        private static AndreKriterierType fraKode(String kode) {
-            return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ukjent AndreKriterierType: " + kode));
-        }
     }
 }
