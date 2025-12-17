@@ -1,18 +1,18 @@
 package no.nav.foreldrepenger.los.oppgave;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-
-import java.util.Objects;
 
 @Entity(name = "OppgaveEgenskap")
 @Table(name = "OPPGAVE_EGENSKAP")
@@ -28,7 +28,7 @@ public class OppgaveEgenskap extends BaseEntitet {
     @Column(name = "OPPGAVE_ID", updatable = false, insertable = false)
     private Long oppgaveId;
 
-    @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
     private AndreKriterierType andreKriterierType;
 

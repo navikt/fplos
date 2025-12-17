@@ -15,6 +15,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,10 +25,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
@@ -56,14 +58,14 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "FORSTE_STONADSDAG")
     protected LocalDate førsteStønadsdag;
 
-    @Convert(converter = BehandlingType.KodeverdiConverter.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "BEHANDLING_TYPE")
     protected BehandlingType behandlingType = BehandlingType.INNSYN;
 
     @OneToMany(mappedBy = "oppgave", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     protected Set<OppgaveEgenskap> oppgaveEgenskaper = new HashSet<>();
 
-    @Convert(converter = FagsakYtelseType.KodeverdiConverter.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "FAGSAK_YTELSE_TYPE")
     protected FagsakYtelseType fagsakYtelseType;
 
@@ -71,7 +73,7 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "AKTIV")
     protected Boolean aktiv = Boolean.TRUE;
 
-    @Convert(converter = Fagsystem.FagSystemConverter.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "SYSTEM")
     protected Fagsystem system;
 

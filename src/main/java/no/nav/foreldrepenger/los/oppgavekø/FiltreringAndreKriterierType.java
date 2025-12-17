@@ -1,12 +1,21 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
+import java.util.Objects;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
-
-import jakarta.persistence.*;
-
-import java.util.Objects;
 
 @Entity(name = "FiltreringAndreKriterier")
 @Table(name = "FILTRERING_ANDRE_KRITERIER")
@@ -20,7 +29,7 @@ public class FiltreringAndreKriterierType extends BaseEntitet {
     private OppgaveFiltrering oppgaveFiltrering;
 
     @Column(name = "ANDRE_KRITERIER_TYPE", nullable = false)
-    @Convert(converter = AndreKriterierType.KodeverdiConverter.class)
+    @Enumerated(EnumType.STRING)
     private AndreKriterierType andreKriterierType;
 
     //Verdi som viser om filtreringen skal inkludere eller ekskludere oppgaver med det gitte innslaget.

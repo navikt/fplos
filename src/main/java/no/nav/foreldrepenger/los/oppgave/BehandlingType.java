@@ -1,13 +1,10 @@
 package no.nav.foreldrepenger.los.oppgave;
 
 import java.util.Arrays;
-import java.util.Optional;
-
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import jakarta.persistence.EnumeratedValue;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum BehandlingType implements Kodeverdi {
@@ -20,7 +17,8 @@ public enum BehandlingType implements Kodeverdi {
     TILBAKEBETALING_REVURDERING("BT-009", "Tilbakebetaling revurdering");
 
     @JsonValue
-    private String kode;
+    @EnumeratedValue
+    private final String kode;
     private final String navn;
 
     BehandlingType(String kode, String navn) {
@@ -52,16 +50,4 @@ public enum BehandlingType implements Kodeverdi {
     }
 
 
-    @Converter(autoApply = true)
-    public static class KodeverdiConverter implements AttributeConverter<BehandlingType, String> {
-        @Override
-        public String convertToDatabaseColumn(BehandlingType attribute) {
-            return Optional.ofNullable(attribute).map(BehandlingType::getKode).orElse(null);
-        }
-
-        @Override
-        public BehandlingType convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData).map(BehandlingType::fraKode).orElse(null);
-        }
-    }
 }

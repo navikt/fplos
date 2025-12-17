@@ -1,13 +1,9 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
+import jakarta.persistence.EnumeratedValue;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum KøSortering implements Kodeverdi {
@@ -24,7 +20,8 @@ public enum KøSortering implements Kodeverdi {
     public enum FeltKategori { UNIVERSAL, TILBAKEKREVING }
 
     @JsonValue
-    private String kode;
+    @EnumeratedValue
+    private final String kode;
     @JsonIgnore
     private final String navn;
     @JsonIgnore
@@ -63,24 +60,4 @@ public enum KøSortering implements Kodeverdi {
         return feltkategori;
     }
 
-
-    @Converter(autoApply = true)
-    public static class KodeverdiConverter implements AttributeConverter<KøSortering, String> {
-        @Override
-        public String convertToDatabaseColumn(KøSortering attribute) {
-            return Optional.ofNullable(attribute).map(KøSortering::getKode).orElse(null);
-        }
-
-        @Override
-        public KøSortering convertToEntityAttribute(String dbData) {
-            return Optional.ofNullable(dbData).map(KodeverdiConverter::fraKode).orElse(null);
-        }
-
-        private static KøSortering fraKode(String kode) {
-            return Arrays.stream(values())
-                .filter(v -> v.kode.equals(kode))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ukjent KøSortering: " + kode));
-        }
-    }
 }

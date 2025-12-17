@@ -11,6 +11,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +23,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -43,7 +44,7 @@ public class OppgaveFiltrering extends BaseEntitet {
     private String navn;
 
     @Column(name = "sortering", updatable = false, nullable = false)
-    @Convert(converter = KøSortering.KodeverdiConverter.class)
+    @Enumerated(EnumType.STRING)
     private KøSortering sortering;
 
     @OneToMany(mappedBy = "oppgaveFiltrering", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.los.tjenester.admin;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,9 +19,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.statistikk.SnapshotEnhetYtelseBehandlingTask;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftOpprettAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.EnkelBehandlingIdDto;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskStatus;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
+import no.nav.vedtak.felles.prosesstask.api.TaskType;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
@@ -32,14 +40,17 @@ public class AdminRestTjeneste {
     private SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste;
     private OppgaveTjeneste oppgaveTjeneste;
     private OrganisasjonRepository organisasjonRepository;
+    private ProsessTaskTjeneste prosessTaskTjeneste;
 
     @Inject
     public AdminRestTjeneste(SynkroniseringHendelseTaskOppretterTjeneste synkroniseringHendelseTaskOppretterTjeneste,
                              OppgaveTjeneste oppgaveTjeneste,
-                             OrganisasjonRepository organisasjonRepository) {
+                             OrganisasjonRepository organisasjonRepository,
+                             ProsessTaskTjeneste prosessTaskTjeneste) {
         this.synkroniseringHendelseTaskOppretterTjeneste = synkroniseringHendelseTaskOppretterTjeneste;
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.organisasjonRepository = organisasjonRepository;
+        this.prosessTaskTjeneste = prosessTaskTjeneste;
     }
 
     public AdminRestTjeneste() {
@@ -129,6 +140,25 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response slettLøseGruppeKnytninger() {
         organisasjonRepository.slettLøseGruppeKnytninger();
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/start-statistikktask-ytelse-behandling")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Fjerne saksbehandlere fra grupper når saksbehandler mangler i avdeling", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response startStatistikkTaskYtelseBehandling() {
+        var schedulerType = TaskType.forProsessTask(SnapshotEnhetYtelseBehandlingTask.class);
+        var eksisterende = prosessTaskTjeneste.finnAlle(ProsessTaskStatus.KLAR).stream()
+            .map(ProsessTaskData::taskType)
+            .anyMatch(schedulerType::equals);
+        if (!eksisterende) {
+            var taskData = ProsessTaskData.forProsessTask(SnapshotEnhetYtelseBehandlingTask.class);
+            taskData.setNesteKjøringEtter(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)));
+            prosessTaskTjeneste.lagre(taskData);
+        }
         return Response.ok().build();
     }
 
