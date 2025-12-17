@@ -8,9 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -23,7 +20,6 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 @ProsessTask(value = "statistikk.enhetytelsebehandling", cronExpression = "00 59 22 * * *", maxFailedRuns = 1)
 public class SnapshotEnhetYtelseBehandlingTask implements ProsessTaskHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SnapshotEnhetYtelseBehandlingTask.class);
     private final StatistikkRepository statistikkRepository;
 
     @Inject
