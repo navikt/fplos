@@ -6,13 +6,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 
 public record Behandling(UUID behandlingUuid,
-                         String saksnummer,
+                         Saksnummer saksnummer,
                          FagsakYtelseType ytelse,
                          AktørId aktørId,
                          BehandlingType behandlingstype,
@@ -26,7 +27,7 @@ public record Behandling(UUID behandlingUuid,
                          boolean faresignaler,
                          boolean refusjonskrav,
                          List<Saksegenskap> saksegenskaper,
-                         Foreldrepenger foreldrepenger,
+                         LocalDate førsteUttaksdatoForeldrepenger, //null hvis ES og SVP
                          List<Behandlingsegenskap> behandlingsegenskaper,
                          Tilbakekreving tilbakekreving) {
 
@@ -39,20 +40,29 @@ public record Behandling(UUID behandlingUuid,
     }
 
     public enum Saksegenskap {
-
+        EØS_BOSATT_NORGE,
+        BOSATT_UTLAND,
+        SAMMENSATT_KONTROLL,
+        DØD,
+        NÆRING,
+        BARE_FAR_RETT,
+        PRAKSIS_UTSETTELSE,
+        HASTER,
     }
 
     public enum Behandlingsegenskap {
-
-    }
-
-    public record Foreldrepenger(LocalDate førsteUttakDato) {
+        SYKDOMSVURDERING,
+        MOR_UKJENT_UTLAND,
+        FARESIGNALER,
+        DIREKTE_UTBETALING,
+        TILBAKEKREVING_SENDT_VARSEL,
+        TILBAKEKREVING_OVER_FIRE_RETTSGEBYR
     }
 
     public record Tilbakekreving(BigDecimal feilutbetaltBeløp, LocalDate førsteFeilutbetalingDato) {
     }
 
-    public record Aksjonspunkt(AksjonspunktDefinisjon definisjon, Aksjonspunktstatus status, LocalDateTime fristTidt {
+    public record Aksjonspunkt(AksjonspunktType type, Aksjonspunktstatus status, LocalDateTime fristTidt) {
     }
 
     public enum Behandlingsårsak {
@@ -71,6 +81,16 @@ public record Behandling(UUID behandlingUuid,
         ANNET
     }
 
-    public enum AksjonspunktDefinisjon {
+    public enum AksjonspunktType {
+        TIL_BESLUTTER,
+        ANNET,
+        KONTROLLER_TERMINBEKREFTELSE,
+        MANUELT_SATT_PÅ_VENT,
+        AUTOMATISK_MARKERING_SOM_UTLAND,
+        ARBEID_OG_INNTEKT,
+        VURDER_FORMKRAV,
+        PÅ_VENT,
+        VURDER_NÆRING,
+        PAPIRSØKNAD
     }
 }

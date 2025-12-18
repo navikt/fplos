@@ -4,8 +4,8 @@ import java.util.Set;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.server.abac.RutingKlient;
 import no.nav.vedtak.felles.integrasjon.ruting.RutingResultat;
 
@@ -19,8 +19,8 @@ public class Beskyttelsesbehov {
         this.rutingKlient = rutingKlient;
     }
 
-    public Set<AndreKriterierType> getBeskyttelsesKriterier(Oppgave oppgave) {
-        var ruting = rutingKlient.finnRutingEgenskaper(oppgave.getSaksnummer().getVerdi());
+    public Set<AndreKriterierType> getBeskyttelsesKriterier(Saksnummer saksnummer) {
+        var ruting = rutingKlient.finnRutingEgenskaper(saksnummer.getVerdi());
         var harKode6 = ruting.contains(RutingResultat.STRENGTFORTROLIG);
         var harKode7 = ruting.contains(RutingResultat.FORTROLIG);
         return harKode7 && !harKode6 ? Set.of(AndreKriterierType.KODE7_SAK) : Set.of();

@@ -55,6 +55,10 @@ public class Reservasjon extends BaseEntitet {
         this.oppgave = oppgave;
     }
 
+    public static Reservasjon fraEksisterende(Reservasjon reservasjon) {
+        return null;
+    }
+
     public Long getId() {
         return id;
     }
