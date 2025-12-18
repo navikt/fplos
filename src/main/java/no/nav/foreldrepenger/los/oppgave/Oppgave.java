@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -213,6 +214,10 @@ public class Oppgave extends BaseEntitet {
         return "Oppgave{" + "id=" + id + ", saksnummer=" + saksnummer + ", aktiv=" + aktiv + ", system='" + system + '\'' + '}';
     }
 
+    public boolean harKriterie(AndreKriterierType kriterie) {
+        return oppgaveEgenskaper.stream().anyMatch(egenskap -> egenskap.getAndreKriterierType() == kriterie);
+    }
+
     public static class Builder {
         protected Oppgave tempOppgave;
 
@@ -290,6 +295,11 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
+        public Builder medKriterier(Set<OppgaveEgenskap> egenskaper) {
+            egenskaper.forEach(oppgaveEgenskap -> tempOppgave.leggTilOppgaveEgenskap(oppgaveEgenskap));
+            return this;
+        }
+
         public Builder dummyOppgave(String enhet) {
             tempOppgave.behandlingId = new BehandlingId(UUID.nameUUIDFromBytes("331133L".getBytes()));
             tempOppgave.saksnummer = new Saksnummer("3478293");
@@ -305,14 +315,7 @@ public class Oppgave extends BaseEntitet {
 
         public Oppgave build() {
             Objects.requireNonNull(tempOppgave.saksnummer, "saksnummer");
-            var oppgave = tempOppgave;
-            tempOppgave = new Oppgave();
-            if (!Fagsystem.FPTILBAKE.equals(tempOppgave.system) && (tempOppgave.feilutbetalingStart != null
-                || tempOppgave.feilutbetalingBelop != null)) {
-                throw new IllegalArgumentException("Utviklerfeil: Angitt tilbakebetalingsinformasjon i FPSAK-oppgave");
-            }
-            tempOppgave = new Oppgave();
-            return oppgave;
+            return tempOppgave;
         }
     }
 }

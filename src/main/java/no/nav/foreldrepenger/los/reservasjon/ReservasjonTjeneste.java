@@ -165,7 +165,12 @@ public class ReservasjonTjeneste {
         }
     }
 
-    public void opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
+    public void opprettReservasjonOgLagre(Oppgave oppgave, String saksbehandler, String begrunnelse) {
+        var reservasjon = opprettReservasjon(oppgave, saksbehandler, begrunnelse);
+        reservasjonRepository.lagre(reservasjon);
+    }
+
+    public static Reservasjon opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
         var reservertTil = utvidetReservasjon();
         var reservasjon = new Reservasjon(oppgave);
         reservasjon.setReservertAv(saksbehandler);
@@ -173,7 +178,7 @@ public class ReservasjonTjeneste {
         reservasjon.setReservertTil(reservertTil);
         reservasjon.setFlyttetAv(BrukerIdent.brukerIdent());
         reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
-        reservasjonRepository.lagre(reservasjon);
+        return reservasjon;
     }
 
 

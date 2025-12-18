@@ -32,7 +32,7 @@ public class OppgaveEgenskapHåndterer {
 
     public void håndterOppgaveEgenskaper(Oppgave oppgave, OppgaveEgenskapFinner aktuelleEgenskaper) {
         var andreKriterier = new ArrayList<>(aktuelleEgenskaper.getAndreKriterier());
-        andreKriterier.addAll(beskyttelsesbehov.getBeskyttelsesKriterier(oppgave));
+        andreKriterier.addAll(beskyttelsesbehov.getBeskyttelsesKriterier(oppgave.getSaksnummer()));
         LOG.info("Legger på oppgaveegenskaper {}", andreKriterier);
 
         var ønskedeEgenskaper = andreKriterier.stream()
