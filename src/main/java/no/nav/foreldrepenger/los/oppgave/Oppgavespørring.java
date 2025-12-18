@@ -22,21 +22,25 @@ public class Oppgavespørring {
     private final LocalDate filtrerTomDato;
     private final Long filtrerFra;
     private final Long filtrerTil;
-    private boolean forAvdelingsleder;
+    private final Filtreringstype filtreringstype;
     private Long maxAntallOppgaver;
 
-    public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering) {
-        sortering = oppgaveFiltrering.getSortering();
-        enhetsnummer = oppgaveFiltrering.getAvdeling().getAvdelingEnhet();
-        behandlingTyper = oppgaveFiltrering.getBehandlingTyper();
-        ytelseTyper = oppgaveFiltrering.getFagsakYtelseTyper();
-        inkluderAndreKriterierTyper = inkluderAndreKriterierTyperFra(oppgaveFiltrering);
-        ekskluderAndreKriterierTyper = ekskluderAndreKriterierTyperFra(oppgaveFiltrering);
-        erDynamiskPeriode = oppgaveFiltrering.getErDynamiskPeriode();
-        filtrerFomDato = oppgaveFiltrering.getFomDato();
-        filtrerTomDato = oppgaveFiltrering.getTomDato();
-        filtrerFra = oppgaveFiltrering.getFra();
-        filtrerTil = oppgaveFiltrering.getTil();
+    public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering, Filtreringstype filtreringstype) {
+        this(
+            oppgaveFiltrering.getAvdeling().getAvdelingEnhet(),
+            oppgaveFiltrering.getSortering(),
+            oppgaveFiltrering.getBehandlingTyper(),
+            oppgaveFiltrering.getFagsakYtelseTyper(),
+            inkluderAndreKriterierTyperFra(oppgaveFiltrering),
+            ekskluderAndreKriterierTyperFra(oppgaveFiltrering),
+            oppgaveFiltrering.getErDynamiskPeriode(),
+            oppgaveFiltrering.getFomDato(),
+            oppgaveFiltrering.getTomDato(),
+            oppgaveFiltrering.getFra(),
+            oppgaveFiltrering.getTil(),
+            filtreringstype
+        );
+
     }
 
     public Oppgavespørring(String enhetsnummer,
@@ -49,7 +53,8 @@ public class Oppgavespørring {
                            LocalDate filtrerFomDato,
                            LocalDate filtrerTomDato,
                            Long filtrerFra,
-                           Long filtrerTil) {
+                           Long filtrerTil,
+                           Filtreringstype filtreringstype) {
         this.sortering = sortering;
         this.enhetsnummer = enhetsnummer;
         this.behandlingTyper = behandlingTyper;
@@ -61,18 +66,11 @@ public class Oppgavespørring {
         this.filtrerTomDato = filtrerTomDato;
         this.filtrerFra = filtrerFra;
         this.filtrerTil = filtrerTil;
-    }
-
-    public void setForAvdelingsleder(boolean forAvdelingsleder) {
-        this.forAvdelingsleder = forAvdelingsleder;
+        this.filtreringstype = filtreringstype;
     }
 
     public void setMaksAntall(int maksAntall) {
         this.maxAntallOppgaver = (long) maksAntall;
-    }
-
-    public boolean getForAvdelingsleder() {
-        return forAvdelingsleder;
     }
 
     public KøSortering getSortering() {
@@ -119,11 +117,15 @@ public class Oppgavespørring {
         return filtrerTil;
     }
 
+    public Filtreringstype getFiltreringstype() {
+        return filtreringstype;
+    }
+
     public Optional<Long> getMaxAntallOppgaver() {
         return Optional.ofNullable(maxAntallOppgaver);
     }
 
-    private List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
+    private static List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
             .stream()
             .filter(not(FiltreringAndreKriterierType::isInkluder))
@@ -131,7 +133,7 @@ public class Oppgavespørring {
             .toList();
     }
 
-    private List<AndreKriterierType> inkluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
+    private static List<AndreKriterierType> inkluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
             .stream()
             .filter(FiltreringAndreKriterierType::isInkluder)
@@ -144,7 +146,6 @@ public class Oppgavespørring {
         return "Oppgavespørring{" + "sortering=" + sortering + "enhetsnummer=" + enhetsnummer + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
             + ytelseTyper + ", inkluderAndreKriterierTyper=" + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper="
             + ekskluderAndreKriterierTyper + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
-            + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", forAvdelingsleder=" + forAvdelingsleder
-            + ", avgrenseTilOppgaveId=" + '}';
+            + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + '}';
     }
 }

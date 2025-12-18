@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
 import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -104,7 +105,7 @@ class OppgaveKøTjenesteTest {
     @Test
     void hentAntallOppgaver() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        var antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, false);
+        var antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, Filtreringstype.AKTIVE_OG_LEDIGE);
         assertThat(antallOppgaver).isEqualTo(3);
     }
 
