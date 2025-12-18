@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -53,9 +54,8 @@ public class OppgaveKøRepository {
 
     public int hentAntallOppgaverForAvdeling(String enhetsNummer) {
         var oppgavespørring = new Oppgavespørring(enhetsNummer, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-            new ArrayList<>(), false, null, null, null, null);
-        oppgavespørring.setForAvdelingsleder(true);
-        return lagTypedQuery(oppgavespørring, true, Long.class).getSingleResult().intValue();
+            new ArrayList<>(), false, null, null, null, null, Filtreringstype.AKTIVE_OG_LEDIGE);
+        return hentAntallOppgaver(oppgavespørring);
     }
 
     public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
@@ -75,7 +75,7 @@ public class OppgaveKøRepository {
         qlStringBuilder.append(filtrerBehandlingType(oppgavespørring, parameters));
         qlStringBuilder.append(filtrerYtelseType(oppgavespørring, parameters));
         qlStringBuilder.append(andreKriterierSubquery(oppgavespørring, parameters));
-        qlStringBuilder.append(reserverteSubquery(parameters));
+        qlStringBuilder.append(reserverteSubquery(oppgavespørring, parameters));
         qlStringBuilder.append(tilBeslutter(oppgavespørring, parameters));
         qlStringBuilder.append(" AND o.aktiv = true ");
         qlStringBuilder.append(beløpFilter(oppgavespørring, parameters));
@@ -84,7 +84,6 @@ public class OppgaveKøRepository {
         if (!kunCountQuery) {
             qlStringBuilder.append(orderBy(oppgavespørring));
         }
-
         var query = entityManager.createQuery(qlStringBuilder.toString(), resultClass);
         parameters.forEach(query::setParameter);
 
@@ -165,14 +164,17 @@ public class OppgaveKøRepository {
         return "AND o.fagsakYtelseType in :fagsakYtelseType ";
     }
 
-    private static String reserverteSubquery(Map<String, Object> parameters) {
+    private static String reserverteSubquery(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
+        if (Set.of(Filtreringstype.AKTIVE_OG_LEDIGE, Filtreringstype.AKTIVE_OG_LEDIGE_FOR_INNLOGGET_SAKSBEHANDLER).contains(oppgavespørring.getFiltreringstype())) {
+            return "";
+        }
         parameters.put("nå", LocalDateTime.now());
         return "AND NOT EXISTS (select 1 from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
     }
 
     private static String tilBeslutter(Oppgavespørring dto, Map<String, Object> parameters) {
         var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
-        if (dto.getForAvdelingsleder() || !tilBeslutterKø) {
+        if (!dto.getFiltreringstype().equals(Filtreringstype.AKTIVE_OG_LEDIGE_FOR_INNLOGGET_SAKSBEHANDLER) || !tilBeslutterKø) {
             return "";
         }
         parameters.put("tilbeslutter", AndreKriterierType.TIL_BESLUTTER);
