@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.domene.typer;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -8,7 +9,7 @@ import jakarta.persistence.Embeddable;
 
 
 @Embeddable
-public class Saksnummer implements Comparable<Saksnummer> {
+public class Saksnummer implements Comparable<Saksnummer>, Serializable {
     private static final String CHARS = "a-z0-9_:-";
 
     private static final Pattern VALID = Pattern.compile("^(-?[1-9]|[a-z0])[" + CHARS + "]*$", Pattern.CASE_INSENSITIVE);
