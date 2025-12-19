@@ -40,7 +40,7 @@ class BehandlingTjenesteTest {
     }
 
     @Test
-    void testAksjonspunkterTilAndreKriterierTyperMapping() {
+    void testAksjonspunkterTilTilstand() {
         var cases = new HashMap<String, BehandlingTilstand>();
         cases.put("5082", BehandlingTilstand.AKSJONSPUNKT);
         cases.put("7001", BehandlingTilstand.VENT_MANUELL);

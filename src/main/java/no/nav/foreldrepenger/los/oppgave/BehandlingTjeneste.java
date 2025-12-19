@@ -47,7 +47,11 @@ public class BehandlingTjeneste {
 
     public void lagreBehandling(LosBehandlingDto dto, Fagsystem kildeSystem) {
         var tilstand = mapBehandlingTilstand(dto, kildeSystem);
-        var builder = Behandling.builder(oppgaveRepository.finnBehandling(dto.behandlingUuid()))
+        var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
+        if (BehandlingTilstand.VENT_SØKNAD.equals(tilstand) && behandling.isEmpty()) {
+            return;
+        }
+        var builder = Behandling.builder(behandling)
             .medId(dto.behandlingUuid())
             .medSaksnummer(new Saksnummer(dto.saksnummer()))
             .medAktørId(new AktørId(dto.aktørId().getAktørId()))
@@ -127,6 +131,8 @@ public class BehandlingTjeneste {
             .toList();
         if (aktive.isEmpty()) {
             return BehandlingTilstand.INGEN;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentSøknad)) {
+            return BehandlingTilstand.VENT_SØKNAD;
         } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentManuell)) {
             return BehandlingTilstand.VENT_MANUELL;
         } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentTidlig)) {

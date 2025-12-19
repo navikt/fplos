@@ -15,6 +15,7 @@ public enum BehandlingTilstand implements Kodeverdi {
     VENT_KLAGEINSTANS("VENT_KLAGEINSTANS", "Venter på klageinstans/trygderett"),
     VENT_KØ("VENT_KØ", "Venter i kø"),
     VENT_MANUELL("VENT_MANUELL", "Satt på vent av saksbehandler"),
+    VENT_SØKNAD("VENT_SØKNAD", "Venter på søknad"),
     PAPIRSØKNAD("PAPIRSØKNAD", "Aktivt aksjonspunkt papirsøknad"),
     AKSJONSPUNKT("AKSJONSPUNKT", "Aktivt aksjonspunkt"),
     BESLUTTER("BESLUTTER", "Beslutter"),

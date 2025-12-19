@@ -21,6 +21,7 @@ public class Aksjonspunkt {
     private static final String VENT_TIDLIG = "7008";
     private static final String VENT_KØ = "7011";
     private static final String VENT_MANUELL = "7001";
+    private static final String VENT_SØKNAD = "7013";
     private static final Set<String> VENT_KOMPLETT = Set.of("7003", "7030");
     private static final Set<String> VENT_KLAGE = Set.of("7033", "7039", "7040");
 
@@ -127,6 +128,10 @@ public class Aksjonspunkt {
 
     public boolean erVentManuell() {
         return erAktiv() && VENT_MANUELL.contains(definisjonKode);
+    }
+
+    public boolean erVentSøknad() {
+        return erAktiv() && VENT_SØKNAD.contains(definisjonKode);
     }
 
     public static Aksjonspunkt aksjonspunktFra(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
