@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
@@ -16,6 +17,12 @@ public class Aksjonspunkt {
     private static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
     private static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
     private static final String TIL_BESLUTTER_KODE = "5016";
+
+    private static final String VENT_TIDLIG = "7008";
+    private static final String VENT_KØ = "7011";
+    private static final String VENT_MANUELL = "7001";
+    private static final Set<String> VENT_KOMPLETT = Set.of("7003", "7030");
+    private static final Set<String> VENT_KLAGE = Set.of("7033", "7039", "7040");
 
     private static final String KONTROLLER_TERMINBEKREFTELSE_KODE = "5001";
     private static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
@@ -100,6 +107,26 @@ public class Aksjonspunkt {
 
     public boolean erVurderFormkrav() {
         return erAktiv() && VURDER_FORMKRAV_GRUPPE.contains(definisjonKode);
+    }
+
+    public boolean erVentTidlig() {
+        return erAktiv() && VENT_TIDLIG.equals(definisjonKode);
+    }
+
+    public boolean erVentKø() {
+        return erAktiv() && VENT_KØ.equals(definisjonKode);
+    }
+
+    public boolean erVentKomplett() {
+        return erAktiv() && VENT_KOMPLETT.contains(definisjonKode);
+    }
+
+    public boolean erVentKlage() {
+        return erAktiv() && VENT_KLAGE.contains(definisjonKode);
+    }
+
+    public boolean erVentManuell() {
+        return erAktiv() && VENT_MANUELL.contains(definisjonKode);
     }
 
     public static Aksjonspunkt aksjonspunktFra(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {

@@ -159,7 +159,7 @@ public class Behandling extends BaseEntitet {
     }
 
     public static class Builder {
-        private Behandling behandlingKladd;
+        private final Behandling behandlingKladd;
 
         private Builder(Behandling behandling) {
             behandlingKladd = behandling;

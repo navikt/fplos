@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgaveHendelseHåndterer;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingHendelseHåndterer;
+import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 import no.nav.vedtak.felles.prosesstask.api.CommonTaskProperties;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
@@ -29,17 +31,20 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
 
     private final BehandlingKlient fpsakKlient;
     private final BehandlingKlient fptilbakeKlient;
+    private final BehandlingTjeneste behandlingTjeneste;
 
-    private TilbakekrevingHendelseHåndterer tilbakekrevingHendelseHåndterer;
-    private FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer;
+    private final TilbakekrevingHendelseHåndterer tilbakekrevingHendelseHåndterer;
+    private final FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer;
 
     @Inject
     public BehandlingHendelseTask(FpsakBehandlingKlient fpsakKlient,
                                   FptilbakeBehandlingKlient fptilbakeKlient,
+                                  BehandlingTjeneste behandlingTjeneste,
                                   TilbakekrevingHendelseHåndterer tilbakekrevingHendelseHåndterer,
                                   FpsakOppgaveHendelseHåndterer fpsakOppgaveHendelseHåndterer) {
         this.fpsakKlient = fpsakKlient;
         this.fptilbakeKlient = fptilbakeKlient;
+        this.behandlingTjeneste = behandlingTjeneste;
         this.tilbakekrevingHendelseHåndterer = tilbakekrevingHendelseHåndterer;
         this.fpsakOppgaveHendelseHåndterer = fpsakOppgaveHendelseHåndterer;
     }
@@ -52,12 +57,15 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
 
         if (Kildesystem.FPSAK.equals(kilde)) {
             LOG.info("FPLOS FPSAK hendelse {} behandling {}", hendelseUuidString, behandlingUuid);
-            fpsakOppgaveHendelseHåndterer.håndterBehandling(fpsakKlient.hentLosBehandlingDto(behandlingUuid));
+            var behandling = fpsakKlient.hentLosBehandlingDto(behandlingUuid);
+            fpsakOppgaveHendelseHåndterer.håndterBehandling(behandling);
+            behandlingTjeneste.safeLagreBehandling(behandling, Fagsystem.FPSAK);
         } else {
             LOG.info("FPLOS FPTILBAKE hendelse {} behandling {}", hendelseUuidString, behandlingUuid);
             var behandling = fptilbakeKlient.hentLosBehandlingDto(behandlingUuid);
             var egenskaper = fpsakKlient.hentLosFagsakEgenskaperDto(new Saksnummer(behandling.saksnummer()));
             tilbakekrevingHendelseHåndterer.håndterBehandling(behandling, egenskaper);
+            behandlingTjeneste.safeLagreBehandling(behandling, Fagsystem.FPTILBAKE);
         }
 
     }
