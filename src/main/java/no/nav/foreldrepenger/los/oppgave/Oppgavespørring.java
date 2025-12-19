@@ -146,6 +146,6 @@ public class Oppgavespørring {
         return "Oppgavespørring{" + "sortering=" + sortering + "enhetsnummer=" + enhetsnummer + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
             + ytelseTyper + ", inkluderAndreKriterierTyper=" + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper="
             + ekskluderAndreKriterierTyper + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
-            + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + '}';
+            + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", filtreringstype=" + filtreringstype + '}';
     }
 }
