@@ -7,6 +7,7 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.statistikk.kø.StatistikkForKø;
 
 @ApplicationScoped
 public class StatistikkRepository {
@@ -26,6 +27,11 @@ public class StatistikkRepository {
         statistikk.forEach(innslag -> entityManager.persist(innslag));
         entityManager.flush();
     }
+
+    public void lagreStatistikkForKø(StatistikkForKø statistikk) {
+        entityManager.persist(statistikk);
+    }
+
 
     public List<OppgaveEnhetYtelseBehandling> hentÅpneOppgaverPerEnhetYtelseBehandling() {
         return entityManager.createQuery("""
