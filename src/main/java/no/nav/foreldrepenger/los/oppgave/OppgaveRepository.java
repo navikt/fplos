@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.hibernate.jpa.HibernateHints;
 import org.slf4j.Logger;
@@ -192,6 +193,19 @@ public class OppgaveRepository {
 
     public <U extends BaseEntitet> void refresh(U entitet) {
         entityManager.refresh(entitet);
+    }
+
+    public Optional<Behandling> finnBehandling(UUID behandlingId) {
+        return Optional.ofNullable(entityManager.find(Behandling.class, behandlingId));
+    }
+
+    public void lagreBehandling(Behandling behandling) {
+        entityManager.persist(behandling);
+    }
+
+    public void lagreFlushBehandling(Behandling behandling) {
+        entityManager.persist(behandling);
+        entityManager.flush();
     }
 
 }

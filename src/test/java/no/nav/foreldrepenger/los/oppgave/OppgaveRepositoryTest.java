@@ -13,12 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-
-import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
-import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
-import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,12 +26,15 @@ import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
+import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 @ExtendWith(JpaExtension.class)
@@ -492,5 +492,26 @@ class OppgaveRepositoryTest {
     private void persistFlush(Oppgave oppgave) {
         entityManager.persist(oppgave);
         entityManager.flush();
+    }
+
+    @Test
+    void lagre_behandling_finn_den() {
+        var behandling= Behandling.builder(Optional.empty())
+            .medKildeSystem(Fagsystem.FPSAK)
+            .dummyBehandling(AVDELING_DRAMMEN_ENHET, BehandlingTilstand.AKSJONSPUNKT)
+            .build();
+        oppgaveRepository.lagre(behandling);
+        var hentet = oppgaveRepository.finnBehandling(behandling.getId());
+        assertThat(hentet).isPresent();
+        assertThat(hentet.get().getId()).isEqualTo(behandling.getId());
+        assertThat(hentet.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.AKSJONSPUNKT);
+        var oppdatert = Behandling.builder(hentet)
+            .medBehandlingTilstand(BehandlingTilstand.VENT_MANUELL)
+            .build();
+        oppgaveRepository.lagre(oppdatert);
+        hentet = oppgaveRepository.finnBehandling(behandling.getId());
+        assertThat(hentet).isPresent();
+        assertThat(hentet.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.VENT_MANUELL);
+
     }
 }
