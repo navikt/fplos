@@ -165,7 +165,7 @@ public class OppgaveKøRepository {
     }
 
     private static String reserverteSubquery(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
-        if (Set.of(Filtreringstype.AKTIVE_OG_LEDIGE, Filtreringstype.AKTIVE_OG_LEDIGE_FOR_INNLOGGET_SAKSBEHANDLER).contains(oppgavespørring.getFiltreringstype())) {
+        if (!Set.of(Filtreringstype.AKTIVE_OG_LEDIGE, Filtreringstype.AKTIVE_OG_LEDIGE_FOR_INNLOGGET_SAKSBEHANDLER).contains(oppgavespørring.getFiltreringstype())) {
             return "";
         }
         parameters.put("nå", LocalDateTime.now());
