@@ -17,7 +17,6 @@ public enum BehandlingTilstand implements Kodeverdi {
     VENT_MANUELL("VENT_MANUELL", "Satt på vent av saksbehandler"),
     PAPIRSØKNAD("PAPIRSØKNAD", "Aktivt aksjonspunkt papirsøknad"),
     AKSJONSPUNKT("AKSJONSPUNKT", "Aktivt aksjonspunkt"),
-    RETUR("RETUR", "Retur"), // TODO: Trenger vi denne???
     BESLUTTER("BESLUTTER", "Beslutter"),
     AVSLUTTET("AVSLUTTET", "Avsluttet");
 

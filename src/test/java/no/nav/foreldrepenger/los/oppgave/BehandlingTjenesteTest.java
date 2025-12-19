@@ -58,14 +58,34 @@ class BehandlingTjenesteTest {
     }
 
     @Test
-    void avbrutt5016GirReturnertFraBeslutterEgenskap() {
+    void avbrutt5016GirAksjonspunkt() {
         var avbrutt5016 = new LosAksjonspunktDto("5016", Aksjonspunktstatus.AVBRUTT, null);
         var aktivAnnet = new LosAksjonspunktDto("5038", Aksjonspunktstatus.OPPRETTET, null);
         var dto = lagLosBehandlingDto(Kildesystem.FPSAK, List.of(), null, avbrutt5016, aktivAnnet);
         behandlingTjeneste.lagreBehandling(dto, Fagsystem.FPSAK);
         var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
         Assertions.assertThat(behandling).isPresent();
-        Assertions.assertThat(behandling.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.RETUR);
+        Assertions.assertThat(behandling.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.AKSJONSPUNKT);
+    }
+
+    @Test
+    void aktiv7003girTilbakeAksjonspunkt() {
+        var aktiv5005 = new LosAksjonspunktDto("7003", Aksjonspunktstatus.OPPRETTET, null);
+        var dto = lagLosBehandlingDto(Kildesystem.FPTILBAKE, List.of(), null, aktiv5005);
+        behandlingTjeneste.lagreBehandling(dto, Fagsystem.FPTILBAKE);
+        var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
+        Assertions.assertThat(behandling).isPresent();
+        Assertions.assertThat(behandling.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.AKSJONSPUNKT);
+    }
+
+    @Test
+    void aktiv7001girTilbakeVent() {
+        var aktiv5005 = new LosAksjonspunktDto("7001", Aksjonspunktstatus.OPPRETTET, null);
+        var dto = lagLosBehandlingDto(Kildesystem.FPTILBAKE, List.of(), null, aktiv5005);
+        behandlingTjeneste.lagreBehandling(dto, Fagsystem.FPTILBAKE);
+        var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
+        Assertions.assertThat(behandling).isPresent();
+        Assertions.assertThat(behandling.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.VENT_MANUELL);
     }
 
     @Test

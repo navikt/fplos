@@ -46,7 +46,7 @@ public class BehandlingTjeneste {
     }
 
     public void lagreBehandling(LosBehandlingDto dto, Fagsystem kildeSystem) {
-
+        var tilstand = mapBehandlingTilstand(dto, kildeSystem);
         var builder = Behandling.builder(oppgaveRepository.finnBehandling(dto.behandlingUuid()))
             .medId(dto.behandlingUuid())
             .medSaksnummer(new Saksnummer(dto.saksnummer()))
@@ -55,7 +55,7 @@ public class BehandlingTjeneste {
             .medKildeSystem(kildeSystem)
             .medFagsakYtelseType(OppgaveUtil.mapYtelse(dto.ytelse()))
             .medBehandlingType(OppgaveUtil.mapBehandlingstype(dto.behandlingstype()))
-            .medBehandlingTilstand(mapBehandlingTilstand(dto, kildeSystem))
+            .medBehandlingTilstand(tilstand)
             .medAktiveAksjonspunkt(mapAktiveAksjonspunkt(dto))
             .medVentefrist(mapTidligsteVentefrist(dto))
             .medOpprettet(dto.opprettetTidspunkt())
@@ -71,8 +71,7 @@ public class BehandlingTjeneste {
 
     private BehandlingTilstand mapBehandlingTilstand(LosBehandlingDto dto, Fagsystem kildeSystem) {
         return switch (dto.behandlingsstatus()) {
-            case OPPRETTET -> BehandlingTilstand.OPPRETTET;
-            case UTREDES -> utledFraAksjonspunkt(dto, kildeSystem);
+            case OPPRETTET, UTREDES -> utledFraAksjonspunkt(dto, kildeSystem);
             case FATTER_VEDTAK -> BehandlingTilstand.BESLUTTER;
             case IVERKSETTER_VEDTAK -> BehandlingTilstand.AVSLUTTET;
             case AVSLUTTET -> BehandlingTilstand.AVSLUTTET;
@@ -101,50 +100,51 @@ public class BehandlingTjeneste {
             return BehandlingTilstand.INGEN;
         }
         if (Fagsystem.FPTILBAKE.equals(kildeSystem)) {
-            if (TilbakekrevingOppgaveEgenskapFinner.aktivVentBruker(dto.aksjonspunkt()) ){
-                return BehandlingTilstand.VENT_MANUELL;
-            } else if (TilbakekrevingOppgaveEgenskapFinner.aktivVentKrav(dto.aksjonspunkt())) {
-                return BehandlingTilstand.VENT_REGISTERDATA;
-            } else if (TilbakekrevingOppgaveEgenskapFinner.aktivtBeslutterAp(dto.aksjonspunkt())) {
-                return BehandlingTilstand.BESLUTTER;
-            } else if (!TilbakekrevingOppgaveEgenskapFinner.aktiveApForutenBeslutterEllerVent(dto.aksjonspunkt())) {
-                return BehandlingTilstand.INGEN;
-            } else if (TilbakekrevingOppgaveEgenskapFinner.avbruttBeslutterAp(dto.aksjonspunkt())) {
-                return BehandlingTilstand.RETUR;
-            } else {
-                return BehandlingTilstand.AKSJONSPUNKT;
-            }
+            return utledTilstandTilbake(dto);
         } else {
-            var retur = dto.aksjonspunkt().stream()
-                .map(Aksjonspunkt::aksjonspunktFra)
-                .anyMatch(Aksjonspunkt::erReturnertFraBeslutter);
-            var aktive = dto.aksjonspunkt().stream()
-                .filter(a -> Aksjonspunktstatus.OPPRETTET.equals(a.status()))
-                .map(Aksjonspunkt::aksjonspunktFra)
-                .toList();
-            if (aktive.isEmpty()) {
-                return BehandlingTilstand.INGEN;
-            } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentManuell)) {
-                return BehandlingTilstand.VENT_MANUELL;
-            } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentTidlig)) {
-                return BehandlingTilstand.VENT_TIDLIG;
-            } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentKø)) {
-                return BehandlingTilstand.VENT_KØ;
-            } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentKomplett)) {
-                return BehandlingTilstand.VENT_KOMPLETT;
-            } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentKlage)) {
-                return BehandlingTilstand.VENT_KLAGEINSTANS;
-            } else if (aktive.stream().anyMatch(Aksjonspunkt::erPåVent)) {
-                return BehandlingTilstand.VENT_REGISTERDATA;
-            } else if (aktive.stream().anyMatch(Aksjonspunkt::erRegistrerPapirSøknad)) {
-                return BehandlingTilstand.PAPIRSØKNAD;
-            } else if (aktive.stream().anyMatch(Aksjonspunkt::erTilBeslutter)) {
-                return BehandlingTilstand.BESLUTTER;
-            } else if (retur) {
-                return BehandlingTilstand.RETUR;
-            } else {
-                return BehandlingTilstand.AKSJONSPUNKT;
-            }
+            return utledTilstandFpsak(dto);
+        }
+    }
+
+    private static BehandlingTilstand utledTilstandTilbake(LosBehandlingDto dto) {
+        if (TilbakekrevingOppgaveEgenskapFinner.aktivVentBruker(dto.aksjonspunkt()) ){
+            return BehandlingTilstand.VENT_MANUELL;
+        } else if (TilbakekrevingOppgaveEgenskapFinner.aktivVentKrav(dto.aksjonspunkt())) {
+            return BehandlingTilstand.VENT_REGISTERDATA;
+        } else if (TilbakekrevingOppgaveEgenskapFinner.aktivtBeslutterAp(dto.aksjonspunkt())) {
+            return BehandlingTilstand.BESLUTTER;
+        } else if (!TilbakekrevingOppgaveEgenskapFinner.aktiveApForutenBeslutterEllerVent(dto.aksjonspunkt())) {
+            return BehandlingTilstand.INGEN;
+        } else {
+            return BehandlingTilstand.AKSJONSPUNKT;
+        }
+    }
+
+    private static BehandlingTilstand utledTilstandFpsak(LosBehandlingDto dto) {
+        var aktive = dto.aksjonspunkt().stream()
+            .filter(a -> Aksjonspunktstatus.OPPRETTET.equals(a.status()))
+            .map(Aksjonspunkt::aksjonspunktFra)
+            .toList();
+        if (aktive.isEmpty()) {
+            return BehandlingTilstand.INGEN;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentManuell)) {
+            return BehandlingTilstand.VENT_MANUELL;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentTidlig)) {
+            return BehandlingTilstand.VENT_TIDLIG;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentKø)) {
+            return BehandlingTilstand.VENT_KØ;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentKomplett)) {
+            return BehandlingTilstand.VENT_KOMPLETT;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erVentKlage)) {
+            return BehandlingTilstand.VENT_KLAGEINSTANS;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erPåVent)) {
+            return BehandlingTilstand.VENT_REGISTERDATA;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erRegistrerPapirSøknad)) {
+            return BehandlingTilstand.PAPIRSØKNAD;
+        } else if (aktive.stream().anyMatch(Aksjonspunkt::erTilBeslutter)) {
+            return BehandlingTilstand.BESLUTTER;
+        } else {
+            return BehandlingTilstand.AKSJONSPUNKT;
         }
     }
 }
