@@ -35,7 +35,6 @@ public class StatistikkRepository {
         entityManager.persist(statistikk);
     }
 
-
     public List<OppgaveEnhetYtelseBehandling> hentÅpneOppgaverPerEnhetYtelseBehandling() {
         return entityManager.createQuery("""
             Select new no.nav.foreldrepenger.los.statistikk.OppgaveEnhetYtelseBehandling(

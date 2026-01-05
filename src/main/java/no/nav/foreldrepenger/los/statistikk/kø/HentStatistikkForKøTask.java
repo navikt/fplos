@@ -15,7 +15,7 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 public class HentStatistikkForKøTask implements ProsessTaskHandler {
     static final String OPPGAVE_FILTER_ID = "oppgave_filter_id";
 
-    private StatistikkTjeneste statistikkTjeneste;
+    private KøStatistikkTjeneste køStatistikkTjeneste;
     private StatistikkRepository statistikkRepository;
 
     public HentStatistikkForKøTask() {
@@ -23,16 +23,16 @@ public class HentStatistikkForKøTask implements ProsessTaskHandler {
     }
 
     @Inject
-    public HentStatistikkForKøTask(StatistikkTjeneste statistikkTjeneste, StatistikkRepository statistikkRepository) {
-        this.statistikkTjeneste = statistikkTjeneste;
+    public HentStatistikkForKøTask(KøStatistikkTjeneste køStatistikkTjeneste, StatistikkRepository statistikkRepository) {
+        this.køStatistikkTjeneste = køStatistikkTjeneste;
         this.statistikkRepository = statistikkRepository;
     }
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
         var behandlingsKø = Long.valueOf(prosessTaskData.getPropertyValue(OPPGAVE_FILTER_ID));
-        var antallOppgaver = statistikkTjeneste.hentAntallOppgaver(behandlingsKø);
-        var antallTilgjengeligeOppgaver = statistikkTjeneste.hentAntallTilgjengeligeOppgaverFor(behandlingsKø);
+        var antallOppgaver = køStatistikkTjeneste.hentAntallOppgaver(behandlingsKø);
+        var antallTilgjengeligeOppgaver = køStatistikkTjeneste.hentAntallTilgjengeligeOppgaverFor(behandlingsKø);
         var statistikkForKø = new StatistikkForKø(behandlingsKø, System.currentTimeMillis(), LocalDate.now(), antallOppgaver, antallTilgjengeligeOppgaver);
         statistikkRepository.lagreStatistikkForKø(statistikkForKø);
     }

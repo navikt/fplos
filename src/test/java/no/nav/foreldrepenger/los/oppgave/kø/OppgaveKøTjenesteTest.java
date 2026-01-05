@@ -12,6 +12,8 @@ import java.util.UUID;
 import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
 import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 
+import no.nav.foreldrepenger.los.oppgave.Rolle;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,7 +107,7 @@ class OppgaveKøTjenesteTest {
     @Test
     void hentAntallOppgaver() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        var antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, Filtreringstype.AKTIVE_OG_LEDIGE);
+        var antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, Filtreringstype.AKTIVE_OG_LEDIG, Rolle.SAKSBEHANDLER);
         assertThat(antallOppgaver).isEqualTo(3);
     }
 

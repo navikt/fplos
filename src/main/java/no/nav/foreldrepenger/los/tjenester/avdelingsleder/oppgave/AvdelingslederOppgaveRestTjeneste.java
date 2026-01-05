@@ -12,6 +12,7 @@ import jakarta.ws.rs.QueryParam;
 
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
+import no.nav.foreldrepenger.los.oppgave.Rolle;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SakslisteIdDto;
@@ -41,7 +42,7 @@ public class AvdelingslederOppgaveRestTjeneste {
     @Operation(description = "Henter antall oppgaver knyttet til sakslisten", tags = "AvdelingslederOppgaver")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.AKTIVE_OG_LEDIGE);
+        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.AKTIVE_OG_LEDIG, Rolle.AVDELINGSLEDER);
     }
 
     @GET

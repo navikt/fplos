@@ -49,17 +49,29 @@ public class OppgaveKøRepository {
 
 
     public int hentAntallOppgaver(Oppgavespørring oppgavespørring) {
-        return lagTypedQuery(oppgavespørring, true, Long.class).getSingleResult().intValue();
+        return lagTypedQuery(oppgavespørring,true, Long.class).getSingleResult().intValue();
     }
 
     public int hentAntallOppgaverForAvdeling(String enhetsNummer) {
-        var oppgavespørring = new Oppgavespørring(enhetsNummer, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-            new ArrayList<>(), false, null, null, null, null, Filtreringstype.AKTIVE_OG_LEDIGE);
+        var oppgavespørring = new Oppgavespørring(
+            enhetsNummer,
+            KøSortering.BEHANDLINGSFRIST,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            false,
+            null,
+            null,
+            null,
+            null,
+            Filtreringstype.AKTIVE_OG_LEDIG,
+            Rolle.AVDELINGSLEDER);
         return hentAntallOppgaver(oppgavespørring);
     }
 
     public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
-        var query = lagTypedQuery(oppgavespørring, false, Oppgave.class);
+        var query = lagTypedQuery(oppgavespørring,false, Oppgave.class);
         return query.getResultList();
     }
 
@@ -165,7 +177,7 @@ public class OppgaveKøRepository {
     }
 
     private static String reserverteSubquery(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
-        if (!Set.of(Filtreringstype.AKTIVE_OG_LEDIGE, Filtreringstype.AKTIVE_OG_LEDIGE_FOR_INNLOGGET_SAKSBEHANDLER).contains(oppgavespørring.getFiltreringstype())) {
+        if (Filtreringstype.AKTIVE.equals(oppgavespørring.getFiltreringstype())) {
             return "";
         }
         parameters.put("nå", LocalDateTime.now());
@@ -174,9 +186,10 @@ public class OppgaveKøRepository {
 
     private static String tilBeslutter(Oppgavespørring dto, Map<String, Object> parameters) {
         var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
-        if (!dto.getFiltreringstype().equals(Filtreringstype.AKTIVE_OG_LEDIGE_FOR_INNLOGGET_SAKSBEHANDLER) || !tilBeslutterKø) {
+        if (Set.of(Rolle.AVDELINGSLEDER, Rolle.STATISTIKK).contains(dto.getRolle()) || !tilBeslutterKø) {
             return "";
         }
+
         parameters.put("tilbeslutter", AndreKriterierType.TIL_BESLUTTER);
         parameters.put("uid", BrukerIdent.brukerIdent().toUpperCase());
         return """

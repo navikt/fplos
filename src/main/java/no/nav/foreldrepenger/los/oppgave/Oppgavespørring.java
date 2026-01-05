@@ -23,9 +23,10 @@ public class Oppgavespørring {
     private final Long filtrerFra;
     private final Long filtrerTil;
     private final Filtreringstype filtreringstype;
+    private final Rolle rolle;
     private Long maxAntallOppgaver;
 
-    public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering, Filtreringstype filtreringstype) {
+    public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering, Filtreringstype filtreringstype, Rolle rolle) {
         this(
             oppgaveFiltrering.getAvdeling().getAvdelingEnhet(),
             oppgaveFiltrering.getSortering(),
@@ -38,7 +39,7 @@ public class Oppgavespørring {
             oppgaveFiltrering.getTomDato(),
             oppgaveFiltrering.getFra(),
             oppgaveFiltrering.getTil(),
-            filtreringstype
+            filtreringstype, rolle
         );
 
     }
@@ -54,7 +55,8 @@ public class Oppgavespørring {
                            LocalDate filtrerTomDato,
                            Long filtrerFra,
                            Long filtrerTil,
-                           Filtreringstype filtreringstype) {
+                           Filtreringstype filtreringstype,
+                           Rolle rolle) {
         this.sortering = sortering;
         this.enhetsnummer = enhetsnummer;
         this.behandlingTyper = behandlingTyper;
@@ -67,6 +69,7 @@ public class Oppgavespørring {
         this.filtrerFra = filtrerFra;
         this.filtrerTil = filtrerTil;
         this.filtreringstype = filtreringstype;
+        this.rolle = rolle;
     }
 
     public void setMaksAntall(int maksAntall) {
@@ -121,6 +124,10 @@ public class Oppgavespørring {
         return filtreringstype;
     }
 
+    public Rolle getRolle() {
+        return rolle;
+    }
+
     public Optional<Long> getMaxAntallOppgaver() {
         return Optional.ofNullable(maxAntallOppgaver);
     }
@@ -146,6 +153,7 @@ public class Oppgavespørring {
         return "Oppgavespørring{" + "sortering=" + sortering + "enhetsnummer=" + enhetsnummer + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
             + ytelseTyper + ", inkluderAndreKriterierTyper=" + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper="
             + ekskluderAndreKriterierTyper + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
-            + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", filtreringstype=" + filtreringstype + '}';
+            + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", filtreringstype=" + filtreringstype +  ", rolle=" + rolle
+            + '}';
     }
 }

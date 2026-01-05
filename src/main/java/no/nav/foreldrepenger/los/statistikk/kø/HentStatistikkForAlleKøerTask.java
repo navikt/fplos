@@ -11,18 +11,18 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 @ProsessTask(value = "statistikk.kø.alle", cronExpression = "0 30 5-16 * * *", maxFailedRuns = 1)
 public class HentStatistikkForAlleKøerTask implements ProsessTaskHandler {
 
-    private final StatistikkTjeneste statistikkTjeneste;
+    private final KøStatistikkTjeneste køStatistikkTjeneste;
     private final ProsessTaskTjeneste prosessTaskTjeneste;
 
     @Inject
-    public HentStatistikkForAlleKøerTask(StatistikkTjeneste statistikkTjeneste, ProsessTaskTjeneste prosessTaskTjeneste) {
-        this.statistikkTjeneste = statistikkTjeneste;
+    public HentStatistikkForAlleKøerTask(KøStatistikkTjeneste køStatistikkTjeneste, ProsessTaskTjeneste prosessTaskTjeneste) {
+        this.køStatistikkTjeneste = køStatistikkTjeneste;
         this.prosessTaskTjeneste = prosessTaskTjeneste;
     }
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var alleKøer = statistikkTjeneste.hentAlleKøer();
+        var alleKøer = køStatistikkTjeneste.hentAlleKøer();
         for (var kø : alleKøer) {
             var task = ProsessTaskData.forProsessTask(HentStatistikkForKøTask.class);
             task.setProperty(HentStatistikkForKøTask.OPPGAVE_FILTER_ID, kø.getId().toString());
