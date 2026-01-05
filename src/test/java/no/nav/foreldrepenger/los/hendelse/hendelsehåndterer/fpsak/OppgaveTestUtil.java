@@ -7,6 +7,7 @@ import java.util.List;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
@@ -40,6 +41,6 @@ public class OppgaveTestUtil {
     }
 
     public static List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter() {
-        return List.of(new LosBehandlingDto.LosAksjonspunktDto("1111", Aksjonspunktstatus.OPPRETTET, null));
+        return List.of(new LosBehandlingDto.LosAksjonspunktDto("1111", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.OPPRETTET, null));
     }
 }

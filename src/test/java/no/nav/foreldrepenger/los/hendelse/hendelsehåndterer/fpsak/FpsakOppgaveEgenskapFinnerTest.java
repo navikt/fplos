@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.AktørId;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
@@ -58,13 +59,17 @@ class FpsakOppgaveEgenskapFinnerTest {
 
     @Test
     void testAksjonspunkterTilAndreKriterierTyperMapping() {
-        var cases = new HashMap<String, AndreKriterierType>();
-        cases.put("5082", AndreKriterierType.VURDER_FORMKRAV);
-        cases.put("5016", AndreKriterierType.TIL_BESLUTTER);
-        cases.put("5012", AndreKriterierType.PAPIRSØKNAD);
+        Map<String, AndreKriterierType> cases = Map.of(
+            "5082", AndreKriterierType.VURDER_FORMKRAV,
+            "5016", AndreKriterierType.TIL_BESLUTTER,
+            "5012", AndreKriterierType.PAPIRSØKNAD);
+        Map<String, Aksjonspunkttype> typer = Map.of(
+            "5082", Aksjonspunkttype.AKSJONSPUNKT,
+            "5016", Aksjonspunkttype.BESLUTTER,
+            "5012", Aksjonspunkttype.PAPIRSØKNAD);
 
         cases.forEach((k, v) -> {
-            var ap = new LosAksjonspunktDto(k, Aksjonspunktstatus.OPPRETTET, null);
+            var ap = new LosAksjonspunktDto(k, typer.get(k), Aksjonspunktstatus.OPPRETTET, null);
             var resultat = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, ap));
             Assertions.assertThat(resultat.getAndreKriterier()).isEqualTo(List.of(v));
         });
@@ -72,8 +77,8 @@ class FpsakOppgaveEgenskapFinnerTest {
 
     @Test
     void skalIkkeReturnereDuplikateAndreKriterierTyper() {
-        var ap = new LosAksjonspunktDto("5082", Aksjonspunktstatus.OPPRETTET, null);
-        var apISammeGruppe = new LosAksjonspunktDto("5083", Aksjonspunktstatus.OPPRETTET, null);
+        var ap = new LosAksjonspunktDto("5082", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.OPPRETTET, null);
+        var apISammeGruppe = new LosAksjonspunktDto("5083", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.OPPRETTET, null);
         var resultat = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, ap, apISammeGruppe));
         Assertions.assertThat(resultat.getAndreKriterier())
                   .hasSize(1)
@@ -82,27 +87,27 @@ class FpsakOppgaveEgenskapFinnerTest {
 
     @Test
     void skalIkkeMappeInaktiveAksjonspunktTilAndreKriterierTyper() {
-        var ap = new LosAksjonspunktDto("5082", Aksjonspunktstatus.AVBRUTT, null);
+        var ap = new LosAksjonspunktDto("5082", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.AVBRUTT, null);
         var resultat = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, ap));
         Assertions.assertThat(resultat.getAndreKriterier()).isEmpty();
     }
 
     @Test
     void aktiv5068GirVurderInnhentingAvSED() {
-        var aktiv5068 = new LosAksjonspunktDto("5068", Aksjonspunktstatus.OPPRETTET, null);
+        var aktiv5068 = new LosAksjonspunktDto("5068", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.OPPRETTET, null);
         var result = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of("EØS_BOSATT_NORGE"), null, aktiv5068));
         Assertions.assertThat(result.getAndreKriterier()).contains(AndreKriterierType.VURDER_EØS_OPPTJENING);
     }
 
     @Test
     void utførtEllerAvbrutt5068GirIkkeVurderSed() {
-        var utført5068 = new LosAksjonspunktDto("5068", Aksjonspunktstatus.UTFØRT, null);
+        var utført5068 = new LosAksjonspunktDto("5068", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.UTFØRT, null);
         var utført5068Resultat = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of("EØS_BOSATT_NORGE"), null, utført5068));
         Assertions.assertThat(utført5068Resultat.getAndreKriterier())
                   .isNotEmpty()
                   .doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
 
-        var avbrutt5068 = new LosAksjonspunktDto("5068", Aksjonspunktstatus.AVBRUTT, null);
+        var avbrutt5068 = new LosAksjonspunktDto("5068", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.AVBRUTT, null);
         var avbrutt5068Resultat = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of("EØS_BOSATT_NORGE"), null, avbrutt5068));
         Assertions.assertThat(avbrutt5068Resultat.getAndreKriterier())
                   .isNotEmpty()
@@ -111,21 +116,21 @@ class FpsakOppgaveEgenskapFinnerTest {
 
     @Test
     void avbrutt5016GirReturnertFraBeslutterEgenskap() {
-        var avbrutt5016 = new LosAksjonspunktDto("5016", Aksjonspunktstatus.AVBRUTT, null);
+        var avbrutt5016 = new LosAksjonspunktDto("5016", Aksjonspunkttype.BESLUTTER, Aksjonspunktstatus.AVBRUTT, null);
         var result = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, avbrutt5016));
         Assertions.assertThat(result.getAndreKriterier()).contains(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
     }
 
     @Test
     void aktiv5001GirKontrollerTerminbekreftelse() {
-        var aktiv5001 = new LosAksjonspunktDto("5001", Aksjonspunktstatus.OPPRETTET, null);
+        var aktiv5001 = new LosAksjonspunktDto("5001", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.OPPRETTET, null);
         var result = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, aktiv5001));
         Assertions.assertThat(result.getAndreKriterier()).contains(AndreKriterierType.TERMINBEKREFTELSE);
     }
 
     @Test
     void skalIkkeHaEgenskapVurderSedNårNasjonalSak() {
-        var aktiv5068 = new LosAksjonspunktDto("5068", Aksjonspunktstatus.OPPRETTET, null);
+        var aktiv5068 = new LosAksjonspunktDto("5068", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.OPPRETTET, null);
         var resultat = new FpsakOppgaveEgenskapFinner(lagLosBehandlingDto(List.of(), null, aktiv5068));
         Assertions.assertThat(resultat.getAndreKriterier()).isEmpty();
     }

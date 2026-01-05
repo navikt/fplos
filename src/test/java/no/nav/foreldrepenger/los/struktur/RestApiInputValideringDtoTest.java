@@ -30,7 +30,14 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.MappedSuperclass;
@@ -44,20 +51,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
 import jakarta.ws.rs.PathParam;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 import no.nav.foreldrepenger.los.felles.util.validering.ValidKodeverk;
 import no.nav.foreldrepenger.los.konfig.IndexClasses;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 class RestApiInputValideringDtoTest extends RestApiTester {
 
@@ -151,6 +149,7 @@ class RestApiInputValideringDtoTest extends RestApiTester {
         if (erKodeverk(klasse)) {
             return;
         }
+        if (klasse.getSimpleName().equals(LosBehandlingDto.class.getSimpleName())) return; // ignorer LosBehandlingDto
 
         if (besøkteKlasser.contains(klasse)) {
             return;

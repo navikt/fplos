@@ -10,6 +10,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.LokalFagsakEgenskap
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
@@ -68,17 +69,17 @@ public class TilbakekrevingOppgaveEgenskapFinner implements OppgaveEgenskapFinne
 
     public static boolean aktivtBeslutterAp(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
         return aksjonspunkter.stream()
-            .anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
+            .anyMatch(a -> Aksjonspunkttype.BESLUTTER.equals(a.type()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
     }
 
     public static boolean avbruttBeslutterAp(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
         return aksjonspunkter.stream()
-            .anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.AVBRUTT.equals(a.status()));
+            .anyMatch(a -> Aksjonspunkttype.BESLUTTER.equals(a.type()) && Aksjonspunktstatus.AVBRUTT.equals(a.status()));
     }
 
     public static boolean aktiveApForutenBeslutterEllerVent(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
         return aksjonspunkter.stream()
-            .anyMatch(a -> !Set.of("5005", "7001", "7002").contains(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
+            .anyMatch(a -> !Set.of(Aksjonspunkttype.BESLUTTER, Aksjonspunkttype.VENT).contains(a.type()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
     }
 
     public static boolean aktivVentBruker(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {

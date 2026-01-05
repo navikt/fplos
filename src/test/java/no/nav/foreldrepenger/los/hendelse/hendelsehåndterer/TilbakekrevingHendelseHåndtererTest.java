@@ -34,6 +34,7 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
@@ -48,13 +49,18 @@ class TilbakekrevingHendelseHåndtererTest {
     private EntityManager entityManager;
     private TilbakekrevingHendelseHåndterer handler;
 
-    private final List<Aksjonspunkt> åpentAksjonspunkt = List.of(lagAp("5015", "OPPR"));
-    private final List<Aksjonspunkt> manueltPåVentAksjonspunkt = List.of(lagAp("5015", "OPPR"), lagAp("7002", "OPPR"));
-    private final List<Aksjonspunkt> åpentBeslutter = List.of(lagAp("5005", "OPPR"));
-    private final List<Aksjonspunkt> avsluttetAksjonspunkt = List.of(lagAp("5015", "AVBR"));
+    private final List<Aksjonspunkt> åpentAksjonspunkt = List.of(lagAp("5015", Aksjonspunktstatus.OPPRETTET));
+    private final List<Aksjonspunkt> manueltPåVentAksjonspunkt = List.of(lagAp("5015", Aksjonspunktstatus.OPPRETTET), lagAp("7002", Aksjonspunktstatus.OPPRETTET));
+    private final List<Aksjonspunkt> åpentBeslutter = List.of(lagAp("5005", Aksjonspunktstatus.OPPRETTET));
+    private final List<Aksjonspunkt> avsluttetAksjonspunkt = List.of(lagAp("5015", Aksjonspunktstatus.AVBRUTT));
 
-    private static Aksjonspunkt lagAp(String kode, String status) {
-        return Aksjonspunkt.builder().medDefinisjon(kode).medStatus(status).build();
+    private static Aksjonspunkt lagAp(String kode, Aksjonspunktstatus status) {
+        var type = switch (kode) {
+            case "7001", "7002" -> Aksjonspunkttype.VENT;
+            case "5005" -> Aksjonspunkttype.BESLUTTER;
+            default -> Aksjonspunkttype.AKSJONSPUNKT;
+        };
+        return new Aksjonspunkt(kode, type, status, null);
     }
 
     @BeforeEach
@@ -149,18 +155,21 @@ class TilbakekrevingHendelseHåndtererTest {
         var behandlingId = BehandlingId.random();
         var førsteEvent = hendelse(åpentAksjonspunkt, behandlingId);
         var andreEventBeslutter = hendelse(åpentBeslutter, behandlingId);
-        var tredjeAp = List.of(lagAp("5005", "OPPR"), lagAp("5004", "OPPR"));
+        var tredjeAp = List.of(lagAp("5005", Aksjonspunktstatus.AVBRUTT), lagAp("5004", Aksjonspunktstatus.OPPRETTET));
         var tredjeEventReturTilForeslå = hendelse(tredjeAp, behandlingId);
         handler.håndterBehandling(førsteEvent);
 
         sjekkAktivOppgaveEksisterer(true);
         sjekkBeslutterEgenskapMedAktivstatus(false);
+        sjekkReturEgenskapMedAktivstatus(false);
 
         handler.håndterBehandling(andreEventBeslutter);
         sjekkBeslutterEgenskapMedAktivstatus(true);
+        sjekkReturEgenskapMedAktivstatus(false);
 
         handler.håndterBehandling(tredjeEventReturTilForeslå);
         sjekkBeslutterEgenskapMedAktivstatus(false);
+        sjekkReturEgenskapMedAktivstatus(true);
     }
 
     @Test
@@ -253,6 +262,18 @@ class TilbakekrevingHendelseHåndtererTest {
         }
     }
 
+    private void sjekkReturEgenskapMedAktivstatus(boolean status) {
+        var oppgaver = DBTestUtil.hentAlle(entityManager, Oppgave.class);
+        var aktivOppgave = oppgaver.stream().filter(Oppgave::getAktiv).findFirst().orElse(null);
+        assertThat(aktivOppgave).isNotNull();
+        var egenskaper = aktivOppgave.getOppgaveEgenskaper();
+        if (status) {
+            assertThat(egenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).collect(Collectors.toSet())).contains(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
+        } else {
+            assertThat(egenskaper.stream().map(OppgaveEgenskap::getAndreKriterierType).collect(Collectors.toSet())).doesNotContain(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
+        }
+    }
+
     private void sjekkAntallOppgaver(int antall) {
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(antall);
     }
@@ -281,9 +302,12 @@ class TilbakekrevingHendelseHåndtererTest {
         var ap = aksjonspunkter.stream()
             .map(a -> new LosBehandlingDto.LosAksjonspunktDto(
                 a.getDefinisjonKode(),
-                "OPPR".equals(a.getStatusKode())
-                    ? Aksjonspunktstatus.OPPRETTET
-                    : Aksjonspunktstatus.AVBRUTT,
+                switch (a.getDefinisjonKode()) {
+                    case "7001", "7002" -> Aksjonspunkttype.VENT;
+                    case "5005" -> Aksjonspunkttype.BESLUTTER;
+                    default -> Aksjonspunkttype.AKSJONSPUNKT;
+                },
+                a.status(),
                 null))
             .collect(Collectors.toList());
         return new LosBehandlingDto(behandlingId.toUUID(), Kildesystem.FPTILBAKE, "123", Ytelse.FORELDREPENGER,

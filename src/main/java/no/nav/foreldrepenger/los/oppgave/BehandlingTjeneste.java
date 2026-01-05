@@ -19,6 +19,7 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingOppgaveEgenskapFinner;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
@@ -85,6 +86,7 @@ public class BehandlingTjeneste {
     private String mapAktiveAksjonspunkt(LosBehandlingDto dto) {
         return Optional.ofNullable(dto.aksjonspunkt()).orElseGet(List::of).stream()
             .filter(a -> Aksjonspunktstatus.OPPRETTET.equals(a.status()))
+            .filter(a -> !Aksjonspunkttype.VENT.equals(a.type()))
             .map(LosBehandlingDto.LosAksjonspunktDto::definisjon)
             .sorted(Comparator.naturalOrder())
             .collect(Collectors.joining(";"));
@@ -111,7 +113,7 @@ public class BehandlingTjeneste {
     }
 
     private static BehandlingTilstand utledTilstandTilbake(LosBehandlingDto dto) {
-        if (TilbakekrevingOppgaveEgenskapFinner.aktivVentBruker(dto.aksjonspunkt()) ){
+        if (TilbakekrevingOppgaveEgenskapFinner.aktivVentBruker(dto.aksjonspunkt())) {
             return BehandlingTilstand.VENT_MANUELL;
         } else if (TilbakekrevingOppgaveEgenskapFinner.aktivVentKrav(dto.aksjonspunkt())) {
             return BehandlingTilstand.VENT_REGISTERDATA;

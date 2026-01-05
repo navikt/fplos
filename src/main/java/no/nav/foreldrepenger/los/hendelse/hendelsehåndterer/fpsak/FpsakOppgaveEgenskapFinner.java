@@ -11,7 +11,6 @@ import no.nav.foreldrepenger.los.felles.util.StreamUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.LokalFagsakEgenskap;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
@@ -148,28 +147,4 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
             .anyMatch(s -> s.equalsIgnoreCase(egenskap.name()));
     }
 
-    public static boolean aktivtBeslutterAp(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
-        return aksjonspunkter.stream()
-            .anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
-    }
-
-    public static boolean avbruttBeslutterAp(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
-        return aksjonspunkter.stream()
-            .anyMatch(a -> a.definisjon().equals("5005") && Aksjonspunktstatus.AVBRUTT.equals(a.status()));
-    }
-
-    public static boolean aktiveApForutenBeslutterEllerVent(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
-        return aksjonspunkter.stream()
-            .anyMatch(a -> !Set.of("5005", "7001", "7002").contains(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
-    }
-
-    public static boolean aktivVentBruker(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
-        return aksjonspunkter.stream()
-            .anyMatch(a -> "7001".equals(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
-    }
-
-    public static boolean aktivVentKrav(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
-        return aksjonspunkter.stream()
-            .anyMatch(a -> "7002".equals(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
-    }
 }

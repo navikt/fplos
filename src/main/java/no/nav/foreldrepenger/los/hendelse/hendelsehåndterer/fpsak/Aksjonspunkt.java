@@ -1,22 +1,15 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
-import static java.util.Arrays.asList;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
-public class Aksjonspunkt {
-    private static final String STATUSKODE_AKTIV = "OPPR";
-    private static final String STATUSKODE_AVBRUTT = "AVBR";
-    private static final String STATUSKODE_UTFØRT = "UTFO";
-
+public record Aksjonspunkt(String definisjonKode, Aksjonspunkttype type, Aksjonspunktstatus status, LocalDateTime fristTid) {
     private static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
-    private static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
-    private static final String TIL_BESLUTTER_KODE = "5016";
 
     private static final String VENT_TIDLIG = "7008";
     private static final String VENT_KØ = "7011";
@@ -28,27 +21,8 @@ public class Aksjonspunkt {
     private static final String KONTROLLER_TERMINBEKREFTELSE_KODE = "5001";
     private static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
     private static final String ARBEID_INNTEKT = "5085";
-    private static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
     private static final List<String> VURDER_FORMKRAV_GRUPPE = List.of("5082");
     private static final List<String> RELEVANT_NÆRING = List.of("5039", "5049", "5058", "5046", "5051", "5089", "5082", "5035");
-
-    private String definisjonKode;
-    private String statusKode;
-    private LocalDateTime fristTid;
-
-    public Aksjonspunkt() {
-        // Jackson
-    }
-
-    public Aksjonspunkt(String definisjonKode, String statusKode) {
-        this(definisjonKode, statusKode, null);
-    }
-
-    public Aksjonspunkt(String definisjonKode, String statusKode, LocalDateTime fristTid) {
-        this.definisjonKode = definisjonKode;
-        this.statusKode = statusKode;
-        this.fristTid = fristTid;
-    }
 
     public LocalDateTime getFristTid() {
         return fristTid;
@@ -58,12 +32,8 @@ public class Aksjonspunkt {
         return definisjonKode;
     }
 
-    public String getStatusKode() {
-        return statusKode;
-    }
-
     public boolean erPåVent() {
-        return definisjonKode != null && definisjonKode.startsWith(PÅ_VENT_KODEGRUPPE_STARTS_WITH) && erAktiv();
+        return Aksjonspunkttype.VENT.equals(type()) && erAktiv();
     }
 
     public boolean erManueltPåVent() {
@@ -71,23 +41,23 @@ public class Aksjonspunkt {
     }
 
     public boolean erAktiv() {
-        return STATUSKODE_AKTIV.equals(statusKode);
+        return Aksjonspunktstatus.OPPRETTET.equals(status);
     }
 
     public boolean erAvbrutt() {
-        return STATUSKODE_AVBRUTT.equals(statusKode);
+        return Aksjonspunktstatus.AVBRUTT.equals(status);
     }
 
     public boolean erTilBeslutter() {
-        return TIL_BESLUTTER_KODE.equals(definisjonKode) && erAktiv();
+        return Aksjonspunkttype.BESLUTTER.equals(type()) && erAktiv();
     }
 
     public boolean erReturnertFraBeslutter() {
-        return TIL_BESLUTTER_KODE.equals(definisjonKode) && erAvbrutt();
+        return Aksjonspunkttype.BESLUTTER.equals(type()) && erAvbrutt();
     }
 
     public boolean erRegistrerPapirSøknad() {
-        return REGISTRER_PAPIRSØKNAD_KODE.contains(definisjonKode) && erAktiv();
+        return Aksjonspunkttype.PAPIRSØKNAD.equals(type()) && erAktiv();
     }
 
     public boolean skalVurdereInnhentingAvSED() {
@@ -135,50 +105,8 @@ public class Aksjonspunkt {
     }
 
     public static Aksjonspunkt aksjonspunktFra(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
-        return Aksjonspunkt.builder()
-            .medDefinisjon(aksjonspunktDto.definisjon())
-            .medStatus(mapAksjonspunktstatus(aksjonspunktDto.status()))
-            .medFristTid(aksjonspunktDto.fristTid())
-            .build();
+        return new Aksjonspunkt(aksjonspunktDto.definisjon(), aksjonspunktDto.type(), aksjonspunktDto.status(), aksjonspunktDto.fristTid());
     }
 
-    private static String mapAksjonspunktstatus(Aksjonspunktstatus status) {
-        return switch (status) {
-            case OPPRETTET -> STATUSKODE_AKTIV;
-            case AVBRUTT -> STATUSKODE_AVBRUTT;
-            case UTFØRT -> STATUSKODE_UTFØRT;
-        };
-    }
-
-    public static Aksjonspunkt.Builder builder() {
-        return new Aksjonspunkt.Builder();
-    }
-
-    public static class Builder {
-        private final Aksjonspunkt aksjonspunkt;
-
-        public Builder() {
-            aksjonspunkt = new Aksjonspunkt();
-        }
-
-        public Aksjonspunkt.Builder medDefinisjon(String definisjonKode) {
-            aksjonspunkt.definisjonKode = definisjonKode;
-            return this;
-        }
-
-        public Aksjonspunkt.Builder medStatus(String statusKode) {
-            aksjonspunkt.statusKode = statusKode;
-            return this;
-        }
-
-        public Aksjonspunkt.Builder medFristTid(LocalDateTime fristTid) {
-            aksjonspunkt.fristTid = fristTid;
-            return this;
-        }
-
-        public Aksjonspunkt build() {
-            return aksjonspunkt;
-        }
-    }
 
 }
