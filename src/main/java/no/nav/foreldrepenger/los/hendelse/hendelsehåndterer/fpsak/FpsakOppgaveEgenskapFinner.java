@@ -78,7 +78,8 @@ public class FpsakOppgaveEgenskapFinner implements OppgaveEgenskapFinner {
         if (harSaksegenskap(saksegenskaper, LokalFagsakEgenskap.DØD)) {
             this.andreKriterier.add(AndreKriterierType.DØD);
         }
-        var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
+        var aksjonspunkter = Optional.ofNullable(behandling.aksjonspunkt()).orElseGet(List::of)
+            .stream().map(Aksjonspunkt::aksjonspunktFra).toList();
 
         if (matchAksjonspunkt(aksjonspunkter, Aksjonspunkt::erTilBeslutter)) {
             this.andreKriterier.add(AndreKriterierType.TIL_BESLUTTER);

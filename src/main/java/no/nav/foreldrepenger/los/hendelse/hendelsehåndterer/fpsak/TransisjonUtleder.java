@@ -11,13 +11,13 @@ import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakO
 import static no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon.SETT_PÅ_VENT;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
-
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.FpsakOppgavetransisjonHåndterer.Oppgavetransisjon;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
@@ -30,7 +30,8 @@ public final class TransisjonUtleder {
 
     static Oppgavetransisjon utledAktuellTransisjon(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak, OppgaveHistorikk oppgaveHistorikk) {
         LOG.info("Utleder aktuell oppgavetransisjon for behandlingId {}, oppgavehistorikk {}", behandlingId, oppgaveHistorikk);
-        var aksjonspunkter = behandlingFpsak.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
+        var aksjonspunkter = Optional.ofNullable(behandlingFpsak.aksjonspunkt()).orElseGet(List::of)
+            .stream().map(Aksjonspunkt::aksjonspunktFra).toList();
 
         if (erIngenÅpne(aksjonspunkter)) {
             if (oppgaveHistorikk.erUtenHistorikk() || oppgaveHistorikk.erIngenÅpenOppgave()) {

@@ -113,13 +113,14 @@ public class BehandlingTjeneste {
     }
 
     private static BehandlingTilstand utledTilstandTilbake(LosBehandlingDto dto) {
-        if (TilbakekrevingOppgaveEgenskapFinner.aktivVentBruker(dto.aksjonspunkt())) {
+        var aksjonspunkt = Optional.ofNullable(dto.aksjonspunkt()).orElseGet(List::of);
+        if (TilbakekrevingOppgaveEgenskapFinner.aktivVentBruker(aksjonspunkt)) {
             return BehandlingTilstand.VENT_MANUELL;
-        } else if (TilbakekrevingOppgaveEgenskapFinner.aktivVentKrav(dto.aksjonspunkt())) {
+        } else if (TilbakekrevingOppgaveEgenskapFinner.aktivVentKrav(aksjonspunkt)) {
             return BehandlingTilstand.VENT_REGISTERDATA;
-        } else if (TilbakekrevingOppgaveEgenskapFinner.aktivtBeslutterAp(dto.aksjonspunkt())) {
+        } else if (TilbakekrevingOppgaveEgenskapFinner.aktivtBeslutterAp(aksjonspunkt)) {
             return BehandlingTilstand.BESLUTTER;
-        } else if (!TilbakekrevingOppgaveEgenskapFinner.aktiveApForutenBeslutterEllerVent(dto.aksjonspunkt())) {
+        } else if (!TilbakekrevingOppgaveEgenskapFinner.aktiveApForutenBeslutterEllerVent(aksjonspunkt)) {
             return BehandlingTilstand.INGEN;
         } else {
             return BehandlingTilstand.AKSJONSPUNKT;
@@ -127,7 +128,7 @@ public class BehandlingTjeneste {
     }
 
     private static BehandlingTilstand utledTilstandFpsak(LosBehandlingDto dto) {
-        var aktive = dto.aksjonspunkt().stream()
+        var aktive = Optional.ofNullable(dto.aksjonspunkt()).orElseGet(List::of).stream()
             .filter(a -> Aksjonspunktstatus.OPPRETTET.equals(a.status()))
             .map(Aksjonspunkt::aksjonspunktFra)
             .toList();

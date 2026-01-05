@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.håndterere;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -38,7 +39,8 @@ public class PåVentOppgaveOppgavetransisjonHåndterer implements FpsakOppgavetr
     @Override
     public void håndter(BehandlingId behandlingId, LosBehandlingDto behandling, OppgaveHistorikk eventHistorikk) {
         var behandlendeEnhet = behandling.behandlendeEnhetId();
-        var aksjonspunkter = behandling.aksjonspunkt().stream().map(Aksjonspunkt::aksjonspunktFra).toList();
+        var aksjonspunkter = Optional.ofNullable(behandling.aksjonspunkt()).orElseGet(List::of)
+            .stream().map(Aksjonspunkt::aksjonspunktFra).toList();
         var venteType = manueltSattPåVent(aksjonspunkter) ? OppgaveEventType.MANU_VENT : OppgaveEventType.VENT;
         var aksjonspunktFrist = aksjonspunktFrist(aksjonspunkter, venteType);
 
