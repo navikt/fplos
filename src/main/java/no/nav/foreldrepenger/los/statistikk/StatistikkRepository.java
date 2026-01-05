@@ -91,4 +91,11 @@ public class StatistikkRepository {
             .setParameter("tidsstempel", startpunkt)
             .getResultList();
     }
+
+    public List<StatistikkForKø> hentStatistikkForKøEtter(Long tidsstempel) {
+        return entityManager.createQuery("SELECT s FROM StatistikkForKø s WHERE s.tidsstempel >= :tidsstempel",
+                StatistikkForKø.class)
+            .setParameter("tidsstempel", tidsstempel)
+            .getResultList();
+    }
 }

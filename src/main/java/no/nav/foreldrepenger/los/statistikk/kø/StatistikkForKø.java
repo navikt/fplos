@@ -11,7 +11,7 @@ import no.nav.foreldrepenger.los.felles.BaseEntitet;
 
 @Entity
 @IdClass(KøType.class)
-@Table(name = "STAT_KOE")
+@Table(name = "STAT_OPPGAVE_FILTER")
 public class StatistikkForKø extends BaseEntitet {
     @Id
     @Column(name = "OPPGAVE_FILTER_ID", updatable = false, nullable = false)

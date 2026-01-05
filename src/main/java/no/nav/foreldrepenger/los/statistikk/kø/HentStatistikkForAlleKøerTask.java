@@ -8,7 +8,7 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 
 @Dependent
-@ProsessTask(value = "statistikk.kø.alle", cronExpression = "0 30 5-16 * * *", maxFailedRuns = 1)
+@ProsessTask(value = "statistikk.kø.alle", cronExpression = "0 30 5-16 * * 1-6", maxFailedRuns = 1)
 public class HentStatistikkForAlleKøerTask implements ProsessTaskHandler {
 
     private final KøStatistikkTjeneste køStatistikkTjeneste;
