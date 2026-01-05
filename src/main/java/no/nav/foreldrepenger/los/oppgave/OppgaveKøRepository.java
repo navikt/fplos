@@ -66,7 +66,7 @@ public class OppgaveKøRepository {
             null,
             null,
             Filtreringstype.AKTIVE_OG_LEDIG,
-            Rolle.AVDELINGSLEDER);
+            Formål.AVDELINGSLEDER);
         return hentAntallOppgaver(oppgavespørring);
     }
 
@@ -186,7 +186,7 @@ public class OppgaveKøRepository {
 
     private static String tilBeslutter(Oppgavespørring dto, Map<String, Object> parameters) {
         var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
-        if (Set.of(Rolle.AVDELINGSLEDER, Rolle.STATISTIKK).contains(dto.getRolle()) || !tilBeslutterKø) {
+        if (Set.of(Formål.AVDELINGSLEDER, Formål.STATISTIKK).contains(dto.getFormål()) || !tilBeslutterKø) {
             return "";
         }
 

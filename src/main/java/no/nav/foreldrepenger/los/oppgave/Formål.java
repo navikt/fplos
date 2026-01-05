@@ -1,6 +1,6 @@
 package no.nav.foreldrepenger.los.oppgave;
 
-public enum Rolle {
+public enum Formål {
     SAKSBEHANDLER,
     AVDELINGSLEDER,
     STATISTIKK,
