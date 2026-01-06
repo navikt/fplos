@@ -31,7 +31,7 @@ public class StatistikkRepository {
         entityManager.flush();
     }
 
-    public void lagreStatistikkOppgavefilter(StatistikkOppgaveFilter statistikk) {
+    public void lagreStatistikkOppgaveFilter(StatistikkOppgaveFilter statistikk) {
         entityManager.persist(statistikk);
     }
 

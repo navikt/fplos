@@ -113,21 +113,4 @@ class StatistikkEnhetYtelseBehandlingTest {
         assertThat(resultater.stream().map(StatistikkEnhetYtelseBehandling::getAntallAvsluttet).reduce(0, Integer::sum)).isEqualTo(1);
     }
 
-
-    @Test
-    void taSnapshotHsadadaentResultat() {
-        leggInnEttSettMedOppgaver();
-        var prosessTaskData = ProsessTaskData.forProsessTask(HentStatistikkForKøTask.class);
-        snapshotTask.doTask(prosessTaskData);
-        var resultater = statistikkRepository.hentInnslagEtterTidsstempel(System.currentTimeMillis() - Duration.ofDays(7).toMillis());
-        assertThat(resultater).hasSize(4);
-        assertThat(resultater.stream().filter(r -> AVDELING_DRAMMEN_ENHET.equals(r.getBehandlendeEnhet())).count()).isEqualTo(3);
-        assertThat(resultater.stream().map(StatistikkEnhetYtelseBehandling::getAntallAvsluttet).reduce(0, Integer::sum)).isZero();
-
-        avsluttOppgave(beslutterOppgave);
-        snapshotTask.doTask(ProsessTaskData.forProsessTask(SnapshotEnhetYtelseBehandlingTask.class));
-        resultater = statistikkRepository.hentInnslagEtterTidsstempel(System.currentTimeMillis() - Duration.ofDays(7).toMillis());
-        assertThat(resultater.stream().map(StatistikkEnhetYtelseBehandling::getAntallAvsluttet).reduce(0, Integer::sum)).isEqualTo(1);
-    }
-
 }

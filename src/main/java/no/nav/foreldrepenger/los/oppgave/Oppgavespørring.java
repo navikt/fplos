@@ -23,6 +23,8 @@ public class Oppgavespørring {
     private final Long filtrerFra;
     private final Long filtrerTil;
     private final Filtreringstype filtreringstype;
+    private boolean fjernReserverte;
+    private boolean fjernBeslutteroppgaverMedSammeSaksbehandler;
     private Long maxAntallOppgaver;
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering, Filtreringstype filtreringstype) {
