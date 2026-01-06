@@ -8,7 +8,6 @@ import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
 import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
-import no.nav.foreldrepenger.los.oppgave.Formål;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.vedtak.exception.FunksjonellException;
 
@@ -38,13 +37,13 @@ public class KøStatistikkTjeneste {
     }
 
     public Integer hentAntallTilgjengeligeOppgaverFor(Long behandlingsKø) {
-        var oppgavespørring = hentOppgavespørringForKø(behandlingsKø, Filtreringstype.AKTIVE_OG_LEDIG);
+        var oppgavespørring = hentOppgavespørringForKø(behandlingsKø, Filtreringstype.AKTIVE_OG_LEDIGE);
         return oppgaveKøRepository.hentAntallOppgaver(oppgavespørring);
     }
 
     private Oppgavespørring hentOppgavespørringForKø(Long behandlingsKø, Filtreringstype filtreringstype) {
         return oppgaveRepository.hentOppgaveFilterSett(behandlingsKø)
-            .map(oppgaveFiltrering -> new Oppgavespørring(oppgaveFiltrering, filtreringstype, Formål.STATISTIKK))
+            .map(oppgaveFiltrering -> new Oppgavespørring(oppgaveFiltrering, filtreringstype))
             .orElseThrow(() -> new FunksjonellException("FP-164687", "Fant ikke oppgavekø med id " + behandlingsKø));
     }
 }

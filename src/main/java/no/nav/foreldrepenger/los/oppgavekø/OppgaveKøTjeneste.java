@@ -11,7 +11,6 @@ import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
 import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
-import no.nav.foreldrepenger.los.oppgave.Formål;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -47,9 +46,9 @@ public class OppgaveKøTjeneste {
         return hentAlleOppgaveFiltrering(BrukerIdent.brukerIdent());
     }
 
-    public Integer hentAntallOppgaver(Long behandlingsKø, Filtreringstype filtreringstype, Formål formål) {
+    public Integer hentAntallOppgaver(Long behandlingsKø, Filtreringstype filtreringstype) {
         var queryDto = oppgaveRepository.hentOppgaveFilterSett(behandlingsKø)
-            .map(of -> new Oppgavespørring(of, filtreringstype, formål))
+            .map(of -> new Oppgavespørring(of, filtreringstype))
             .orElseThrow(() -> new FunksjonellException("FP-164687", "Fant ikke oppgavekø med id " + behandlingsKø));
         return oppgaveKøRepository.hentAntallOppgaver(queryDto);
     }
@@ -64,7 +63,7 @@ public class OppgaveKøTjeneste {
         if (oppgaveFilter.isEmpty()) {
             return Collections.emptyList();
         }
-        var oppgavespørring = new Oppgavespørring(oppgaveFilter.get(), Filtreringstype.AKTIVE_OG_LEDIG, Formål.SAKSBEHANDLER);
+        var oppgavespørring = new Oppgavespørring(oppgaveFilter.get(), Filtreringstype.AKTIVE_OG_LEDIGE_BARE_FOR_SAKSBEHANDLER);
         oppgavespørring.setMaksAntall(maksAntall);
         return oppgaveKøRepository.hentOppgaver(oppgavespørring);
     }

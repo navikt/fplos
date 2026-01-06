@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+
+import org.hibernate.jpa.HibernateHints;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -16,8 +17,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-
-import org.hibernate.jpa.HibernateHints;
 
 @ApplicationScoped
 public class OppgaveKøRepository {
@@ -65,8 +64,7 @@ public class OppgaveKøRepository {
             null,
             null,
             null,
-            Filtreringstype.AKTIVE_OG_LEDIG,
-            Formål.AVDELINGSLEDER);
+            Filtreringstype.AKTIVE_OG_LEDIGE);
         return hentAntallOppgaver(oppgavespørring);
     }
 
@@ -88,7 +86,7 @@ public class OppgaveKøRepository {
         qlStringBuilder.append(filtrerYtelseType(oppgavespørring, parameters));
         qlStringBuilder.append(andreKriterierSubquery(oppgavespørring, parameters));
         qlStringBuilder.append(reserverteSubquery(oppgavespørring, parameters));
-        qlStringBuilder.append(tilBeslutter(oppgavespørring, parameters));
+        qlStringBuilder.append(filtrerBortEgneBeslutterOppgaver(oppgavespørring, parameters));
         qlStringBuilder.append(" AND o.aktiv = true ");
         qlStringBuilder.append(beløpFilter(oppgavespørring, parameters));
         qlStringBuilder.append(datoFilter(oppgavespørring, parameters));
@@ -184,9 +182,9 @@ public class OppgaveKøRepository {
         return "AND NOT EXISTS (select 1 from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
     }
 
-    private static String tilBeslutter(Oppgavespørring dto, Map<String, Object> parameters) {
+    private static String filtrerBortEgneBeslutterOppgaver(Oppgavespørring dto, Map<String, Object> parameters) {
         var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
-        if (Set.of(Formål.AVDELINGSLEDER, Formål.STATISTIKK).contains(dto.getFormål()) || !tilBeslutterKø) {
+        if (!tilBeslutterKø || !Filtreringstype.AKTIVE_OG_LEDIGE_BARE_FOR_SAKSBEHANDLER.equals(dto.getFiltreringstype())) {
             return "";
         }
 
