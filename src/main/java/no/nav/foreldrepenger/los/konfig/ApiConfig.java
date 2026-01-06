@@ -34,6 +34,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.reservasjon.AvdelingRe
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.AvdelingslederSaksbehandlerRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.AvdelingslederSakslisteRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.kodeverk.KodeverkRestTjeneste;
+import no.nav.foreldrepenger.los.tjenester.migrering.MigreringRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.reservasjon.ReservasjonRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
@@ -102,6 +103,7 @@ public class ApiConfig extends Application {
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
         classes.add(AdminRestTjeneste.class);
+        classes.add(MigreringRestTjeneste.class);
         classes.add(ProsessTaskRestTjeneste.class);
         return classes;
     }

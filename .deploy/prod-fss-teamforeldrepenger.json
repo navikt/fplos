@@ -53,7 +53,12 @@
       "cluster": "prod-gcp"
     },
     {
-      "app": "fpfordel",
+      "app": "fptilbake",
+      "namespace": "teamforeldrepenger",
+      "cluster": "prod-fss"
+    },
+    {
+      "app": "fpsak",
       "namespace": "teamforeldrepenger",
       "cluster": "prod-fss"
     },

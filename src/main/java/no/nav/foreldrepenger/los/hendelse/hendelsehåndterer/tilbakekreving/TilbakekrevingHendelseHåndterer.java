@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.OppgaveEgenskapFinner;
@@ -20,13 +21,13 @@ import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveHistorikk;
-import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
@@ -62,7 +63,7 @@ public class TilbakekrevingHendelseHåndterer {
     public void håndterBehandling(LosBehandlingDto behandlingDto, LosFagsakEgenskaperDto egenskaperDto) {
         var behandlingId = BehandlingId.fromUUID(behandlingDto.behandlingUuid());
         var oppgaveHistorikk = new OppgaveHistorikk(oppgaveRepository.hentOppgaveEventer(behandlingId));
-        var aksjonspunkter = behandlingDto.aksjonspunkt();
+        var aksjonspunkter = Optional.ofNullable(behandlingDto.aksjonspunkt()).orElseGet(List::of);
         var egenskapFinner = new TilbakekrevingOppgaveEgenskapFinner(aksjonspunkter, behandlingDto.ansvarligSaksbehandlerIdent(),
             egenskaperDto, Optional.ofNullable(behandlingDto.behandlingsegenskaper()).orElse(List.of()));
         var behandlendeEnhet = behandlingDto.behandlendeEnhetId();
@@ -154,7 +155,7 @@ public class TilbakekrevingHendelseHåndterer {
 
     private static boolean aktivLosManuellVent(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
         return aksjonspunkter.stream()
-            .anyMatch(a -> List.of("7001", "7002").contains(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
+            .anyMatch(a -> Aksjonspunkttype.VENT.equals(a.type()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
     }
 
     protected void loggEvent(BehandlingId behandlingId,

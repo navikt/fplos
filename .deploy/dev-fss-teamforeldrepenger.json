@@ -53,7 +53,12 @@
       "cluster": "dev-gcp"
     },
     {
-      "app": "fpfordel",
+      "app": "fptilbake",
+      "namespace": "teamforeldrepenger",
+      "cluster": "dev-fss"
+    },
+    {
+      "app": "fpsak",
       "namespace": "teamforeldrepenger",
       "cluster": "dev-fss"
     },

@@ -2,8 +2,8 @@ package no.nav.foreldrepenger.los.oppgave;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +16,7 @@ import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.AktørId;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
@@ -41,14 +42,19 @@ class BehandlingTjenesteTest {
 
     @Test
     void testAksjonspunkterTilTilstand() {
-        var cases = new HashMap<String, BehandlingTilstand>();
-        cases.put("5082", BehandlingTilstand.AKSJONSPUNKT);
-        cases.put("7001", BehandlingTilstand.VENT_MANUELL);
-        cases.put("5016", BehandlingTilstand.BESLUTTER);
-        cases.put("5012", BehandlingTilstand.PAPIRSØKNAD);
+        Map<String, BehandlingTilstand> cases = Map.of(
+            "5082", BehandlingTilstand.AKSJONSPUNKT,
+            "7001", BehandlingTilstand.VENT_MANUELL,
+            "5016", BehandlingTilstand.BESLUTTER,
+            "5012", BehandlingTilstand.PAPIRSØKNAD);
+        Map<String, Aksjonspunkttype> typer = Map.of(
+            "5082", Aksjonspunkttype.AKSJONSPUNKT,
+            "7001", Aksjonspunkttype.VENT,
+            "5016", Aksjonspunkttype.BESLUTTER,
+            "5012", Aksjonspunkttype.PAPIRSØKNAD);
 
         cases.forEach((k, v) -> {
-            var ap = new LosAksjonspunktDto(k, Aksjonspunktstatus.OPPRETTET, null);
+            var ap = new LosAksjonspunktDto(k, typer.get(k), Aksjonspunktstatus.OPPRETTET, null);
             var dto = lagLosBehandlingDto(Kildesystem.FPSAK, List.of(), null, ap);
             behandlingTjeneste.lagreBehandling(dto, Fagsystem.FPSAK);
             var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
@@ -59,8 +65,8 @@ class BehandlingTjenesteTest {
 
     @Test
     void avbrutt5016GirAksjonspunkt() {
-        var avbrutt5016 = new LosAksjonspunktDto("5016", Aksjonspunktstatus.AVBRUTT, null);
-        var aktivAnnet = new LosAksjonspunktDto("5038", Aksjonspunktstatus.OPPRETTET, null);
+        var avbrutt5016 = new LosAksjonspunktDto("5016", Aksjonspunkttype.BESLUTTER, Aksjonspunktstatus.AVBRUTT, null);
+        var aktivAnnet = new LosAksjonspunktDto("5038", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.OPPRETTET, null);
         var dto = lagLosBehandlingDto(Kildesystem.FPSAK, List.of(), null, avbrutt5016, aktivAnnet);
         behandlingTjeneste.lagreBehandling(dto, Fagsystem.FPSAK);
         var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
@@ -70,7 +76,7 @@ class BehandlingTjenesteTest {
 
     @Test
     void aktiv7003girTilbakeAksjonspunkt() {
-        var aktiv5005 = new LosAksjonspunktDto("7003", Aksjonspunktstatus.OPPRETTET, null);
+        var aktiv5005 = new LosAksjonspunktDto("7003", Aksjonspunkttype.AKSJONSPUNKT, Aksjonspunktstatus.OPPRETTET, null);
         var dto = lagLosBehandlingDto(Kildesystem.FPTILBAKE, List.of(), null, aktiv5005);
         behandlingTjeneste.lagreBehandling(dto, Fagsystem.FPTILBAKE);
         var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
@@ -80,7 +86,7 @@ class BehandlingTjenesteTest {
 
     @Test
     void aktiv7001girTilbakeVent() {
-        var aktiv5005 = new LosAksjonspunktDto("7001", Aksjonspunktstatus.OPPRETTET, null);
+        var aktiv5005 = new LosAksjonspunktDto("7001", Aksjonspunkttype.VENT, Aksjonspunktstatus.OPPRETTET, null);
         var dto = lagLosBehandlingDto(Kildesystem.FPTILBAKE, List.of(), null, aktiv5005);
         behandlingTjeneste.lagreBehandling(dto, Fagsystem.FPTILBAKE);
         var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
@@ -90,7 +96,7 @@ class BehandlingTjenesteTest {
 
     @Test
     void aktiv5005girTilbakeBeslutter() {
-        var aktiv5005 = new LosAksjonspunktDto("5005", Aksjonspunktstatus.OPPRETTET, null);
+        var aktiv5005 = new LosAksjonspunktDto("5005", Aksjonspunkttype.BESLUTTER, Aksjonspunktstatus.OPPRETTET, null);
         var dto = lagLosBehandlingDto(Kildesystem.FPTILBAKE, List.of(), null, aktiv5005);
         behandlingTjeneste.lagreBehandling(dto, Fagsystem.FPTILBAKE);
         var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
