@@ -49,7 +49,7 @@ public class OppgaveKøRepository {
 
 
     public int hentAntallOppgaver(Oppgavespørring oppgavespørring) {
-        return lagTypedQuery(oppgavespørring,true, Long.class).getSingleResult().intValue();
+        return lagTypedQuery(oppgavespørring, true, Long.class).getSingleResult().intValue();
     }
 
     public int hentAntallOppgaverForAvdeling(String enhetsNummer) {

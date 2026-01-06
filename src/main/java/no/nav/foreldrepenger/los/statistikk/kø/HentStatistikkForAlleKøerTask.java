@@ -22,7 +22,7 @@ public class HentStatistikkForAlleKøerTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var alleKøer = køStatistikkTjeneste.hentAlleKøer();
+        var alleKøer = køStatistikkTjeneste.hentAlleOppgavefiltreringer();
         for (var kø : alleKøer) {
             var task = ProsessTaskData.forProsessTask(HentStatistikkForKøTask.class);
             task.setProperty(HentStatistikkForKøTask.OPPGAVE_FILTER_ID, kø.getId().toString());

@@ -28,8 +28,8 @@ public class KøStatistikkTjeneste {
         this.oppgaveKøRepository = oppgaveKøRepository;
     }
 
-    public List<OppgaveFiltrering> hentAlleKøer() {
-        return oppgaveRepository.hentAlleOppgaveFiltre();
+    public List<OppgaveFiltrering> hentAlleOppgavefiltreringer() {
+        return oppgaveRepository.hentAlleOppgaveFiltreReadOnly();
     }
 
     public Integer hentAntallOppgaver(Long behandlingsKø) {

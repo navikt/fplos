@@ -54,8 +54,9 @@ public class OppgaveRepository {
             .findFirst();
     }
 
-    public List<OppgaveFiltrering> hentAlleOppgaveFiltre() {
+    public List<OppgaveFiltrering> hentAlleOppgaveFiltreReadOnly() {
         var listeTypedQuery = entityManager.createQuery("from OppgaveFiltrering", OppgaveFiltrering.class);
+        listeTypedQuery.setHint(HibernateHints.HINT_READ_ONLY, "true");
         return listeTypedQuery.getResultList();
     }
 
