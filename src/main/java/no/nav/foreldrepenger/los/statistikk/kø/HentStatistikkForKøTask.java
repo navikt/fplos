@@ -33,7 +33,7 @@ public class HentStatistikkForKøTask implements ProsessTaskHandler {
         var behandlingsKø = Long.valueOf(prosessTaskData.getPropertyValue(OPPGAVE_FILTER_ID));
         var antallOppgaver = køStatistikkTjeneste.hentAntallOppgaver(behandlingsKø);
         var antallTilgjengeligeOppgaver = køStatistikkTjeneste.hentAntallTilgjengeligeOppgaverFor(behandlingsKø);
-        var statistikkForKø = new StatistikkForKø(behandlingsKø, System.currentTimeMillis(), LocalDate.now(), antallOppgaver, antallTilgjengeligeOppgaver);
-        statistikkRepository.lagreStatistikkForKø(statistikkForKø);
+        var statistikkOppgaveFilter = new StatistikkOppgaveFilter(behandlingsKø, System.currentTimeMillis(), LocalDate.now(), antallOppgaver, antallTilgjengeligeOppgaver);
+        statistikkRepository.lagreStatistikkOppgavefilter(statistikkOppgaveFilter);
     }
 }

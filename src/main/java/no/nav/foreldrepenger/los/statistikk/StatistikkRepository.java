@@ -10,7 +10,7 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import no.nav.foreldrepenger.los.statistikk.kø.StatistikkForKø;
+import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 
 @ApplicationScoped
 public class StatistikkRepository {
@@ -31,7 +31,7 @@ public class StatistikkRepository {
         entityManager.flush();
     }
 
-    public void lagreStatistikkForKø(StatistikkForKø statistikk) {
+    public void lagreStatistikkOppgavefilter(StatistikkOppgaveFilter statistikk) {
         entityManager.persist(statistikk);
     }
 
@@ -89,13 +89,6 @@ public class StatistikkRepository {
             ORDER BY s.tidsstempel, s.fagsakYtelseType, s.behandlingType
             """, StatistikkEnhetYtelseBehandling.class)
             .setParameter("tidsstempel", startpunkt)
-            .getResultList();
-    }
-
-    public List<StatistikkForKø> hentStatistikkForKøEtter(Long tidsstempel) {
-        return entityManager.createQuery("SELECT s FROM StatistikkForKø s WHERE s.tidsstempel >= :tidsstempel",
-                StatistikkForKø.class)
-            .setParameter("tidsstempel", tidsstempel)
             .getResultList();
     }
 }

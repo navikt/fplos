@@ -421,7 +421,7 @@ class OppgaveRepositoryTest {
         // saksbehandlere bør ikke få opp et antall som ikke stemmer med det de ser i køen (egne vedtak til beslutter filtreres bort fra beslutterkø)
         var beslutterKøIkkeAvdelingsleder = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, List.of(),
             List.of(), List.of(AndreKriterierType.TIL_BESLUTTER), List.of(), false, null, null, null, null,
-            Filtreringstype.AKTIVE_OG_LEDIGE);
+            Filtreringstype.AKTIVE_OG_LEDIGE_BARE_FOR_SAKSBEHANDLER);
         var oppgaver = oppgaveKøRepository.hentAntallOppgaver(beslutterKøIkkeAvdelingsleder);
         assertThat(oppgaver).isZero();
 

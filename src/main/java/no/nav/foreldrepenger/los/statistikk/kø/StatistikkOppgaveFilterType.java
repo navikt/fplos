@@ -3,5 +3,5 @@ package no.nav.foreldrepenger.los.statistikk.kø;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public record KøType(Long oppgaveFilterId, Long tidsstempel) {
+public record StatistikkOppgaveFilterType(Long oppgaveFilterId, Long tidsstempel) {
 }
