@@ -1,5 +1,13 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
+import static java.util.Arrays.asList;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Aksjonspunkt;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.AksjonspunktType;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Behandlingsegenskap;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Behandlingsstatus;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Saksegenskap;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Tilbakekreving;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -7,12 +15,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.Beskyttelsesbehov;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.LokalFagsakEgenskap;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingOppgaveEgenskapFinner;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -21,29 +33,18 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
-import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
-import no.nav.vedtak.hendelser.behandling.Behandlingstype;
-import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
-import no.nav.vedtak.hendelser.behandling.Ytelse;
-import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
-
-import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.vedtak.felles.prosesstask.api.CommonTaskProperties;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
-
-import static java.util.Arrays.asList;
-import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.*;
+import no.nav.vedtak.hendelser.behandling.Ytelse;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
 @Dependent
 @ProsessTask(value = "håndter.behandlinghendelse", firstDelay = 10, thenDelay = 10)
@@ -70,16 +71,19 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
 
     private final OppgaveRepository oppgaveRepository;
     private final Beskyttelsesbehov beskyttelsesbehov;
+    private final ReservasjonRepository reservasjonRepository;
 
     @Inject
     public BehandlingHendelseTask2(FpsakBehandlingKlient fpsakKlient,
                                    FptilbakeBehandlingKlient fptilbakeKlient,
                                    OppgaveRepository oppgaveRepository,
-                                   Beskyttelsesbehov beskyttelsesbehov) {
+                                   Beskyttelsesbehov beskyttelsesbehov,
+                                   ReservasjonRepository reservasjonRepository) {
         this.fpsakKlient = fpsakKlient;
         this.fptilbakeKlient = fptilbakeKlient;
         this.oppgaveRepository = oppgaveRepository;
         this.beskyttelsesbehov = beskyttelsesbehov;
+        this.reservasjonRepository = reservasjonRepository;
     }
 
     @Override
@@ -96,48 +100,65 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         var skalLageOppgave = skalLageOppgave(behandlingDto);
         if (skalLageOppgave) {
             var oppgave = opprettOppgave(behandlingDto);
-            opprettReservasjon(oppgave, eksisterendeOppgave);
+            opprettReservasjon(oppgave, eksisterendeOppgave, behandlingDto);
         }
 
     }
 
-    private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave) {
-        var reservasjon = utledReservasjon(oppgave, eksisterendeOppgave);
-        reservasjon.ifPresent(this::lagreReservasjon);
-    }
-
-    private void lagreReservasjon(Reservasjon reservasjon) {
-
+    private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, Behandling behandling) {
+        var reservasjon = utledReservasjon(oppgave, eksisterendeOppgave, behandling);
+        reservasjon.ifPresent(reservasjonRepository::lagre);
     }
 
     private Optional<Reservasjon> utledReservasjon(Oppgave nyOppgave, Optional<Oppgave> eo, Behandling behandling) {
-
-        return eo.map(eksisterendeOppgave -> {
-            if (!eksisterendeOppgave.getBehandlendeEnhet().equals(behandling.behandlendeEnhetId())) {
+        if (eo.isPresent()) {
+            var eksisterendeOppgave = eo.get();
+            if (harEndretEnhet(behandling, eksisterendeOppgave)) {
                 return Optional.empty();
             }
-            if (eksisterendeOppgave.harKriterie(AndreKriterierType.PAPIRSØKNAD)) {
-                return nyOppgave.harKriterie(AndreKriterierType.PAPIRSØKNAD) ? Reservasjon.fraEksisterende(eksisterendeOppgave.getReservasjon()) : Optional.empty();
+            if (erReturFraBeslutter(nyOppgave, eksisterendeOppgave)) {
+                return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, behandling.ansvarligSaksbehandlerIdent(),
+                    ReservasjonKonstanter.RETUR_FRA_BESLUTTER));
             }
-            if (eksisterendeOppgave.harKriterie(AndreKriterierType.TIL_BESLUTTER)) {
-                return nyOppgave.harKriterie(AndreKriterierType.RETURNERT_FRA_BESLUTTER) ? ReservasjonTjeneste.opprettReservasjon(nyOppgave,
-                    behandling.ansvarligSaksbehandlerIdent(), ReservasjonKonstanter.RETUR_FRA_BESLUTTER) : Optional.empty();
+            if (eksisterendeOppgave.harAktivReservasjon()) {
+                if (eksisterendeOppgave.harKriterie(AndreKriterierType.PAPIRSØKNAD) && !nyOppgave.harKriterie(AndreKriterierType.PAPIRSØKNAD)) {
+                    return Optional.empty();
+                }
+                return Optional.of(nyReservasjon(nyOppgave, eksisterendeOppgave.getReservasjon()));
             }
+            //TODO hvis saksbehandler slår opp en sak og begynner å jobbe på den, skal vi da reservere?
+            return Optional.empty();
+        }
+        //TODO reservere hvis saksbehandler oppretter revurering -> sjekke om det eksisterer en behandling i fplos?
+        //TODO sjekke fptilbake om på vent av vent setter riktig saksbehandler slik som fpsak
+        if (erManuellRevurdering(behandling) && behandling.ansvarligSaksbehandlerIdent() != null) {
+            return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, behandling.ansvarligSaksbehandlerIdent(), null));
+        }
+        //TODO se over lengden på reservasjonene, utvidet 24 h vs standard 8 h?
+        return Optional.empty();
+    }
 
+    private static boolean erManuellRevurdering(Behandling behandling) {
+        return behandling.behandlingstype() == BehandlingType.REVURDERING && behandling.behandlingsårsaker()
+            .contains(Behandling.Behandlingsårsak.MANUELL);
+    }
 
-        }).orElseGet(() -> {
-            return behandling.ansvarligSaksbehandlerIdent() == null ? Optional.empty() : ReservasjonTjeneste.opprettReservasjon(nyOppgave,
-                behandling.ansvarligSaksbehandlerIdent(), null);
-        });
+    private static boolean erReturFraBeslutter(Oppgave nyOppgave, Oppgave eksisterendeOppgave) {
+        return eksisterendeOppgave.harKriterie(AndreKriterierType.TIL_BESLUTTER) && nyOppgave.harKriterie(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
+    }
 
-        //Eks reservasjon til vanlig oppgave -> arve, logg hvis avvik fra dto?
-        //Eks reservasjon til beslutter -> ikke arve, kanskje lete etter forrige beslutter
-        //Eks reservasjon papir til vanlig -> ikke arve
-        //
-        //Beslutter tilbake til saksbehandler -> opprett reservasjon fra behandlingdto
-        //Ingen eks reservasjon -> opprett reservasjon fra behandlingdto dersom revurdering manuell behandling
-        //Endret enhet -> ikke viderefør
-        return null;
+    private static boolean harEndretEnhet(Behandling behandling, Oppgave eksisterendeOppgave) {
+        return !eksisterendeOppgave.getBehandlendeEnhet().equals(behandling.behandlendeEnhetId());
+    }
+
+    private static Reservasjon nyReservasjon(Oppgave nyOppgave, Reservasjon eksisterendeReservasjon) {
+        var reservasjon = new Reservasjon(nyOppgave);
+        reservasjon.setReservertTil(eksisterendeReservasjon.getReservertTil());
+        reservasjon.setReservertAv(eksisterendeReservasjon.getReservertAv());
+        reservasjon.setFlyttetAv(eksisterendeReservasjon.getFlyttetAv());
+        reservasjon.setBegrunnelse(eksisterendeReservasjon.getBegrunnelse());
+        reservasjon.setFlyttetTidspunkt(eksisterendeReservasjon.getFlyttetTidspunkt());
+        return reservasjon;
     }
 
     private Oppgave opprettOppgave(Behandling behandling) {
@@ -171,9 +192,11 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     private Set<AndreKriterierType> utledKriterier(Behandling behandling) {
         var kriterier = new HashSet<AndreKriterierType>();
 
-        var aktiveAksjonspunkt = behandling.aksjonspunkt().stream()
+        var aktiveAksjonspunkt = behandling.aksjonspunkt()
+            .stream()
             .filter(a -> a.status() == Aksjonspunktstatus.OPPRETTET)
-            .map(Aksjonspunkt::type).collect(Collectors.toSet());
+            .map(Aksjonspunkt::type)
+            .collect(Collectors.toSet());
         if (aktiveAksjonspunkt.contains(AksjonspunktType.PAPIRSØKNAD)) {
             kriterier.add(AndreKriterierType.PAPIRSØKNAD);
         }
@@ -230,8 +253,8 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         if (behandlingsegenskaper.contains(Behandlingsegenskap.TILBAKEKREVING_OVER_FIRE_RETTSGEBYR)) {
             kriterier.add(AndreKriterierType.OVER_FIRE_RETTSGEBYR);
         }
-        if (behandling.behandlingstype().gjelderTilbakebetaling() && !behandlingsegenskaper.isEmpty()
-            && !behandlingsegenskaper.contains(Behandlingsegenskap.TILBAKEKREVING_SENDT_VARSEL)) {
+        if (behandling.behandlingstype().gjelderTilbakebetaling() && !behandlingsegenskaper.isEmpty() && !behandlingsegenskaper.contains(
+            Behandlingsegenskap.TILBAKEKREVING_SENDT_VARSEL)) {
             kriterier.add(AndreKriterierType.IKKE_VARSLET);
         }
         if (!behandling.refusjonskrav() || behandlingsegenskaper.contains(Behandlingsegenskap.DIREKTE_UTBETALING)) {
@@ -266,7 +289,9 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             kriterier.add(AndreKriterierType.REVURDERING_INNTEKTSMELDING);
         }
 
-        if (behandling.aksjonspunkt().stream().anyMatch(a -> a.type() == AksjonspunktType.TIL_BESLUTTER && a.status() == Aksjonspunktstatus.AVBRUTT)) {
+        if (behandling.aksjonspunkt()
+            .stream()
+            .anyMatch(a -> a.type() == AksjonspunktType.TIL_BESLUTTER && a.status() == Aksjonspunktstatus.AVBRUTT)) {
             kriterier.add(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
         }
 
@@ -276,7 +301,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     }
 
     private boolean skalLageOppgave(Behandling behandlingDto) {
-        return behandlingDto.aksjonspunkt().stream().anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET));
+        return behandlingDto.aksjonspunkt().stream().anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET)); //TODO ikke på vent
     }
 
     private Optional<Oppgave> finnEksisterendeOppgave(UUID behandlingUuid) {
@@ -299,9 +324,9 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         var saksegenskaper = mapFagsakEgenskaper(dto.saksegenskaper());
         var behandlingsegenskaper = dto.behandlingsegenskaper().stream().map(Behandlingsegenskap::valueOf).toList();
         return new Behandling(dto.behandlingUuid(), new Saksnummer(dto.saksnummer()), map(dto.ytelse()), new AktørId(dto.aktørId().getAktørId()),
-            BehandlingType.valueOf(dto.behandlingstype().name()), Behandlingsstatus.valueOf(dto.behandlingsstatus().name()),
-            dto.opprettetTidspunkt(), dto.behandlendeEnhetId(), dto.behandlingsfrist(), dto.ansvarligSaksbehandlerIdent(), aksjonspunkter,
-            behandlingsårsaker, dto.faresignaler(), dto.refusjonskrav(), saksegenskaper,
+            BehandlingType.valueOf(dto.behandlingstype().name()), Behandlingsstatus.valueOf(dto.behandlingsstatus().name()), dto.opprettetTidspunkt(),
+            dto.behandlendeEnhetId(), dto.behandlingsfrist(), dto.ansvarligSaksbehandlerIdent(), aksjonspunkter, behandlingsårsaker,
+            dto.faresignaler(), dto.refusjonskrav(), saksegenskaper,
             dto.foreldrepengerDto() == null ? null : dto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper, null);
     }
 
