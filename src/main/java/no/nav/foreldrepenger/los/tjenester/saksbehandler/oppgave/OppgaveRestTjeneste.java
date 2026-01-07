@@ -84,7 +84,7 @@ public class OppgaveRestTjeneste {
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
         if (oppgaveIderSomVises.isEmpty()) {
-            var finnesOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.AKTIVE_OG_LEDIGE_BARE_FOR_SAKSBEHANDLER) > 0;
+            var finnesOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.LEDIGE) > 0;
             if (!finnesOppgaver) {
                 return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
             }
@@ -112,7 +112,7 @@ public class OppgaveRestTjeneste {
     @Operation(description = "Henter antall oppgaver knyttet til sakslisten", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.AKTIVE_OG_LEDIGE_BARE_FOR_SAKSBEHANDLER);
+        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.LEDIGE);
     }
 
     @GET

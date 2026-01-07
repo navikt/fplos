@@ -41,7 +41,7 @@ public class AvdelingslederOppgaveRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId,
                                                   @NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.AKTIVE_OG_LEDIGE);
+        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.ALLE);
     }
 
     @GET

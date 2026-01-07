@@ -105,7 +105,7 @@ class OppgaveKøTjenesteTest {
     @Test
     void hentAntallOppgaver() {
         var oppgaveFiltreringId = leggeInnEtSettMedOppgaver();
-        var antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, Filtreringstype.AKTIVE_OG_LEDIGE);
+        var antallOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(oppgaveFiltreringId, Filtreringstype.ALLE);
         assertThat(antallOppgaver).isEqualTo(3);
     }
 

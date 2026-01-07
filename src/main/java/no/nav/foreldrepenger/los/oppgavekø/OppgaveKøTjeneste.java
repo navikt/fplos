@@ -63,7 +63,7 @@ public class OppgaveKøTjeneste {
         if (oppgaveFilter.isEmpty()) {
             return Collections.emptyList();
         }
-        var oppgavespørring = new Oppgavespørring(oppgaveFilter.get(), Filtreringstype.AKTIVE_OG_LEDIGE_BARE_FOR_SAKSBEHANDLER);
+        var oppgavespørring = new Oppgavespørring(oppgaveFilter.get(), Filtreringstype.LEDIGE);
         oppgavespørring.setMaksAntall(maksAntall);
         return oppgaveKøRepository.hentOppgaver(oppgavespørring);
     }

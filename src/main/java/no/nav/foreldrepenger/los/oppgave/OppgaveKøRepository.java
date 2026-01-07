@@ -64,7 +64,7 @@ public class OppgaveKøRepository {
             null,
             null,
             null,
-            Filtreringstype.AKTIVE_OG_LEDIGE);
+            Filtreringstype.ALLE);
         return hentAntallOppgaver(oppgavespørring);
     }
 
@@ -175,7 +175,7 @@ public class OppgaveKøRepository {
     }
 
     private static String reserverteSubquery(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
-        if (Filtreringstype.AKTIVE.equals(oppgavespørring.getFiltreringstype())) {
+        if (Filtreringstype.ALLE.equals(oppgavespørring.getFiltreringstype())) {
             return "";
         }
         parameters.put("nå", LocalDateTime.now());
@@ -184,7 +184,7 @@ public class OppgaveKøRepository {
 
     private static String filtrerBortEgneBeslutterOppgaver(Oppgavespørring dto, Map<String, Object> parameters) {
         var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
-        if (!tilBeslutterKø || !Filtreringstype.AKTIVE_OG_LEDIGE_BARE_FOR_SAKSBEHANDLER.equals(dto.getFiltreringstype())) {
+        if (!tilBeslutterKø || Filtreringstype.ALLE.equals(dto.getFiltreringstype())) {
             return "";
         }
 

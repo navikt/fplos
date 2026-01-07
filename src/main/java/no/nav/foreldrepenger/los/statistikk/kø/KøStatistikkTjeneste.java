@@ -32,12 +32,12 @@ public class KøStatistikkTjeneste {
     }
 
     public Integer hentAntallOppgaver(Long behandlingsKø) {
-        var oppgavespørring = hentOppgavespørringForKø(behandlingsKø, Filtreringstype.AKTIVE);
+        var oppgavespørring = hentOppgavespørringForKø(behandlingsKø, Filtreringstype.ALLE);
         return oppgaveKøRepository.hentAntallOppgaver(oppgavespørring);
     }
 
     public Integer hentAntallTilgjengeligeOppgaverFor(Long behandlingsKø) {
-        var oppgavespørring = hentOppgavespørringForKø(behandlingsKø, Filtreringstype.AKTIVE_OG_LEDIGE);
+        var oppgavespørring = hentOppgavespørringForKø(behandlingsKø, Filtreringstype.LEDIGE);
         return oppgaveKøRepository.hentAntallOppgaver(oppgavespørring);
     }
 
