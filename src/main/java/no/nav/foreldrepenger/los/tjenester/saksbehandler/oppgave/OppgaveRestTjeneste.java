@@ -25,6 +25,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.AsyncPollingStatus;
@@ -83,7 +84,7 @@ public class OppgaveRestTjeneste {
                                                          @Valid @QueryParam("oppgaveIder") OppgaveIderDto oppgaverIder) throws URISyntaxException {
         List<Long> oppgaveIderSomVises = oppgaverIder == null ? List.of() : oppgaverIder.getOppgaveIdeer();
         if (oppgaveIderSomVises.isEmpty()) {
-            var finnesOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), false) > 0;
+            var finnesOppgaver = oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.LEDIGE) > 0;
             if (!finnesOppgaver) {
                 return Redirect.sendTilPolling(request, sakslisteId, oppgaverIder);
             }
@@ -111,7 +112,7 @@ public class OppgaveRestTjeneste {
     @Operation(description = "Henter antall oppgaver knyttet til sakslisten", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), false);
+        return oppgaveKøTjeneste.hentAntallOppgaver(sakslisteId.getVerdi(), Filtreringstype.LEDIGE);
     }
 
     @GET

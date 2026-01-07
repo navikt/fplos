@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.hibernate.jpa.HibernateHints;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
-
-import org.hibernate.jpa.HibernateHints;
 
 @ApplicationScoped
 public class OppgaveKøRepository {
@@ -52,14 +52,24 @@ public class OppgaveKøRepository {
     }
 
     public int hentAntallOppgaverForAvdeling(String enhetsNummer) {
-        var oppgavespørring = new Oppgavespørring(enhetsNummer, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-            new ArrayList<>(), false, null, null, null, null);
-        oppgavespørring.setForAvdelingsleder(true);
-        return lagTypedQuery(oppgavespørring, true, Long.class).getSingleResult().intValue();
+        var oppgavespørring = new Oppgavespørring(
+            enhetsNummer,
+            KøSortering.BEHANDLINGSFRIST,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            false,
+            null,
+            null,
+            null,
+            null,
+            Filtreringstype.ALLE);
+        return hentAntallOppgaver(oppgavespørring);
     }
 
     public List<Oppgave> hentOppgaver(Oppgavespørring oppgavespørring) {
-        var query = lagTypedQuery(oppgavespørring, false, Oppgave.class);
+        var query = lagTypedQuery(oppgavespørring,false, Oppgave.class);
         return query.getResultList();
     }
 
@@ -75,8 +85,8 @@ public class OppgaveKøRepository {
         qlStringBuilder.append(filtrerBehandlingType(oppgavespørring, parameters));
         qlStringBuilder.append(filtrerYtelseType(oppgavespørring, parameters));
         qlStringBuilder.append(andreKriterierSubquery(oppgavespørring, parameters));
-        qlStringBuilder.append(reserverteSubquery(parameters));
-        qlStringBuilder.append(tilBeslutter(oppgavespørring, parameters));
+        qlStringBuilder.append(reserverteSubquery(oppgavespørring, parameters));
+        qlStringBuilder.append(filtrerBortEgneBeslutterOppgaver(oppgavespørring, parameters));
         qlStringBuilder.append(" AND o.aktiv = true ");
         qlStringBuilder.append(beløpFilter(oppgavespørring, parameters));
         qlStringBuilder.append(datoFilter(oppgavespørring, parameters));
@@ -84,7 +94,6 @@ public class OppgaveKøRepository {
         if (!kunCountQuery) {
             qlStringBuilder.append(orderBy(oppgavespørring));
         }
-
         var query = entityManager.createQuery(qlStringBuilder.toString(), resultClass);
         parameters.forEach(query::setParameter);
 
@@ -165,16 +174,20 @@ public class OppgaveKøRepository {
         return "AND o.fagsakYtelseType in :fagsakYtelseType ";
     }
 
-    private static String reserverteSubquery(Map<String, Object> parameters) {
+    private static String reserverteSubquery(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
+        if (Filtreringstype.ALLE.equals(oppgavespørring.getFiltreringstype())) {
+            return "";
+        }
         parameters.put("nå", LocalDateTime.now());
         return "AND NOT EXISTS (select 1 from Reservasjon r where r.oppgave = o and r.reservertTil > :nå) ";
     }
 
-    private static String tilBeslutter(Oppgavespørring dto, Map<String, Object> parameters) {
+    private static String filtrerBortEgneBeslutterOppgaver(Oppgavespørring dto, Map<String, Object> parameters) {
         var tilBeslutterKø = dto.getInkluderAndreKriterierTyper().contains(AndreKriterierType.TIL_BESLUTTER);
-        if (dto.getForAvdelingsleder() || !tilBeslutterKø) {
+        if (!tilBeslutterKø || Filtreringstype.ALLE.equals(dto.getFiltreringstype())) {
             return "";
         }
+
         parameters.put("tilbeslutter", AndreKriterierType.TIL_BESLUTTER);
         parameters.put("uid", BrukerIdent.brukerIdent().toUpperCase());
         return """

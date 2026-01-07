@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 
+import no.nav.foreldrepenger.los.statistikk.kø.HentStatistikkForKøTask;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -110,6 +112,5 @@ class StatistikkEnhetYtelseBehandlingTest {
         resultater = statistikkRepository.hentStatistikkForEnhetFomDato(AVDELING_DRAMMEN_ENHET, LocalDate.now().minusWeeks(1));
         assertThat(resultater.stream().map(StatistikkEnhetYtelseBehandling::getAntallAvsluttet).reduce(0, Integer::sum)).isEqualTo(1);
     }
-
 
 }

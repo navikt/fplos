@@ -10,6 +10,7 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 
 @ApplicationScoped
 public class StatistikkRepository {
@@ -28,6 +29,10 @@ public class StatistikkRepository {
     public void lagreStatistikkEnhetYtelseBehandling(Collection<StatistikkEnhetYtelseBehandling> statistikk) {
         statistikk.forEach(innslag -> entityManager.persist(innslag));
         entityManager.flush();
+    }
+
+    public void lagreStatistikkOppgaveFilter(StatistikkOppgaveFilter statistikk) {
+        entityManager.persist(statistikk);
     }
 
     public List<OppgaveEnhetYtelseBehandling> hentÅpneOppgaverPerEnhetYtelseBehandling() {
