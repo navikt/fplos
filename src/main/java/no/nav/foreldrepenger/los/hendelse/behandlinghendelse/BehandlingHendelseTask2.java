@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,16 +52,9 @@ import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 @ProsessTask(value = "håndter.behandlinghendelse", firstDelay = 10, thenDelay = 10)
 public class BehandlingHendelseTask2 implements ProsessTaskHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseTask2.class);
-
-    private static final String MANUELT_SATT_PÅ_VENT_KODE = "7001";
-    private static final String PÅ_VENT_KODEGRUPPE_STARTS_WITH = "7";
-    private static final String TIL_BESLUTTER_KODE = "5016";
-
     private static final String KONTROLLER_TERMINBEKREFTELSE_KODE = "5001";
     private static final String AUTOMATISK_MARKERING_SOM_UTLAND = "5068";
     private static final String ARBEID_INNTEKT = "5085";
-    private static final List<String> REGISTRER_PAPIRSØKNAD_KODE = asList("5012", "5040", "5057", "5096");
     private static final String VURDER_FORMKRAV_KODE = "5082";
     private static final List<String> RELEVANT_NÆRING = List.of("5039", "5049", "5058", "5046", "5051", "5089", "5082", "5035");
 
@@ -93,6 +88,8 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
 
         var behandlingDto = hentBehandlingDto(behandlingUuid, kilde, new Saksnummer(prosessTaskData.getSaksnummer()));
 
+
+        //TODO Se på om lagret behandling aksjonspunkt er lik ny tilstand, hvis dette er tilfellet så behold oppgave?
         var eksisterendeOppgave = finnEksisterendeOppgave(behandlingDto.behandlingUuid());
         eksisterendeOppgave.ifPresent(
             Oppgave::avsluttOppgave); //NB! avslutte reservasjon??? avkorter ikke reservasjonen nå. Sjekk queries og frontend
@@ -130,7 +127,6 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             return Optional.empty();
         }
         //TODO reservere hvis saksbehandler oppretter revurering -> sjekke om det eksisterer en behandling i fplos?
-        //TODO sjekke fptilbake om på vent av vent setter riktig saksbehandler slik som fpsak
         if (erManuellRevurdering(behandling) && behandling.ansvarligSaksbehandlerIdent() != null) {
             return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, behandling.ansvarligSaksbehandlerIdent(), null));
         }
@@ -335,7 +331,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     }
 
     private List<Aksjonspunkt> mapAksjonspunkt(LosBehandlingDto dto) {
-        return dto.aksjonspunkt().stream().map(ap -> new Aksjonspunkt(mapFraFpsak(ap.definisjon()), ap.status(), ap.fristTid())).toList();
+        return dto.aksjonspunkt().stream().map(ap -> new Aksjonspunkt(mapFraFpsak(ap), ap.status(), ap.fristTid())).toList();
     }
 
     private static FagsakYtelseType map(Ytelse ytelse) {
@@ -364,17 +360,22 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         };
     }
 
-    private AksjonspunktType mapFraFpsak(String aksjonspunktKode) {
-        return switch (aksjonspunktKode) {
-            case MANUELT_SATT_PÅ_VENT_KODE -> AksjonspunktType.MANUELT_SATT_PÅ_VENT;
+    private AksjonspunktType mapFraFpsak(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
+        if (aksjonspunktDto.type() == Aksjonspunkttype.VENT) {
+            return AksjonspunktType.PÅ_VENT;
+        }
+        if (aksjonspunktDto.type() == Aksjonspunkttype.BESLUTTER) {
+            return AksjonspunktType.TIL_BESLUTTER;
+        }
+        if (aksjonspunktDto.type() == Aksjonspunkttype.PAPIRSØKNAD) {
+            return AksjonspunktType.PAPIRSØKNAD;
+        }
+        return switch (aksjonspunktDto.definisjon()) {
             case AUTOMATISK_MARKERING_SOM_UTLAND -> AksjonspunktType.AUTOMATISK_MARKERING_SOM_UTLAND;
             case ARBEID_INNTEKT -> AksjonspunktType.ARBEID_OG_INNTEKT;
             case VURDER_FORMKRAV_KODE -> AksjonspunktType.VURDER_FORMKRAV;
-            case TIL_BESLUTTER_KODE -> AksjonspunktType.TIL_BESLUTTER;
             case KONTROLLER_TERMINBEKREFTELSE_KODE -> AksjonspunktType.KONTROLLER_TERMINBEKREFTELSE;
             case String kode when RELEVANT_NÆRING.contains(kode) -> AksjonspunktType.VURDER_NÆRING;
-            case String kode when kode.startsWith(PÅ_VENT_KODEGRUPPE_STARTS_WITH) -> AksjonspunktType.PÅ_VENT;
-            case String kode when REGISTRER_PAPIRSØKNAD_KODE.contains(kode) -> AksjonspunktType.PAPIRSØKNAD;
             default -> AksjonspunktType.ANNET;
         };
     }
