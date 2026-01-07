@@ -22,7 +22,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.Nøkkeltal
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
-class OppgaveBeholdningStatistikkTjenesteTest {
+class OppgaveBeholdningKøStatistikkTjenesteTest {
 
     private final Oppgave førstegangOppgave = Oppgave.builder()
         .dummyOppgave(AVDELING_DRAMMEN_ENHET)

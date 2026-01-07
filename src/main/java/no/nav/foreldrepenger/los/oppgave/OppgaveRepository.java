@@ -54,6 +54,12 @@ public class OppgaveRepository {
             .findFirst();
     }
 
+    public List<OppgaveFiltrering> hentAlleOppgaveFiltreReadOnly() {
+        var listeTypedQuery = entityManager.createQuery("from OppgaveFiltrering", OppgaveFiltrering.class);
+        listeTypedQuery.setHint(HibernateHints.HINT_READ_ONLY, "true");
+        return listeTypedQuery.getResultList();
+    }
+
     public List<OppgaveFiltrering> hentAlleOppgaveFilterSettTilknyttetEnhet(String avdelingEnhet) {
         var listeTypedQuery = entityManager.createQuery("from OppgaveFiltrering l where l.avdeling.avdelingEnhet = :avdelingEnhet order by l.navn",
             OppgaveFiltrering.class).setParameter("avdelingEnhet", avdelingEnhet);//$NON-NLS-1$
