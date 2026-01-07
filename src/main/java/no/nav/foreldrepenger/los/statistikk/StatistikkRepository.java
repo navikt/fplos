@@ -1,6 +1,9 @@
 package no.nav.foreldrepenger.los.statistikk;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 
@@ -61,10 +64,26 @@ public class StatistikkRepository {
             .getResultList();
     }
 
-    public List<StatistikkEnhetYtelseBehandling> hentInnslagEtterTidsstempel(Long tidsstempel) {
-        return entityManager.createQuery("SELECT s FROM StatistikkEnhetYtelseBehandling s WHERE s.tidsstempel >= :tidsstempel",
-                StatistikkEnhetYtelseBehandling.class)
-            .setParameter("tidsstempel", tidsstempel)
+    public List<StatistikkEnhetYtelseBehandling> hentStatistikkForEnhetFomDato(String enhet, LocalDate fom) {
+        var startpunkt = fom.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return entityManager.createQuery("""
+            SELECT s FROM StatistikkEnhetYtelseBehandling s
+            WHERE s.behandlendeEnhet = :enhet AND s.tidsstempel >= :tidsstempel
+            ORDER BY s.tidsstempel, s.fagsakYtelseType, s.behandlingType
+            """, StatistikkEnhetYtelseBehandling.class)
+            .setParameter("enhet", enhet)
+            .setParameter("tidsstempel", startpunkt)
+            .getResultList();
+    }
+
+    public List<StatistikkEnhetYtelseBehandling> hentStatistikkFomDato(LocalDate fom) {
+        var startpunkt = fom.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return entityManager.createQuery("""
+            SELECT s FROM StatistikkEnhetYtelseBehandling s
+            WHERE s.tidsstempel >= :tidsstempel
+            ORDER BY s.tidsstempel, s.fagsakYtelseType, s.behandlingType
+            """, StatistikkEnhetYtelseBehandling.class)
+            .setParameter("tidsstempel", startpunkt)
             .getResultList();
     }
 }

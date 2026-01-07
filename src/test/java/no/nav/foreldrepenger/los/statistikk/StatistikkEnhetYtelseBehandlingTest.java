@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.statistikk;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Duration;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,14 +94,20 @@ class StatistikkEnhetYtelseBehandlingTest {
     void taSnapshotHentResultat() {
         leggInnEttSettMedOppgaver();
         snapshotTask.doTask(ProsessTaskData.forProsessTask(SnapshotEnhetYtelseBehandlingTask.class));
-        var resultater = statistikkRepository.hentInnslagEtterTidsstempel(System.currentTimeMillis() - Duration.ofDays(7).toMillis());
-        assertThat(resultater).hasSize(4);
+
+        var resultater0 = statistikkRepository.hentStatistikkFomDato(LocalDate.now().minusWeeks(1));
+        assertThat(resultater0).hasSize(4);
+        assertThat(resultater0.stream().filter(r -> AVDELING_DRAMMEN_ENHET.equals(r.getBehandlendeEnhet())).count()).isEqualTo(3);
+        assertThat(resultater0.stream().map(StatistikkEnhetYtelseBehandling::getAntallAvsluttet).reduce(0, Integer::sum)).isZero();
+
+        var resultater = statistikkRepository.hentStatistikkForEnhetFomDato(AVDELING_DRAMMEN_ENHET, LocalDate.now().minusWeeks(1));
+        assertThat(resultater).hasSize(3);
         assertThat(resultater.stream().filter(r -> AVDELING_DRAMMEN_ENHET.equals(r.getBehandlendeEnhet())).count()).isEqualTo(3);
         assertThat(resultater.stream().map(StatistikkEnhetYtelseBehandling::getAntallAvsluttet).reduce(0, Integer::sum)).isZero();
 
         avsluttOppgave(beslutterOppgave);
         snapshotTask.doTask(ProsessTaskData.forProsessTask(SnapshotEnhetYtelseBehandlingTask.class));
-        resultater = statistikkRepository.hentInnslagEtterTidsstempel(System.currentTimeMillis() - Duration.ofDays(7).toMillis());
+        resultater = statistikkRepository.hentStatistikkForEnhetFomDato(AVDELING_DRAMMEN_ENHET, LocalDate.now().minusWeeks(1));
         assertThat(resultater.stream().map(StatistikkEnhetYtelseBehandling::getAntallAvsluttet).reduce(0, Integer::sum)).isEqualTo(1);
     }
 

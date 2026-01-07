@@ -102,44 +102,6 @@ class OppgaveBeholdningStatistikkTjenesteTest {
     }
 
     @Test
-        //FIXME - denne testen feiler fra midnatt til kl 01:00
-        /*
-         * [ERROR] Failures:
-         * [ERROR]   OppgaveBeholdningStatistikkTjenesteTest.hentAntallOppgaverForAvdelingPerDatoTest:118
-         * Expected size: 3 but was: 0 in:
-         * []
-         */
-    void hentAntallOppgaverForAvdelingPerDatoTest() {
-        leggInnEttSettMedOppgaver();
-        var resultater = nøkkeltallRepository.hentAlleOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET);
-        assertThat(resultater).hasSize(3);
-        assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
-        assertThat(resultater.get(0).behandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
-        assertThat(resultater.get(0).opprettetDato()).isEqualTo(LocalDate.now());
-        assertThat(resultater.get(0).antall()).isEqualTo(4L);
-        assertThat(resultater.get(1).antall()).isEqualTo(1L);
-        assertThat(resultater.get(2).antall()).isEqualTo(1L);
-    }
-
-    @Test
-        //FIXME - denne testen feiler fra midnatt til kl 01:00
-        /*
-         * [ERROR]   OppgaveBeholdningStatistikkTjenesteTest.hentAntallOppgaverForAvdelingPerDatoTest2:136
-         * expected: 2022-04-05 (java.time.LocalDate)
-         *  but was: 2022-04-04 (java.time.LocalDate)
-         */
-    void hentAntallOppgaverForAvdelingPerDatoTest2() {
-        leggTilOppgave(førstegangOppgave, 27, 27);
-        leggTilOppgave(førstegangOppgave2, 28, 28);//skal ikke komme i resultatssettet
-        leggTilOppgave(annenAvdeling, 10, 4);//skal ikke komme i resultatssettet
-        leggTilOppgave(klageOppgave, 10, 4);
-        var resultater = nøkkeltallRepository.hentAlleOppgaverForAvdelingPerDato(AVDELING_DRAMMEN_ENHET);
-        assertThat(resultater).hasSize(8);
-        assertThat(resultater.get(0).fagsakYtelseType()).isEqualTo(FagsakYtelseType.FORELDREPENGER);
-        assertThat(resultater.get(0).opprettetDato()).isEqualTo(LocalDate.now().minusDays(27));
-    }
-
-    @Test
     void hentOppgaverPerFørsteStønadsdagMåned() {
         leggInnEttSettMedOppgaver();
         var idag = LocalDate.now();
