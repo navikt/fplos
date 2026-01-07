@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdeling;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDato;
@@ -28,14 +30,16 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 public class NøkkeltallRestTjeneste {
 
     private NøkkeltallRepository nøkkeltallRepository;
+    private StatistikkRepository statistikkRepository;
 
     public NøkkeltallRestTjeneste() {
         // For Rest-CDI
     }
 
     @Inject
-    public NøkkeltallRestTjeneste(NøkkeltallRepository nøkkeltallRepository) {
+    public NøkkeltallRestTjeneste(NøkkeltallRepository nøkkeltallRepository, StatistikkRepository statistikkRepository) {
         this.nøkkeltallRepository = nøkkeltallRepository;
+        this.statistikkRepository = statistikkRepository;
     }
 
     @GET
@@ -51,7 +55,9 @@ public class NøkkeltallRestTjeneste {
     @Operation(description = "UA Historikk", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<OppgaverForAvdelingPerDato> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return nøkkeltallRepository.hentAlleOppgaverForAvdelingPerDato(avdelingEnhet.getAvdelingEnhet());
+        return statistikkRepository.hentStatistikkForEnhetFomDato(avdelingEnhet.getAvdelingEnhet(), LocalDate.now().minusWeeks(4)).stream()
+            .map(s -> new OppgaverForAvdelingPerDato(s.getFagsakYtelseType(), s.getBehandlingType(), s.getStatistikkDato(), Long.valueOf(s.getAntallAktive())))
+            .toList();
     }
 
     @GET

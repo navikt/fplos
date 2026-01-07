@@ -11,7 +11,6 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdeling;
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagUkeMåned;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
@@ -50,20 +49,6 @@ public class NøkkeltallRepository {
     }
 
     @SuppressWarnings("unchecked")
-    public List<OppgaverForAvdelingPerDato> hentAlleOppgaverForAvdelingPerDato(String avdelingEnhet) {
-        return entityManager.createNativeQuery("""
-            Select o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, datoer.dato, Count(1) AS ANTALL
-            FROM (select trunc(sysdate) + rownum -28 as dato from all_objects where rownum <= (trunc(sysdate) - trunc(sysdate-28) )) datoer,
-            OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
-            WHERE a.AVDELING_ENHET =:avdelingEnhet
-            AND trunc(datoer.dato) >= trunc(o.OPPRETTET_TID)
-            AND NOT (o.AKTIV='N' AND trunc(datoer.dato) > trunc(o.ENDRET_TID))
-            GROUP BY datoer.dato, o.BEHANDLING_TYPE, o.FAGSAK_YTELSE_TYPE
-            ORDER BY datoer.dato, o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE
-            """).setParameter(AVDELING_ENHET, avdelingEnhet).getResultStream().map(row -> mapOppgaverForAvdelingPerDato((Object[]) row)).toList();
-    }
-
-    @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdagUkeMåned> hentOppgaverPerFørsteStønadsdagMåned(String avdeling) {
         return entityManager.createNativeQuery("""
             select trunc(ytre.DATO, 'MM') as DATO, YTELSE, sum(ytre.ANTALL) as ANTALL from (
@@ -95,13 +80,5 @@ public class NøkkeltallRepository {
         var tilBeslutter = new BooleanToStringConverter().convertToEntityAttribute(Character.toString((Character) row[2])); // NOSONAR
         var antall = ((BigDecimal) row[3]).longValue(); // NOSONAR
         return new OppgaverForAvdeling(fagsakYtelseType, behandlingType, !tilBeslutter, antall);
-    }
-
-    private static OppgaverForAvdelingPerDato mapOppgaverForAvdelingPerDato(Object[] row) {
-        var fagsakYtelseType = FagsakYtelseType.fraKode((String) row[0]);  // NOSONAR
-        var behandlingType = BehandlingType.fraKode((String) row[1]);  // NOSONAR
-        var opprettetDato = ((LocalDateTime) row[2]).toLocalDate();  // NOSONAR
-        var antall = ((BigDecimal) row[3]).longValue();  // NOSONAR
-        return new OppgaverForAvdelingPerDato(fagsakYtelseType, behandlingType, opprettetDato, antall);
     }
 }
