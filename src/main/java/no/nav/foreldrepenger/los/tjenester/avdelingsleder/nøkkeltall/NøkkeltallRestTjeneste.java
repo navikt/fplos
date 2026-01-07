@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -55,9 +57,12 @@ public class NøkkeltallRestTjeneste {
     @Operation(description = "UA Historikk", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<OppgaverForAvdelingPerDato> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return statistikkRepository.hentStatistikkForEnhetFomDato(avdelingEnhet.getAvdelingEnhet(), LocalDate.now().minusWeeks(4)).stream()
-            .map(s -> new OppgaverForAvdelingPerDato(s.getFagsakYtelseType(), s.getBehandlingType(), s.getStatistikkDato(), Long.valueOf(s.getAntallAktive())))
-            .toList();
+        var eldre = statistikkRepository.hentStatistikkForEnhetFomDato(avdelingEnhet.getAvdelingEnhet(), LocalDate.now().minusWeeks(4)).stream()
+            .map(s -> new OppgaverForAvdelingPerDato(s.getFagsakYtelseType(), s.getBehandlingType(), s.getStatistikkDato(), Long.valueOf(s.getAntallAktive())));
+        var dagens = statistikkRepository.hentÅpneOppgaverPerEnhetYtelseBehandling().stream()
+            .filter(tall -> Objects.equals(tall.enhet(), avdelingEnhet.getAvdelingEnhet()))
+            .map(tall -> new OppgaverForAvdelingPerDato(tall.fagsakYtelseType(), tall.behandlingType(), LocalDate.now(), tall.antall()));
+        return Stream.concat(eldre, dagens).toList();
     }
 
     @GET
