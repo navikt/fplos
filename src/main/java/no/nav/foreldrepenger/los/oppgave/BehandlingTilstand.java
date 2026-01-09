@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.EnumeratedValue;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
+import java.util.Set;
+
 public enum BehandlingTilstand implements Kodeverdi {
 
     OPPRETTET("OPPRETTET", "Opprettet"),
@@ -41,5 +43,7 @@ public enum BehandlingTilstand implements Kodeverdi {
         return kode;
     }
 
-
+    public boolean erPåVent() {
+        return Set.of(VENT_KOMPLETT, VENT_KØ, VENT_MANUELL, VENT_REGISTERDATA, VENT_TIDLIG, VENT_KLAGEINSTANS, VENT_SØKNAD).contains(this);
+    }
 }

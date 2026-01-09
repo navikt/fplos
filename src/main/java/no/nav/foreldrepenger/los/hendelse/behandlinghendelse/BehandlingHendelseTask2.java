@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
-import static java.util.Arrays.asList;
 import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Aksjonspunkt;
 import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.AksjonspunktType;
 import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Behandlingsegenskap;
@@ -15,10 +14,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -64,6 +61,8 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     private final BehandlingKlient fpsakKlient;
     private final BehandlingKlient fptilbakeKlient;
 
+    private final BehandlingTjeneste behandlingTjeneste;
+
     private final OppgaveRepository oppgaveRepository;
     private final Beskyttelsesbehov beskyttelsesbehov;
     private final ReservasjonRepository reservasjonRepository;
@@ -71,11 +70,13 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     @Inject
     public BehandlingHendelseTask2(FpsakBehandlingKlient fpsakKlient,
                                    FptilbakeBehandlingKlient fptilbakeKlient,
+                                   BehandlingTjeneste behandlingTjeneste,
                                    OppgaveRepository oppgaveRepository,
                                    Beskyttelsesbehov beskyttelsesbehov,
                                    ReservasjonRepository reservasjonRepository) {
         this.fpsakKlient = fpsakKlient;
         this.fptilbakeKlient = fptilbakeKlient;
+        this.behandlingTjeneste = behandlingTjeneste;
         this.oppgaveRepository = oppgaveRepository;
         this.beskyttelsesbehov = beskyttelsesbehov;
         this.reservasjonRepository = reservasjonRepository;
@@ -88,7 +89,6 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
 
         var behandlingDto = hentBehandlingDto(behandlingUuid, kilde, new Saksnummer(prosessTaskData.getSaksnummer()));
 
-
         //TODO Se på om lagret behandling aksjonspunkt er lik ny tilstand, hvis dette er tilfellet så behold oppgave?
         var eksisterendeOppgave = finnEksisterendeOppgave(behandlingDto.behandlingUuid());
         eksisterendeOppgave.ifPresent(
@@ -100,6 +100,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             opprettReservasjon(oppgave, eksisterendeOppgave, behandlingDto);
         }
 
+        behandlingTjeneste.safeLagreBehandling(behandlingDto, Fagsystem.FPSAK);
     }
 
     private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, Behandling behandling) {
@@ -127,11 +128,25 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             return Optional.empty();
         }
         //TODO reservere hvis saksbehandler oppretter revurering -> sjekke om det eksisterer en behandling i fplos?
-        if (erManuellRevurdering(behandling) && behandling.ansvarligSaksbehandlerIdent() != null) {
+        var lagretBehandling = oppgaveRepository.finnBehandling(behandling.behandlingUuid());
+        if (behandling.ansvarligSaksbehandlerIdent() != null && (erNyManuellRevurdering(behandling, lagretBehandling) || erPåVent(lagretBehandling))) {
             return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, behandling.ansvarligSaksbehandlerIdent(), null));
         }
         //TODO se over lengden på reservasjonene, utvidet 24 h vs standard 8 h?
         return Optional.empty();
+    }
+
+    private boolean erPåVent(Optional<no.nav.foreldrepenger.los.oppgave.Behandling> lagretBehandling) {
+        return lagretBehandling.stream().anyMatch(this::erPåVent);
+    }
+
+    private static boolean erNyManuellRevurdering(Behandling behandling, Optional<no.nav.foreldrepenger.los.oppgave.Behandling> lagretBehandling) {
+        return lagretBehandling.isEmpty() && erManuellRevurdering(behandling);
+    }
+
+    private boolean erPåVent(no.nav.foreldrepenger.los.oppgave.Behandling behandling) {
+        //TODO blir feil når det kommer en ny venttilstand i fpsak
+        return behandling.getBehandlingTilstand().erPåVent();
     }
 
     private static boolean erManuellRevurdering(Behandling behandling) {
@@ -402,7 +417,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     }
 
     private static List<Saksegenskap> mapFagsakEgenskaper(List<String> saksegenskaper) {
-        return saksegenskaper.stream().map(Saksegenskap::valueOf).toList(); //TODO logge hvis ny verdi?
+        return saksegenskaper.stream().map(Saksegenskap::valueOf).toList();
     }
 
 }
