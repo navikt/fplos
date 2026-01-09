@@ -9,7 +9,7 @@ public enum BehandlingVenteStatus implements Kodeverdi {
     IKKE_PÅ_VENT("IKKE_PÅ_VENT", "Ikke på vent");
 
     @JsonValue
-    private String kode;
+    private final String kode;
     private final String navn;
 
     BehandlingVenteStatus(String kode, String navn) {

@@ -18,6 +18,8 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingFørsteUttakDto;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingVentefristUtløperDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdeling;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagUkeMåned;
@@ -71,5 +73,23 @@ public class NøkkeltallRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<OppgaverForFørsteStønadsdagUkeMåned> getOppgaverPerFørsteStønadsdagMåned(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return nøkkeltallRepository.hentOppgaverPerFørsteStønadsdagMåned(avdelingEnhet.getAvdelingEnhet());
+    }
+
+    @GET
+    @Path("/åpne-behandlinger")
+    @Produces("application/json")
+    @Operation(description = "Åpne behandlinger", tags = "AvdelingslederTall")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public List<NøkkeltallBehandlingFørsteUttakDto> getAlleBehandlingerForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+        return nøkkeltallRepository.hentBehandlingMånedsfordeltStønadsdato(avdelingEnhet.getAvdelingEnhet());
+    }
+
+    @GET
+    @Path("/frist-utløp")
+    @Produces("application/json")
+    @Operation(description = "Førstegangsbehandlinger på vent pr enhet, ytelse og ventefrist", tags = "AvdelingslederTall")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public List<NøkkeltallBehandlingVentefristUtløperDto> getAlleVentefristerForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+        return nøkkeltallRepository.hentVentefristUkefordelt(avdelingEnhet.getAvdelingEnhet());
     }
 }
