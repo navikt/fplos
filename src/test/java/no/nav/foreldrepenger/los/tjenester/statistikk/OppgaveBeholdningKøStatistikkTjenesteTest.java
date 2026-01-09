@@ -34,11 +34,7 @@ class OppgaveBeholdningKøStatistikkTjenesteTest {
         .build();
     private final Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.KLAGE).build();
     private final Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.INNSYN).build();
-    private final Oppgave annenAvdeling = Oppgave.builder()
-        .dummyOppgave(AVDELING_DRAMMEN_ENHET)
-        .medBehandlendeEnhet("5555")
-        .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
-        .build();
+
     private final Oppgave beslutterOppgave = Oppgave.builder()
         .dummyOppgave(AVDELING_DRAMMEN_ENHET)
         .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
@@ -112,24 +108,4 @@ class OppgaveBeholdningKøStatistikkTjenesteTest {
         assertThat(resultater.get(0).antall()).isEqualTo(4L);
     }
 
-    private void leggTilOppgave(Oppgave oppgave, int startTilbakeITid, int sluttTilbakeITid) {
-        entityManager.persist(oppgave);
-        entityManager.flush();
-
-        var now = LocalDateTime.now();
-        var opprettetTid = now.minusDays(startTilbakeITid);
-        var endretTid = now.minusDays(sluttTilbakeITid);
-
-        entityManager.createQuery("""
-        UPDATE Oppgave o
-           SET o.opprettetTidspunkt = :opprettetTid,
-               o.endretTidspunkt    = :endretTid,
-               o.aktiv        = 'N'
-         WHERE o.id = :oppgaveId
-        """)
-            .setParameter("opprettetTid", opprettetTid)
-            .setParameter("endretTid", endretTid)
-            .setParameter("oppgaveId", oppgave.getId())
-            .executeUpdate();
-    }
 }
