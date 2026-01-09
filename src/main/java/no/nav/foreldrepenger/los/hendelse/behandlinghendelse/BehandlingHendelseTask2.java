@@ -49,7 +49,7 @@ import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
 @Dependent
-@ProsessTask(value = "håndter.behandlinghendelse", firstDelay = 10, thenDelay = 10)
+@ProsessTask(value = "håndter.behandlinghendelse2", firstDelay = 10, thenDelay = 10)
 public class BehandlingHendelseTask2 implements ProsessTaskHandler {
 
     private static final String KONTROLLER_TERMINBEKREFTELSE_KODE = "5001";
