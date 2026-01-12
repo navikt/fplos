@@ -87,7 +87,8 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         var behandlingUuid = UUID.fromString(prosessTaskData.getPropertyValue(BEHANDLING_UUID));
         var kilde = Kildesystem.valueOf(prosessTaskData.getPropertyValue(KILDE));
 
-        var behandlingDto = hentBehandlingDto(behandlingUuid, kilde, new Saksnummer(prosessTaskData.getSaksnummer()));
+        var dto = hentDto(behandlingUuid, kilde);
+        var behandlingDto = mapDto(behandlingUuid, new Saksnummer(prosessTaskData.getSaksnummer()), dto);
 
         //TODO Se på om lagret behandling aksjonspunkt er lik ny tilstand, hvis dette er tilfellet så behold oppgave?
         var eksisterendeOppgave = finnEksisterendeOppgave(behandlingDto.behandlingUuid());
@@ -100,7 +101,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             opprettReservasjon(oppgave, eksisterendeOppgave, behandlingDto);
         }
 
-        behandlingTjeneste.safeLagreBehandling(behandlingDto, Fagsystem.FPSAK);
+        behandlingTjeneste.safeLagreBehandling(dto, Fagsystem.FPSAK);
     }
 
     private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, Behandling behandling) {
@@ -124,15 +125,12 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
                 }
                 return Optional.of(nyReservasjon(nyOppgave, eksisterendeOppgave.getReservasjon()));
             }
-            //TODO hvis saksbehandler slår opp en sak og begynner å jobbe på den, skal vi da reservere?
             return Optional.empty();
         }
-        //TODO reservere hvis saksbehandler oppretter revurering -> sjekke om det eksisterer en behandling i fplos?
         var lagretBehandling = oppgaveRepository.finnBehandling(behandling.behandlingUuid());
         if (behandling.ansvarligSaksbehandlerIdent() != null && (erNyManuellRevurdering(behandling, lagretBehandling) || erPåVent(lagretBehandling))) {
             return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, behandling.ansvarligSaksbehandlerIdent(), null));
         }
-        //TODO se over lengden på reservasjonene, utvidet 24 h vs standard 8 h?
         return Optional.empty();
     }
 
@@ -312,21 +310,28 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     }
 
     private boolean skalLageOppgave(Behandling behandlingDto) {
-        return behandlingDto.aksjonspunkt().stream().anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET)); //TODO ikke på vent
+        return behandlingDto.aksjonspunkt().stream()
+            .filter(a -> a.type() != AksjonspunktType.PÅ_VENT)
+            .anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET));
     }
 
     private Optional<Oppgave> finnEksisterendeOppgave(UUID behandlingUuid) {
         return oppgaveRepository.hentAktivOppgave(new BehandlingId(behandlingUuid));
     }
 
-    private Behandling hentBehandlingDto(UUID behandlingUuid, Kildesystem kilde, Saksnummer saksnummer) {
-        if (kilde.equals(Kildesystem.FPSAK)) {
+    private Behandling mapDto(UUID behandlingUuid, Saksnummer saksnummer, LosBehandlingDto dto) {
+        if (dto.kildesystem().equals(Kildesystem.FPSAK)) {
             return mapFraFpsak(fpsakKlient.hentLosBehandlingDto(behandlingUuid));
         }
         var losFagsakEgenskaperDto = fpsakKlient.hentLosFagsakEgenskaperDto(saksnummer);
         var losBehandlingDto = fptilbakeKlient.hentLosBehandlingDto(behandlingUuid);
 
         return mapFraFpTilbake(losBehandlingDto, losFagsakEgenskaperDto);
+    }
+
+    private LosBehandlingDto hentDto(UUID behandlingUuid, Kildesystem kilde) {
+        return kilde.equals(Kildesystem.FPSAK) ? fpsakKlient.hentLosBehandlingDto(behandlingUuid) : fptilbakeKlient.hentLosBehandlingDto(
+            behandlingUuid);
     }
 
     private Behandling mapFraFpsak(LosBehandlingDto dto) {
