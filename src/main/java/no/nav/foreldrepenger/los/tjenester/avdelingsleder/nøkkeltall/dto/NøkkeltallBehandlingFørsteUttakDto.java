@@ -4,6 +4,6 @@ import java.time.LocalDate;
 
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 
-public record NøkkeltallBehandlingFørsteUttakDto(String behandlendeEnhet, BehandlingType behandlingType, BehandlingVenteStatus behandlingVenteStatus,
+public record NøkkeltallBehandlingFørsteUttakDto(BehandlingType behandlingType, BehandlingVenteStatus behandlingVenteStatus,
                                                  LocalDate førsteUttakMåned, int antall) {
 }
