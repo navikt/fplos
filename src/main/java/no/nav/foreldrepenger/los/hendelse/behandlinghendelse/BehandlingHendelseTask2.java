@@ -1,21 +1,13 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
-import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Aksjonspunkt;
-import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.AksjonspunktType;
-import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Behandlingsegenskap;
-import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Behandlingsstatus;
-import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Saksegenskap;
-import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.Behandling.Tilbakekreving;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
-import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -25,6 +17,7 @@ import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
@@ -39,6 +32,7 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
+import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsårsak;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
@@ -88,35 +82,35 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         var kilde = Kildesystem.valueOf(prosessTaskData.getPropertyValue(KILDE));
 
         var dto = hentDto(behandlingUuid, kilde);
-        var behandlingDto = mapDto(behandlingUuid, new Saksnummer(prosessTaskData.getSaksnummer()), dto);
+        var oppgaveGrunnlag = mapTilOppgaveGrunnlag(behandlingUuid, new Saksnummer(prosessTaskData.getSaksnummer()), dto);
 
         //TODO Se på om lagret behandling aksjonspunkt er lik ny tilstand, hvis dette er tilfellet så behold oppgave?
-        var eksisterendeOppgave = finnEksisterendeOppgave(behandlingDto.behandlingUuid());
+        var eksisterendeOppgave = finnEksisterendeOppgave(oppgaveGrunnlag.behandlingUuid());
         eksisterendeOppgave.ifPresent(
             Oppgave::avsluttOppgave); //NB! avslutte reservasjon??? avkorter ikke reservasjonen nå. Sjekk queries og frontend
 
-        var skalLageOppgave = skalLageOppgave(behandlingDto);
+        var skalLageOppgave = skalLageOppgave(oppgaveGrunnlag);
         if (skalLageOppgave) {
-            var oppgave = opprettOppgave(behandlingDto);
-            opprettReservasjon(oppgave, eksisterendeOppgave, behandlingDto);
+            var oppgave = opprettOppgave(oppgaveGrunnlag);
+            opprettReservasjon(oppgave, eksisterendeOppgave, oppgaveGrunnlag);
         }
 
         behandlingTjeneste.safeLagreBehandling(dto, Fagsystem.FPSAK);
     }
 
-    private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, Behandling behandling) {
-        var reservasjon = utledReservasjon(oppgave, eksisterendeOppgave, behandling);
+    private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, OppgaveGrunnlag oppgaveGrunnlag) {
+        var reservasjon = utledReservasjon(oppgave, eksisterendeOppgave, oppgaveGrunnlag);
         reservasjon.ifPresent(reservasjonRepository::lagre);
     }
 
-    private Optional<Reservasjon> utledReservasjon(Oppgave nyOppgave, Optional<Oppgave> eo, Behandling behandling) {
+    private Optional<Reservasjon> utledReservasjon(Oppgave nyOppgave, Optional<Oppgave> eo, OppgaveGrunnlag oppgaveGrunnlag) {
         if (eo.isPresent()) {
             var eksisterendeOppgave = eo.get();
-            if (harEndretEnhet(behandling, eksisterendeOppgave)) {
+            if (harEndretEnhet(oppgaveGrunnlag, eksisterendeOppgave)) {
                 return Optional.empty();
             }
             if (erReturFraBeslutter(nyOppgave, eksisterendeOppgave)) {
-                return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, behandling.ansvarligSaksbehandlerIdent(),
+                return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, oppgaveGrunnlag.ansvarligSaksbehandlerIdent(),
                     ReservasjonKonstanter.RETUR_FRA_BESLUTTER));
             }
             if (eksisterendeOppgave.harAktivReservasjon()) {
@@ -127,10 +121,10 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             }
             return Optional.empty();
         }
-        var lagretBehandling = oppgaveRepository.finnBehandling(behandling.behandlingUuid());
-        if (behandling.ansvarligSaksbehandlerIdent() != null && (erNyManuellRevurdering(behandling, lagretBehandling) || erPåVent(
+        var lagretBehandling = oppgaveRepository.finnBehandling(oppgaveGrunnlag.behandlingUuid());
+        if (oppgaveGrunnlag.ansvarligSaksbehandlerIdent() != null && (erNyManuellRevurdering(oppgaveGrunnlag, lagretBehandling) || erPåVent(
             lagretBehandling))) {
-            return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, behandling.ansvarligSaksbehandlerIdent(), null));
+            return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, oppgaveGrunnlag.ansvarligSaksbehandlerIdent(), null));
         }
         return Optional.empty();
     }
@@ -139,8 +133,9 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         return lagretBehandling.stream().anyMatch(this::erPåVent);
     }
 
-    private static boolean erNyManuellRevurdering(Behandling behandling, Optional<no.nav.foreldrepenger.los.oppgave.Behandling> lagretBehandling) {
-        return lagretBehandling.isEmpty() && erManuellRevurdering(behandling);
+    private static boolean erNyManuellRevurdering(OppgaveGrunnlag oppgaveGrunnlag,
+                                                  Optional<no.nav.foreldrepenger.los.oppgave.Behandling> lagretBehandling) {
+        return lagretBehandling.isEmpty() && erManuellRevurdering(oppgaveGrunnlag);
     }
 
     private boolean erPåVent(no.nav.foreldrepenger.los.oppgave.Behandling behandling) {
@@ -148,17 +143,17 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         return behandling.getBehandlingTilstand().erPåVent();
     }
 
-    private static boolean erManuellRevurdering(Behandling behandling) {
-        return behandling.behandlingstype() == BehandlingType.REVURDERING && behandling.behandlingsårsaker()
-            .contains(Behandling.Behandlingsårsak.MANUELL);
+    private static boolean erManuellRevurdering(OppgaveGrunnlag oppgaveGrunnlag) {
+        return oppgaveGrunnlag.behandlingstype() == BehandlingType.REVURDERING && oppgaveGrunnlag.behandlingsårsaker()
+            .contains(OppgaveGrunnlag.Behandlingsårsak.MANUELL);
     }
 
     private static boolean erReturFraBeslutter(Oppgave nyOppgave, Oppgave eksisterendeOppgave) {
         return eksisterendeOppgave.harKriterie(AndreKriterierType.TIL_BESLUTTER) && nyOppgave.harKriterie(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
     }
 
-    private static boolean harEndretEnhet(Behandling behandling, Oppgave eksisterendeOppgave) {
-        return !eksisterendeOppgave.getBehandlendeEnhet().equals(behandling.behandlendeEnhetId());
+    private static boolean harEndretEnhet(OppgaveGrunnlag oppgaveGrunnlag, Oppgave eksisterendeOppgave) {
+        return !eksisterendeOppgave.getBehandlendeEnhet().equals(oppgaveGrunnlag.behandlendeEnhetId());
     }
 
     private static Reservasjon nyReservasjon(Oppgave nyOppgave, Reservasjon eksisterendeReservasjon) {
@@ -171,27 +166,27 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         return reservasjon;
     }
 
-    private Oppgave opprettOppgave(Behandling behandling) {
-        var kriterier = utledKriterier(behandling);
+    private Oppgave opprettOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
+        var kriterier = utledKriterier(oppgaveGrunnlag);
 
         var oppgaveEgenskaper = kriterier.stream()
             .map(k -> new OppgaveEgenskap.Builder().medAndreKriterierType(k)
-                .medSisteSaksbehandlerForTotrinn(k == AndreKriterierType.TIL_BESLUTTER ? behandling.ansvarligSaksbehandlerIdent() : null)
+                .medSisteSaksbehandlerForTotrinn(k == AndreKriterierType.TIL_BESLUTTER ? oppgaveGrunnlag.ansvarligSaksbehandlerIdent() : null)
                 .build())
             .collect(Collectors.toSet());
 
         var oppgave = Oppgave.builder()
             .medSystem(Fagsystem.FPSAK)
-            .medSaksnummer(behandling.saksnummer())
-            .medAktørId(behandling.aktørId())
-            .medBehandlendeEnhet(behandling.behandlendeEnhetId())
-            .medBehandlingType(behandling.behandlingstype())
-            .medFagsakYtelseType(behandling.ytelse())
+            .medSaksnummer(oppgaveGrunnlag.saksnummer())
+            .medAktørId(oppgaveGrunnlag.aktørId())
+            .medBehandlendeEnhet(oppgaveGrunnlag.behandlendeEnhetId())
+            .medBehandlingType(oppgaveGrunnlag.behandlingstype())
+            .medFagsakYtelseType(oppgaveGrunnlag.ytelse())
             .medAktiv(true)
-            .medBehandlingOpprettet(behandling.opprettetTidspunkt())
-            .medBehandlingId(new BehandlingId(behandling.behandlingUuid()))
-            .medFørsteStønadsdag(behandling.førsteUttaksdatoForeldrepenger())
-            .medBehandlingsfrist(behandling.behandlingsfrist() != null ? behandling.behandlingsfrist().atStartOfDay() : null)
+            .medBehandlingOpprettet(oppgaveGrunnlag.opprettetTidspunkt())
+            .medBehandlingId(new BehandlingId(oppgaveGrunnlag.behandlingUuid()))
+            .medFørsteStønadsdag(oppgaveGrunnlag.førsteUttaksdatoForeldrepenger())
+            .medBehandlingsfrist(oppgaveGrunnlag.behandlingsfrist() != null ? oppgaveGrunnlag.behandlingsfrist().atStartOfDay() : null)
             .medKriterier(oppgaveEgenskaper)
             .build();
 
@@ -199,121 +194,123 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         return oppgave;
     }
 
-    private Set<AndreKriterierType> utledKriterier(Behandling behandling) {
+    private Set<AndreKriterierType> utledKriterier(OppgaveGrunnlag oppgaveGrunnlag) {
         var kriterier = new HashSet<AndreKriterierType>();
 
-        var aktiveAksjonspunkt = behandling.aksjonspunkt()
+        var aktiveAksjonspunkt = oppgaveGrunnlag.aksjonspunkt()
             .stream()
             .filter(a -> a.status() == Aksjonspunktstatus.OPPRETTET)
-            .map(Aksjonspunkt::type)
+            .map(OppgaveGrunnlag.Aksjonspunkt::type)
             .collect(Collectors.toSet());
-        if (aktiveAksjonspunkt.contains(AksjonspunktType.PAPIRSØKNAD)) {
+        if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.PAPIRSØKNAD)) {
             kriterier.add(AndreKriterierType.PAPIRSØKNAD);
         }
-        if (aktiveAksjonspunkt.contains(AksjonspunktType.TIL_BESLUTTER)) {
+        if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER)) {
             kriterier.add(AndreKriterierType.TIL_BESLUTTER);
         }
-        if (aktiveAksjonspunkt.contains(AksjonspunktType.KONTROLLER_TERMINBEKREFTELSE)) {
+        if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.KONTROLLER_TERMINBEKREFTELSE)) {
             kriterier.add(AndreKriterierType.TERMINBEKREFTELSE);
         }
-        if (aktiveAksjonspunkt.contains(AksjonspunktType.ARBEID_OG_INNTEKT)) {
+        if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.ARBEID_OG_INNTEKT)) {
             kriterier.add(AndreKriterierType.ARBEID_INNTEKT);
         }
-        if (aktiveAksjonspunkt.contains(AksjonspunktType.VURDER_FORMKRAV)) {
+        if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.VURDER_FORMKRAV)) {
             kriterier.add(AndreKriterierType.VURDER_FORMKRAV);
         }
 
-        var saksegenskaper = behandling.saksegenskaper();
-        if (aktiveAksjonspunkt.contains(AksjonspunktType.AUTOMATISK_MARKERING_SOM_UTLAND) && (saksegenskaper.contains(Saksegenskap.BOSATT_UTLAND)
-            || saksegenskaper.contains(Saksegenskap.EØS_BOSATT_NORGE))) {
+        var saksegenskaper = oppgaveGrunnlag.saksegenskaper();
+        if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.AUTOMATISK_MARKERING_SOM_UTLAND) && (
+            saksegenskaper.contains(OppgaveGrunnlag.Saksegenskap.BOSATT_UTLAND) || saksegenskaper.contains(
+                OppgaveGrunnlag.Saksegenskap.EØS_BOSATT_NORGE))) {
             kriterier.add(AndreKriterierType.VURDER_EØS_OPPTJENING);
         }
-        if (aktiveAksjonspunkt.contains(AksjonspunktType.VURDER_NÆRING) && saksegenskaper.contains(Saksegenskap.NÆRING)) {
+        if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.VURDER_NÆRING) && saksegenskaper.contains(
+            OppgaveGrunnlag.Saksegenskap.NÆRING)) {
             kriterier.add(AndreKriterierType.NÆRING);
         }
-        if (saksegenskaper.contains(Saksegenskap.PRAKSIS_UTSETTELSE)) {
+        if (saksegenskaper.contains(OppgaveGrunnlag.Saksegenskap.PRAKSIS_UTSETTELSE)) {
             kriterier.add(AndreKriterierType.PRAKSIS_UTSETTELSE);
         }
-        if (saksegenskaper.contains(Saksegenskap.EØS_BOSATT_NORGE)) {
+        if (saksegenskaper.contains(OppgaveGrunnlag.Saksegenskap.EØS_BOSATT_NORGE)) {
             kriterier.add(AndreKriterierType.EØS_SAK);
         }
-        if (saksegenskaper.contains(Saksegenskap.BOSATT_UTLAND)) {
+        if (saksegenskaper.contains(OppgaveGrunnlag.Saksegenskap.BOSATT_UTLAND)) {
             kriterier.add(AndreKriterierType.UTLANDSSAK);
         }
-        if (saksegenskaper.contains(Saksegenskap.SAMMENSATT_KONTROLL)) {
+        if (saksegenskaper.contains(OppgaveGrunnlag.Saksegenskap.SAMMENSATT_KONTROLL)) {
             kriterier.add(AndreKriterierType.SAMMENSATT_KONTROLL);
         }
-        if (saksegenskaper.contains(Saksegenskap.DØD)) {
+        if (saksegenskaper.contains(OppgaveGrunnlag.Saksegenskap.DØD)) {
             kriterier.add(AndreKriterierType.DØD);
         }
-        if (saksegenskaper.contains(Saksegenskap.BARE_FAR_RETT)) {
+        if (saksegenskaper.contains(OppgaveGrunnlag.Saksegenskap.BARE_FAR_RETT)) {
             kriterier.add(AndreKriterierType.BARE_FAR_RETT);
         }
-        if (saksegenskaper.contains(Saksegenskap.HASTER)) {
+        if (saksegenskaper.contains(OppgaveGrunnlag.Saksegenskap.HASTER)) {
             kriterier.add(AndreKriterierType.HASTER);
         }
 
-        var behandlingsegenskaper = behandling.behandlingsegenskaper();
-        if (behandlingsegenskaper.contains(Behandlingsegenskap.MOR_UKJENT_UTLAND)) {
+        var behandlingsegenskaper = oppgaveGrunnlag.behandlingsegenskaper();
+        if (behandlingsegenskaper.contains(OppgaveGrunnlag.Behandlingsegenskap.MOR_UKJENT_UTLAND)) {
             kriterier.add(AndreKriterierType.MOR_UKJENT_UTLAND);
         }
-        if (behandlingsegenskaper.contains(Behandlingsegenskap.SYKDOMSVURDERING)) {
+        if (behandlingsegenskaper.contains(OppgaveGrunnlag.Behandlingsegenskap.SYKDOMSVURDERING)) {
             kriterier.add(AndreKriterierType.VURDER_SYKDOM);
         }
-        if (behandlingsegenskaper.contains(Behandlingsegenskap.TILBAKEKREVING_OVER_FIRE_RETTSGEBYR)) {
+        if (behandlingsegenskaper.contains(OppgaveGrunnlag.Behandlingsegenskap.TILBAKEKREVING_OVER_FIRE_RETTSGEBYR)) {
             kriterier.add(AndreKriterierType.OVER_FIRE_RETTSGEBYR);
         }
-        if (behandling.behandlingstype().gjelderTilbakebetaling() && !behandlingsegenskaper.isEmpty() && !behandlingsegenskaper.contains(
-            Behandlingsegenskap.TILBAKEKREVING_SENDT_VARSEL)) {
+        if (oppgaveGrunnlag.behandlingstype().gjelderTilbakebetaling() && !behandlingsegenskaper.isEmpty() && !behandlingsegenskaper.contains(
+            OppgaveGrunnlag.Behandlingsegenskap.TILBAKEKREVING_SENDT_VARSEL)) {
             kriterier.add(AndreKriterierType.IKKE_VARSLET);
         }
-        if (!behandling.refusjonskrav() || behandlingsegenskaper.contains(Behandlingsegenskap.DIREKTE_UTBETALING)) {
+        if (!oppgaveGrunnlag.refusjonskrav() || behandlingsegenskaper.contains(OppgaveGrunnlag.Behandlingsegenskap.DIREKTE_UTBETALING)) {
             kriterier.add(AndreKriterierType.UTBETALING_TIL_BRUKER);
         }
-        if (behandling.faresignaler() || behandlingsegenskaper.contains(Behandlingsegenskap.FARESIGNALER)) {
+        if (oppgaveGrunnlag.faresignaler() || behandlingsegenskaper.contains(OppgaveGrunnlag.Behandlingsegenskap.FARESIGNALER)) {
             kriterier.add(AndreKriterierType.VURDER_FARESIGNALER);
         }
 
-        var behandlingsårsaker = behandling.behandlingsårsaker();
-        if (behandlingsårsaker.contains(Behandling.Behandlingsårsak.PLEIEPENGER)) {
+        var behandlingsårsaker = oppgaveGrunnlag.behandlingsårsaker();
+        if (behandlingsårsaker.contains(OppgaveGrunnlag.Behandlingsårsak.PLEIEPENGER)) {
             kriterier.add(AndreKriterierType.PLEIEPENGER);
         }
-        if (behandlingsårsaker.contains(Behandling.Behandlingsårsak.UTSATT_START)) {
+        if (behandlingsårsaker.contains(OppgaveGrunnlag.Behandlingsårsak.UTSATT_START)) {
             kriterier.add(AndreKriterierType.UTSATT_START);
         }
-        if (behandlingsårsaker.contains(Behandling.Behandlingsårsak.OPPHØR_NY_SAK)) {
+        if (behandlingsårsaker.contains(OppgaveGrunnlag.Behandlingsårsak.OPPHØR_NY_SAK)) {
             kriterier.add(AndreKriterierType.NYTT_VEDTAK);
         }
-        if (behandlingsårsaker.contains(Behandling.Behandlingsårsak.BERØRT)) {
+        if (behandlingsårsaker.contains(OppgaveGrunnlag.Behandlingsårsak.BERØRT)) {
             kriterier.add(AndreKriterierType.BERØRT_BEHANDLING);
         }
-        if (behandlingsårsaker.contains(Behandling.Behandlingsårsak.KLAGE_TILBAKEBETALING)) {
+        if (behandlingsårsaker.contains(OppgaveGrunnlag.Behandlingsårsak.KLAGE_TILBAKEBETALING)) {
             kriterier.add(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
         }
-        if (behandling.ytelse() == FagsakYtelseType.FORELDREPENGER && behandling.behandlingstype() == BehandlingType.REVURDERING
-            && behandlingsårsaker.contains(Behandling.Behandlingsårsak.SØKNAD)) {
+        if (oppgaveGrunnlag.ytelse() == FagsakYtelseType.FORELDREPENGER && oppgaveGrunnlag.behandlingstype() == BehandlingType.REVURDERING
+            && behandlingsårsaker.contains(OppgaveGrunnlag.Behandlingsårsak.SØKNAD)) {
             kriterier.add(AndreKriterierType.ENDRINGSSØKNAD);
         }
-        if (behandling.behandlingstype() == BehandlingType.REVURDERING && behandlingsårsaker.contains(Behandling.Behandlingsårsak.INNTEKTSMELDING)
-            && behandlingsårsaker.size() == 1) {
+        if (oppgaveGrunnlag.behandlingstype() == BehandlingType.REVURDERING && behandlingsårsaker.contains(
+            OppgaveGrunnlag.Behandlingsårsak.INNTEKTSMELDING) && behandlingsårsaker.size() == 1) {
             kriterier.add(AndreKriterierType.REVURDERING_INNTEKTSMELDING);
         }
 
-        if (behandling.aksjonspunkt()
+        if (oppgaveGrunnlag.aksjonspunkt()
             .stream()
-            .anyMatch(a -> a.type() == AksjonspunktType.TIL_BESLUTTER && a.status() == Aksjonspunktstatus.AVBRUTT)) {
+            .anyMatch(a -> a.type() == OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER && a.status() == Aksjonspunktstatus.AVBRUTT)) {
             kriterier.add(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
         }
 
-        kriterier.addAll(beskyttelsesbehov.getBeskyttelsesKriterier(behandling.saksnummer()));
+        kriterier.addAll(beskyttelsesbehov.getBeskyttelsesKriterier(oppgaveGrunnlag.saksnummer()));
 
         return kriterier;
     }
 
-    private boolean skalLageOppgave(Behandling behandlingDto) {
-        return behandlingDto.aksjonspunkt()
+    private boolean skalLageOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
+        return oppgaveGrunnlag.aksjonspunkt()
             .stream()
-            .filter(a -> a.type() != AksjonspunktType.PÅ_VENT)
+            .filter(a -> a.type() != OppgaveGrunnlag.AksjonspunktType.PÅ_VENT)
             .anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET));
     }
 
@@ -321,7 +318,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         return oppgaveRepository.hentAktivOppgave(new BehandlingId(behandlingUuid));
     }
 
-    private Behandling mapDto(UUID behandlingUuid, Saksnummer saksnummer, LosBehandlingDto dto) {
+    private OppgaveGrunnlag mapTilOppgaveGrunnlag(UUID behandlingUuid, Saksnummer saksnummer, LosBehandlingDto dto) {
         if (dto.kildesystem().equals(Kildesystem.FPSAK)) {
             return mapFraFpsak(fpsakKlient.hentLosBehandlingDto(behandlingUuid));
         }
@@ -336,25 +333,15 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             behandlingUuid);
     }
 
-    private Behandling mapFraFpsak(LosBehandlingDto dto) {
+    private OppgaveGrunnlag mapFraFpsak(LosBehandlingDto dto) {
         var aksjonspunkter = mapAksjonspunkt(dto);
         var behandlingsårsaker = mapBehandlingsårsaker(dto);
         var saksegenskaper = mapFagsakEgenskaper(dto.saksegenskaper());
-        var behandlingsegenskaper = dto.behandlingsegenskaper().stream().map(Behandlingsegenskap::valueOf).toList();
-        return new Behandling(dto.behandlingUuid(), new Saksnummer(dto.saksnummer()), map(dto.ytelse()), new AktørId(dto.aktørId().getAktørId()),
-            mapBehandlingType(dto), mapBehandlingstatus(dto), dto.opprettetTidspunkt(), dto.behandlendeEnhetId(), dto.behandlingsfrist(),
-            dto.ansvarligSaksbehandlerIdent(), aksjonspunkter, behandlingsårsaker, dto.faresignaler(), dto.refusjonskrav(), saksegenskaper,
-            dto.foreldrepengerDto() == null ? null : dto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper, null);
-    }
-
-    private static Behandlingsstatus mapBehandlingstatus(LosBehandlingDto dto) {
-        return switch (dto.behandlingsstatus()) {
-            case OPPRETTET -> Behandlingsstatus.OPPRETTET;
-            case UTREDES -> Behandlingsstatus.UTREDES;
-            case FATTER_VEDTAK -> Behandlingsstatus.FATTER_VEDTAK;
-            case IVERKSETTER_VEDTAK -> Behandlingsstatus.IVERKSETTER_VEDTAK;
-            case AVSLUTTET -> Behandlingsstatus.AVSLUTTET;
-        };
+        var behandlingsegenskaper = dto.behandlingsegenskaper().stream().map(OppgaveGrunnlag.Behandlingsegenskap::valueOf).toList();
+        return new OppgaveGrunnlag(dto.behandlingUuid(), new Saksnummer(dto.saksnummer()), map(dto.ytelse()), new AktørId(dto.aktørId().getAktørId()),
+            mapBehandlingType(dto), dto.opprettetTidspunkt(), dto.behandlendeEnhetId(), dto.behandlingsfrist(), dto.ansvarligSaksbehandlerIdent(),
+            aksjonspunkter, behandlingsårsaker, dto.faresignaler(), dto.refusjonskrav(), saksegenskaper,
+            dto.foreldrepengerDto() == null ? null : dto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper);
     }
 
     private static BehandlingType mapBehandlingType(LosBehandlingDto dto) {
@@ -369,12 +356,12 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         };
     }
 
-    private List<Behandling.Behandlingsårsak> mapBehandlingsårsaker(LosBehandlingDto dto) {
+    private List<OppgaveGrunnlag.Behandlingsårsak> mapBehandlingsårsaker(LosBehandlingDto dto) {
         return dto.behandlingsårsaker().stream().map(this::map).toList();
     }
 
-    private List<Aksjonspunkt> mapAksjonspunkt(LosBehandlingDto dto) {
-        return dto.aksjonspunkt().stream().map(ap -> new Aksjonspunkt(mapFraFpsak(ap), ap.status(), ap.fristTid())).toList();
+    private List<OppgaveGrunnlag.Aksjonspunkt> mapAksjonspunkt(LosBehandlingDto dto) {
+        return dto.aksjonspunkt().stream().map(ap -> new OppgaveGrunnlag.Aksjonspunkt(mapFraFpsak(ap), ap.status(), ap.fristTid())).toList();
     }
 
     private static FagsakYtelseType map(Ytelse ytelse) {
@@ -385,65 +372,122 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         };
     }
 
-    private Behandling.Behandlingsårsak map(Behandlingsårsak å) {
+    private OppgaveGrunnlag.Behandlingsårsak map(Behandlingsårsak å) {
         return switch (å) {
-            case SØKNAD -> Behandling.Behandlingsårsak.SØKNAD;
-            case INNTEKTSMELDING -> Behandling.Behandlingsårsak.INNTEKTSMELDING;
-            case FOLKEREGISTER -> Behandling.Behandlingsårsak.FOLKEREGISTER;
-            case PLEIEPENGER -> Behandling.Behandlingsårsak.PLEIEPENGER;
-            case ETTERKONTROLL -> Behandling.Behandlingsårsak.ETTERKONTROLL;
-            case MANUELL -> Behandling.Behandlingsårsak.MANUELL;
-            case BERØRT -> Behandling.Behandlingsårsak.BERØRT;
-            case UTSATT_START -> Behandling.Behandlingsårsak.UTSATT_START;
-            case OPPHØR_NY_SAK -> Behandling.Behandlingsårsak.OPPHØR_NY_SAK;
-            case REGULERING -> Behandling.Behandlingsårsak.REGULERING;
-            case KLAGE_OMGJØRING -> Behandling.Behandlingsårsak.KLAGE_OMGJØRING;
-            case KLAGE_TILBAKEBETALING -> Behandling.Behandlingsårsak.KLAGE_TILBAKEBETALING;
-            case ANNET -> Behandling.Behandlingsårsak.ANNET;
+            case SØKNAD -> OppgaveGrunnlag.Behandlingsårsak.SØKNAD;
+            case INNTEKTSMELDING -> OppgaveGrunnlag.Behandlingsårsak.INNTEKTSMELDING;
+            case FOLKEREGISTER -> OppgaveGrunnlag.Behandlingsårsak.FOLKEREGISTER;
+            case PLEIEPENGER -> OppgaveGrunnlag.Behandlingsårsak.PLEIEPENGER;
+            case ETTERKONTROLL -> OppgaveGrunnlag.Behandlingsårsak.ETTERKONTROLL;
+            case MANUELL -> OppgaveGrunnlag.Behandlingsårsak.MANUELL;
+            case BERØRT -> OppgaveGrunnlag.Behandlingsårsak.BERØRT;
+            case UTSATT_START -> OppgaveGrunnlag.Behandlingsårsak.UTSATT_START;
+            case OPPHØR_NY_SAK -> OppgaveGrunnlag.Behandlingsårsak.OPPHØR_NY_SAK;
+            case REGULERING -> OppgaveGrunnlag.Behandlingsårsak.REGULERING;
+            case KLAGE_OMGJØRING -> OppgaveGrunnlag.Behandlingsårsak.KLAGE_OMGJØRING;
+            case KLAGE_TILBAKEBETALING -> OppgaveGrunnlag.Behandlingsårsak.KLAGE_TILBAKEBETALING;
+            case ANNET -> OppgaveGrunnlag.Behandlingsårsak.ANNET;
         };
     }
 
-    private AksjonspunktType mapFraFpsak(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
+    private OppgaveGrunnlag.AksjonspunktType mapFraFpsak(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
         if (aksjonspunktDto.type() == Aksjonspunkttype.VENT) {
-            return AksjonspunktType.PÅ_VENT;
+            return OppgaveGrunnlag.AksjonspunktType.PÅ_VENT;
         }
         if (aksjonspunktDto.type() == Aksjonspunkttype.BESLUTTER) {
-            return AksjonspunktType.TIL_BESLUTTER;
+            return OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER;
         }
         if (aksjonspunktDto.type() == Aksjonspunkttype.PAPIRSØKNAD) {
-            return AksjonspunktType.PAPIRSØKNAD;
+            return OppgaveGrunnlag.AksjonspunktType.PAPIRSØKNAD;
         }
         return switch (aksjonspunktDto.definisjon()) {
-            case AUTOMATISK_MARKERING_SOM_UTLAND -> AksjonspunktType.AUTOMATISK_MARKERING_SOM_UTLAND;
-            case ARBEID_INNTEKT -> AksjonspunktType.ARBEID_OG_INNTEKT;
-            case VURDER_FORMKRAV_KODE -> AksjonspunktType.VURDER_FORMKRAV;
-            case KONTROLLER_TERMINBEKREFTELSE_KODE -> AksjonspunktType.KONTROLLER_TERMINBEKREFTELSE;
-            case String kode when RELEVANT_NÆRING.contains(kode) -> AksjonspunktType.VURDER_NÆRING;
-            default -> AksjonspunktType.ANNET;
+            case AUTOMATISK_MARKERING_SOM_UTLAND -> OppgaveGrunnlag.AksjonspunktType.AUTOMATISK_MARKERING_SOM_UTLAND;
+            case ARBEID_INNTEKT -> OppgaveGrunnlag.AksjonspunktType.ARBEID_OG_INNTEKT;
+            case VURDER_FORMKRAV_KODE -> OppgaveGrunnlag.AksjonspunktType.VURDER_FORMKRAV;
+            case KONTROLLER_TERMINBEKREFTELSE_KODE -> OppgaveGrunnlag.AksjonspunktType.KONTROLLER_TERMINBEKREFTELSE;
+            case String kode when RELEVANT_NÆRING.contains(kode) -> OppgaveGrunnlag.AksjonspunktType.VURDER_NÆRING;
+            default -> OppgaveGrunnlag.AksjonspunktType.ANNET;
         };
     }
 
-    private Behandling mapFraFpTilbake(LosBehandlingDto behandlingDto, LosFagsakEgenskaperDto losFagsakEgenskaperDto) {
+    private OppgaveGrunnlag mapFraFpTilbake(LosBehandlingDto behandlingDto, LosFagsakEgenskaperDto losFagsakEgenskaperDto) {
         var aksjonspunkter = mapAksjonspunkt(behandlingDto);
         var behandlingsårsaker = mapBehandlingsårsaker(behandlingDto);
-        var tilbakekreving = behandlingDto.tilbakeDto() != null ? new Tilbakekreving(behandlingDto.tilbakeDto().feilutbetaltBeløp(),
-            behandlingDto.tilbakeDto().førsteFeilutbetalingDato()) : null;
 
         var behandlingsegenskaper = behandlingDto.behandlingsegenskaper().stream().map(egenskap -> switch (egenskap.toUpperCase()) {
-            case "VARSLET" -> Behandlingsegenskap.TILBAKEKREVING_SENDT_VARSEL;
-            case "OVER_FIRE_RETTSGEBYR" -> Behandlingsegenskap.TILBAKEKREVING_OVER_FIRE_RETTSGEBYR;
+            case "VARSLET" -> OppgaveGrunnlag.Behandlingsegenskap.TILBAKEKREVING_SENDT_VARSEL;
+            case "OVER_FIRE_RETTSGEBYR" -> OppgaveGrunnlag.Behandlingsegenskap.TILBAKEKREVING_OVER_FIRE_RETTSGEBYR;
             default -> throw new IllegalStateException("Unexpected value: " + egenskap);
         }).toList();
-        return new Behandling(behandlingDto.behandlingUuid(), new Saksnummer(behandlingDto.saksnummer()), map(behandlingDto.ytelse()),
-            new AktørId(behandlingDto.aktørId().getAktørId()), mapBehandlingType(behandlingDto), mapBehandlingstatus(behandlingDto),
-            behandlingDto.opprettetTidspunkt(), behandlingDto.behandlendeEnhetId(), behandlingDto.behandlingsfrist(),
-            behandlingDto.ansvarligSaksbehandlerIdent(), aksjonspunkter, behandlingsårsaker, behandlingDto.faresignaler(),
-            behandlingDto.refusjonskrav(), mapFagsakEgenskaper(losFagsakEgenskaperDto.saksegenskaper()),
-            behandlingDto.foreldrepengerDto() == null ? null : behandlingDto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper,
-            tilbakekreving);
+        return new OppgaveGrunnlag(behandlingDto.behandlingUuid(), new Saksnummer(behandlingDto.saksnummer()), map(behandlingDto.ytelse()),
+            new AktørId(behandlingDto.aktørId().getAktørId()), mapBehandlingType(behandlingDto), behandlingDto.opprettetTidspunkt(),
+            behandlingDto.behandlendeEnhetId(), behandlingDto.behandlingsfrist(), behandlingDto.ansvarligSaksbehandlerIdent(), aksjonspunkter,
+            behandlingsårsaker, behandlingDto.faresignaler(), behandlingDto.refusjonskrav(),
+            mapFagsakEgenskaper(losFagsakEgenskaperDto.saksegenskaper()),
+            behandlingDto.foreldrepengerDto() == null ? null : behandlingDto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper);
     }
 
-    private static List<Saksegenskap> mapFagsakEgenskaper(List<String> saksegenskaper) {
-        return saksegenskaper.stream().map(Saksegenskap::valueOf).toList();
+    private static List<OppgaveGrunnlag.Saksegenskap> mapFagsakEgenskaper(List<String> saksegenskaper) {
+        return saksegenskaper.stream().map(OppgaveGrunnlag.Saksegenskap::valueOf).toList();
+    }
+
+    private record OppgaveGrunnlag(UUID behandlingUuid, Saksnummer saksnummer, FagsakYtelseType ytelse, AktørId aktørId,
+                                   BehandlingType behandlingstype, LocalDateTime opprettetTidspunkt, String behandlendeEnhetId,
+                                   LocalDate behandlingsfrist, String ansvarligSaksbehandlerIdent, List<Aksjonspunkt> aksjonspunkt,
+                                   List<Behandlingsårsak> behandlingsårsaker, boolean faresignaler, boolean refusjonskrav,
+                                   List<Saksegenskap> saksegenskaper, LocalDate førsteUttaksdatoForeldrepenger, //null hvis ES og SVP
+                                   List<Behandlingsegenskap> behandlingsegenskaper) {
+
+        public enum Saksegenskap {
+            EØS_BOSATT_NORGE,
+            BOSATT_UTLAND,
+            SAMMENSATT_KONTROLL,
+            DØD,
+            NÆRING,
+            BARE_FAR_RETT,
+            PRAKSIS_UTSETTELSE,
+            HASTER,
+        }
+
+        public enum Behandlingsegenskap {
+            SYKDOMSVURDERING,
+            MOR_UKJENT_UTLAND,
+            FARESIGNALER,
+            DIREKTE_UTBETALING,
+            REFUSJONSKRAV,
+            TILBAKEKREVING_SENDT_VARSEL,
+            TILBAKEKREVING_OVER_FIRE_RETTSGEBYR
+        }
+
+        public record Aksjonspunkt(AksjonspunktType type, Aksjonspunktstatus status, LocalDateTime fristTidt) {
+        }
+
+        public enum Behandlingsårsak {
+            SØKNAD,
+            INNTEKTSMELDING,
+            FOLKEREGISTER,
+            PLEIEPENGER,
+            ETTERKONTROLL,
+            MANUELL,
+            BERØRT,
+            UTSATT_START,
+            OPPHØR_NY_SAK,
+            REGULERING,
+            KLAGE_OMGJØRING,
+            KLAGE_TILBAKEBETALING,
+            ANNET
+        }
+
+        public enum AksjonspunktType {
+            TIL_BESLUTTER,
+            ANNET,
+            KONTROLLER_TERMINBEKREFTELSE,
+            AUTOMATISK_MARKERING_SOM_UTLAND,
+            ARBEID_OG_INNTEKT,
+            VURDER_FORMKRAV,
+            PÅ_VENT,
+            VURDER_NÆRING,
+            PAPIRSØKNAD
+        }
     }
 }
