@@ -454,7 +454,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
                                    List<Saksegenskap> saksegenskaper, LocalDate førsteUttaksdatoForeldrepenger, //null hvis ES og SVP
                                    List<Behandlingsegenskap> behandlingsegenskaper, BehandlingStatus behandlingStatus) {
 
-        enum Saksegenskap {
+        private enum Saksegenskap {
             EØS_BOSATT_NORGE,
             BOSATT_UTLAND,
             SAMMENSATT_KONTROLL,
@@ -465,7 +465,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             HASTER,
         }
 
-        enum Behandlingsegenskap {
+        private enum Behandlingsegenskap {
             SYKDOMSVURDERING,
             MOR_UKJENT_UTLAND,
             FARESIGNALER,
@@ -475,7 +475,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             TILBAKEKREVING_OVER_FIRE_RETTSGEBYR
         }
 
-        enum BehandlingStatus {
+        private enum BehandlingStatus {
             OPPRETTET,
             UTREDES,
             FATTER_VEDTAK,
@@ -486,7 +486,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         record Aksjonspunkt(AksjonspunktType type, Aksjonspunktstatus status, LocalDateTime fristTidt) {
         }
 
-        enum Behandlingsårsak {
+        private enum Behandlingsårsak {
             SØKNAD,
             INNTEKTSMELDING,
             FOLKEREGISTER,
@@ -502,7 +502,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             ANNET
         }
 
-        enum AksjonspunktType {
+        private enum AksjonspunktType {
             TIL_BESLUTTER,
             ANNET,
             KONTROLLER_TERMINBEKREFTELSE,
