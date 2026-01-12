@@ -96,7 +96,10 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             opprettReservasjon(oppgave, eksisterendeOppgave, oppgaveGrunnlag);
         }
 
-        behandlingTjeneste.safeLagreBehandling(dto, Fagsystem.FPSAK);
+        behandlingTjeneste.safeLagreBehandling(dto, switch (kilde) {
+            case FPSAK -> Fagsystem.FPSAK;
+            case FPTILBAKE -> Fagsystem.FPTILBAKE;
+        });
     }
 
     private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, OppgaveGrunnlag oppgaveGrunnlag) {
