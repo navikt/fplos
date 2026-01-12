@@ -17,6 +17,7 @@ import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.Behandling;
 import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -129,16 +130,15 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         return Optional.empty();
     }
 
-    private boolean erPåVent(Optional<no.nav.foreldrepenger.los.oppgave.Behandling> lagretBehandling) {
+    private boolean erPåVent(Optional<Behandling> lagretBehandling) {
         return lagretBehandling.stream().anyMatch(this::erPåVent);
     }
 
-    private static boolean erNyManuellRevurdering(OppgaveGrunnlag oppgaveGrunnlag,
-                                                  Optional<no.nav.foreldrepenger.los.oppgave.Behandling> lagretBehandling) {
+    private static boolean erNyManuellRevurdering(OppgaveGrunnlag oppgaveGrunnlag, Optional<Behandling> lagretBehandling) {
         return lagretBehandling.isEmpty() && erManuellRevurdering(oppgaveGrunnlag);
     }
 
-    private boolean erPåVent(no.nav.foreldrepenger.los.oppgave.Behandling behandling) {
+    private boolean erPåVent(Behandling behandling) {
         //TODO blir feil når det kommer en ny venttilstand i fpsak
         return behandling.getBehandlingTilstand().erPåVent();
     }
@@ -308,7 +308,9 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     }
 
     private boolean skalLageOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
-        return oppgaveGrunnlag.aksjonspunkt()
+        var underBehandlingStatus = Set.of(OppgaveGrunnlag.BehandlingStatus.OPPRETTET, OppgaveGrunnlag.BehandlingStatus.UTREDES,
+            OppgaveGrunnlag.BehandlingStatus.FATTER_VEDTAK);
+        return underBehandlingStatus.contains(oppgaveGrunnlag.behandlingStatus) && oppgaveGrunnlag.aksjonspunkt()
             .stream()
             .filter(a -> a.type() != OppgaveGrunnlag.AksjonspunktType.PÅ_VENT)
             .anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET));
@@ -341,7 +343,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         return new OppgaveGrunnlag(dto.behandlingUuid(), new Saksnummer(dto.saksnummer()), map(dto.ytelse()), new AktørId(dto.aktørId().getAktørId()),
             mapBehandlingType(dto), dto.opprettetTidspunkt(), dto.behandlendeEnhetId(), dto.behandlingsfrist(), dto.ansvarligSaksbehandlerIdent(),
             aksjonspunkter, behandlingsårsaker, dto.faresignaler(), dto.refusjonskrav(), saksegenskaper,
-            dto.foreldrepengerDto() == null ? null : dto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper);
+            dto.foreldrepengerDto() == null ? null : dto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper, mapStatus(dto));
     }
 
     private static BehandlingType mapBehandlingType(LosBehandlingDto dto) {
@@ -424,7 +426,18 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             behandlingDto.behandlendeEnhetId(), behandlingDto.behandlingsfrist(), behandlingDto.ansvarligSaksbehandlerIdent(), aksjonspunkter,
             behandlingsårsaker, behandlingDto.faresignaler(), behandlingDto.refusjonskrav(),
             mapFagsakEgenskaper(losFagsakEgenskaperDto.saksegenskaper()),
-            behandlingDto.foreldrepengerDto() == null ? null : behandlingDto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper);
+            behandlingDto.foreldrepengerDto() == null ? null : behandlingDto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper,
+            mapStatus(behandlingDto));
+    }
+
+    private OppgaveGrunnlag.BehandlingStatus mapStatus(LosBehandlingDto behandlingDto) {
+        return switch (behandlingDto.behandlingsstatus()) {
+            case OPPRETTET -> OppgaveGrunnlag.BehandlingStatus.OPPRETTET;
+            case UTREDES -> OppgaveGrunnlag.BehandlingStatus.UTREDES;
+            case FATTER_VEDTAK -> OppgaveGrunnlag.BehandlingStatus.FATTER_VEDTAK;
+            case IVERKSETTER_VEDTAK -> OppgaveGrunnlag.BehandlingStatus.IVERKSETTER_VEDTAK;
+            case AVSLUTTET -> OppgaveGrunnlag.BehandlingStatus.AVSLUTTET;
+        };
     }
 
     private static List<OppgaveGrunnlag.Saksegenskap> mapFagsakEgenskaper(List<String> saksegenskaper) {
@@ -436,9 +449,9 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
                                    LocalDate behandlingsfrist, String ansvarligSaksbehandlerIdent, List<Aksjonspunkt> aksjonspunkt,
                                    List<Behandlingsårsak> behandlingsårsaker, boolean faresignaler, boolean refusjonskrav,
                                    List<Saksegenskap> saksegenskaper, LocalDate førsteUttaksdatoForeldrepenger, //null hvis ES og SVP
-                                   List<Behandlingsegenskap> behandlingsegenskaper) {
+                                   List<Behandlingsegenskap> behandlingsegenskaper, BehandlingStatus behandlingStatus) {
 
-        public enum Saksegenskap {
+        enum Saksegenskap {
             EØS_BOSATT_NORGE,
             BOSATT_UTLAND,
             SAMMENSATT_KONTROLL,
@@ -449,7 +462,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             HASTER,
         }
 
-        public enum Behandlingsegenskap {
+        enum Behandlingsegenskap {
             SYKDOMSVURDERING,
             MOR_UKJENT_UTLAND,
             FARESIGNALER,
@@ -459,10 +472,18 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             TILBAKEKREVING_OVER_FIRE_RETTSGEBYR
         }
 
-        public record Aksjonspunkt(AksjonspunktType type, Aksjonspunktstatus status, LocalDateTime fristTidt) {
+        enum BehandlingStatus {
+            OPPRETTET,
+            UTREDES,
+            FATTER_VEDTAK,
+            IVERKSETTER_VEDTAK,
+            AVSLUTTET,
         }
 
-        public enum Behandlingsårsak {
+        record Aksjonspunkt(AksjonspunktType type, Aksjonspunktstatus status, LocalDateTime fristTidt) {
+        }
+
+        enum Behandlingsårsak {
             SØKNAD,
             INNTEKTSMELDING,
             FOLKEREGISTER,
@@ -478,7 +499,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             ANNET
         }
 
-        public enum AksjonspunktType {
+        enum AksjonspunktType {
             TIL_BESLUTTER,
             ANNET,
             KONTROLLER_TERMINBEKREFTELSE,
