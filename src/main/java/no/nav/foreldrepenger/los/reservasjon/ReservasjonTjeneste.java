@@ -1,28 +1,26 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
-
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.felles.util.DateAndTimeUtil;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-
-import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
 
 
 @ApplicationScoped
@@ -207,7 +205,7 @@ public class ReservasjonTjeneste {
     }
 
     private static LocalDateTime utvidetReservasjon() {
-        return LocalDateTime.now().plusHours(24).with(DateAndTimeUtil.justerTilNesteUkedag);
+        return LocalDate.now().plusDays(1).with(DateAndTimeUtil.justerTilNesteUkedag).atTime(19, 0);
     }
 
     private static LocalDateTime standardReservasjon() {

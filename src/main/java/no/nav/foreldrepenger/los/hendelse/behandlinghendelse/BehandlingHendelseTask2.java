@@ -85,10 +85,7 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         var dto = hentDto(behandlingUuid, kilde);
         var oppgaveGrunnlag = mapTilOppgaveGrunnlag(behandlingUuid, new Saksnummer(prosessTaskData.getSaksnummer()), dto);
 
-        //TODO Se på om lagret behandling aksjonspunkt er lik ny tilstand, hvis dette er tilfellet så behold oppgave?
         var eksisterendeOppgave = finnEksisterendeOppgave(oppgaveGrunnlag.behandlingUuid());
-        eksisterendeOppgave.ifPresent(
-            Oppgave::avsluttOppgave); //NB! avslutte reservasjon??? avkorter ikke reservasjonen nå. Sjekk queries og frontend
 
         var skalLageOppgave = skalLageOppgave(oppgaveGrunnlag);
         if (skalLageOppgave) {
@@ -96,10 +93,22 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             opprettReservasjon(oppgave, eksisterendeOppgave, oppgaveGrunnlag);
         }
 
+        eksisterendeOppgave.ifPresent(o -> {
+            o.avsluttOppgave();
+            if (o.harAktivReservasjon()) {
+                avsluttReservasjon(o.getReservasjon());
+            }
+        });
+
         behandlingTjeneste.safeLagreBehandling(dto, switch (kilde) {
             case FPSAK -> Fagsystem.FPSAK;
             case FPTILBAKE -> Fagsystem.FPTILBAKE;
         });
+    }
+
+    private void avsluttReservasjon(Reservasjon reservasjon) {
+        reservasjon.setReservertTil(LocalDateTime.now().minusSeconds(1));
+        reservasjonRepository.lagre(reservasjon);
     }
 
     private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, OppgaveGrunnlag oppgaveGrunnlag) {
@@ -121,6 +130,10 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
                 if (eksisterendeOppgave.harKriterie(AndreKriterierType.PAPIRSØKNAD) && !nyOppgave.harKriterie(AndreKriterierType.PAPIRSØKNAD)) {
                     return Optional.empty();
                 }
+                if (nyOppgave.harKriterie(AndreKriterierType.TIL_BESLUTTER)) {
+                    return eksisterendeOppgave.harKriterie(AndreKriterierType.TIL_BESLUTTER) ? Optional.of(
+                        nyReservasjon(nyOppgave, eksisterendeOppgave.getReservasjon())) : Optional.empty();
+                }
                 return Optional.of(nyReservasjon(nyOppgave, eksisterendeOppgave.getReservasjon()));
             }
             return Optional.empty();
@@ -134,16 +147,11 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     }
 
     private boolean erPåVent(Optional<Behandling> lagretBehandling) {
-        return lagretBehandling.stream().anyMatch(this::erPåVent);
+        return lagretBehandling.stream().anyMatch(behandling -> behandling.getBehandlingTilstand().erPåVent());
     }
 
     private static boolean erNyManuellRevurdering(OppgaveGrunnlag oppgaveGrunnlag, Optional<Behandling> lagretBehandling) {
         return lagretBehandling.isEmpty() && erManuellRevurdering(oppgaveGrunnlag);
-    }
-
-    private boolean erPåVent(Behandling behandling) {
-        //TODO blir feil når det kommer en ny venttilstand i fpsak
-        return behandling.getBehandlingTilstand().erPåVent();
     }
 
     private static boolean erManuellRevurdering(OppgaveGrunnlag oppgaveGrunnlag) {
@@ -311,12 +319,13 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     }
 
     private boolean skalLageOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
+        var erPåVent = oppgaveGrunnlag.aksjonspunkt.stream()
+            .filter(aksjonspunkt -> aksjonspunkt.status() == Aksjonspunktstatus.OPPRETTET)
+            .anyMatch(a -> a.type == OppgaveGrunnlag.AksjonspunktType.PÅ_VENT);
         var underBehandlingStatus = Set.of(OppgaveGrunnlag.BehandlingStatus.OPPRETTET, OppgaveGrunnlag.BehandlingStatus.UTREDES,
-            OppgaveGrunnlag.BehandlingStatus.FATTER_VEDTAK);
-        return underBehandlingStatus.contains(oppgaveGrunnlag.behandlingStatus) && oppgaveGrunnlag.aksjonspunkt()
-            .stream()
-            .filter(a -> a.type() != OppgaveGrunnlag.AksjonspunktType.PÅ_VENT)
-            .anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET));
+            OppgaveGrunnlag.BehandlingStatus.FATTER_VEDTAK).contains(oppgaveGrunnlag.behandlingStatus);
+        var harOpprettetAksjonspunkt = oppgaveGrunnlag.aksjonspunkt().stream().anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET));
+        return !erPåVent && underBehandlingStatus && harOpprettetAksjonspunkt;
     }
 
     private Optional<Oppgave> finnEksisterendeOppgave(UUID behandlingUuid) {
