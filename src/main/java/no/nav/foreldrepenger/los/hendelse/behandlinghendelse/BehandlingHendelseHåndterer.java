@@ -82,13 +82,11 @@ public class BehandlingHendelseHåndterer implements KafkaMessageHandler.KafkaSt
         }
         hendelseRepository.registrerMottattHendelse(hendelseId);
 
-        var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask.class);
+        var prosessTaskData = ProsessTaskData.forProsessTask(BehandlingHendelseTask2.class);
         prosessTaskData.setCallId(behandlingHendelse.getHendelseUuid().toString());
         Optional.ofNullable(behandlingHendelse.getSaksnummer()).ifPresent(prosessTaskData::setSaksnummer);
         prosessTaskData.setBehandlingUUid(behandlingHendelse.getBehandlingUuid());
-        prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, behandlingHendelse.getKildesystem().name());
-        prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, behandlingHendelse.getHendelseUuid().toString());
-        prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_TYPE, behandlingHendelse.getHendelse().name());
+        prosessTaskData.setProperty(BehandlingHendelseTask2.KILDE, behandlingHendelse.getKildesystem().name());
         //setter gruppe og sekvens for rekkefølge
         prosessTaskData.setGruppe(behandlingHendelse.getBehandlingUuid().toString());
         prosessTaskData.setSekvens(String.valueOf(Instant.now().toEpochMilli()));

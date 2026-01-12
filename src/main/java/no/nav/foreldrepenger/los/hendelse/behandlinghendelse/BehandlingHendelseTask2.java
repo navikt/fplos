@@ -128,7 +128,8 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             return Optional.empty();
         }
         var lagretBehandling = oppgaveRepository.finnBehandling(behandling.behandlingUuid());
-        if (behandling.ansvarligSaksbehandlerIdent() != null && (erNyManuellRevurdering(behandling, lagretBehandling) || erPåVent(lagretBehandling))) {
+        if (behandling.ansvarligSaksbehandlerIdent() != null && (erNyManuellRevurdering(behandling, lagretBehandling) || erPåVent(
+            lagretBehandling))) {
             return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, behandling.ansvarligSaksbehandlerIdent(), null));
         }
         return Optional.empty();
@@ -310,7 +311,8 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     }
 
     private boolean skalLageOppgave(Behandling behandlingDto) {
-        return behandlingDto.aksjonspunkt().stream()
+        return behandlingDto.aksjonspunkt()
+            .stream()
             .filter(a -> a.type() != AksjonspunktType.PÅ_VENT)
             .anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET));
     }
@@ -340,10 +342,31 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
         var saksegenskaper = mapFagsakEgenskaper(dto.saksegenskaper());
         var behandlingsegenskaper = dto.behandlingsegenskaper().stream().map(Behandlingsegenskap::valueOf).toList();
         return new Behandling(dto.behandlingUuid(), new Saksnummer(dto.saksnummer()), map(dto.ytelse()), new AktørId(dto.aktørId().getAktørId()),
-            BehandlingType.valueOf(dto.behandlingstype().name()), Behandlingsstatus.valueOf(dto.behandlingsstatus().name()), dto.opprettetTidspunkt(),
-            dto.behandlendeEnhetId(), dto.behandlingsfrist(), dto.ansvarligSaksbehandlerIdent(), aksjonspunkter, behandlingsårsaker,
-            dto.faresignaler(), dto.refusjonskrav(), saksegenskaper,
+            mapBehandlingType(dto), mapBehandlingstatus(dto), dto.opprettetTidspunkt(), dto.behandlendeEnhetId(), dto.behandlingsfrist(),
+            dto.ansvarligSaksbehandlerIdent(), aksjonspunkter, behandlingsårsaker, dto.faresignaler(), dto.refusjonskrav(), saksegenskaper,
             dto.foreldrepengerDto() == null ? null : dto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper, null);
+    }
+
+    private static Behandlingsstatus mapBehandlingstatus(LosBehandlingDto dto) {
+        return switch (dto.behandlingsstatus()) {
+            case OPPRETTET -> Behandlingsstatus.OPPRETTET;
+            case UTREDES -> Behandlingsstatus.UTREDES;
+            case FATTER_VEDTAK -> Behandlingsstatus.FATTER_VEDTAK;
+            case IVERKSETTER_VEDTAK -> Behandlingsstatus.IVERKSETTER_VEDTAK;
+            case AVSLUTTET -> Behandlingsstatus.AVSLUTTET;
+        };
+    }
+
+    private static BehandlingType mapBehandlingType(LosBehandlingDto dto) {
+        return switch (dto.behandlingstype()) {
+            case FØRSTEGANGS -> BehandlingType.FØRSTEGANGSSØKNAD;
+            case REVURDERING -> BehandlingType.REVURDERING;
+            case TILBAKEBETALING -> BehandlingType.TILBAKEBETALING;
+            case TILBAKEBETALING_REVURDERING -> BehandlingType.TILBAKEBETALING_REVURDERING;
+            case KLAGE -> BehandlingType.KLAGE;
+            case ANKE -> BehandlingType.ANKE;
+            case INNSYN -> BehandlingType.INNSYN;
+        };
     }
 
     private List<Behandling.Behandlingsårsak> mapBehandlingsårsaker(LosBehandlingDto dto) {
@@ -412,11 +435,10 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
             default -> throw new IllegalStateException("Unexpected value: " + egenskap);
         }).toList();
         return new Behandling(behandlingDto.behandlingUuid(), new Saksnummer(behandlingDto.saksnummer()), map(behandlingDto.ytelse()),
-            new AktørId(behandlingDto.aktørId().getAktørId()), BehandlingType.valueOf(behandlingDto.behandlingstype().name()),
-            Behandlingsstatus.valueOf(behandlingDto.behandlingsstatus().name()), behandlingDto.opprettetTidspunkt(),
-            behandlingDto.behandlendeEnhetId(), behandlingDto.behandlingsfrist(), behandlingDto.ansvarligSaksbehandlerIdent(), aksjonspunkter,
-            behandlingsårsaker, behandlingDto.faresignaler(), behandlingDto.refusjonskrav(),
-            mapFagsakEgenskaper(losFagsakEgenskaperDto.saksegenskaper()),
+            new AktørId(behandlingDto.aktørId().getAktørId()), mapBehandlingType(behandlingDto), mapBehandlingstatus(behandlingDto),
+            behandlingDto.opprettetTidspunkt(), behandlingDto.behandlendeEnhetId(), behandlingDto.behandlingsfrist(),
+            behandlingDto.ansvarligSaksbehandlerIdent(), aksjonspunkter, behandlingsårsaker, behandlingDto.faresignaler(),
+            behandlingDto.refusjonskrav(), mapFagsakEgenskaper(losFagsakEgenskaperDto.saksegenskaper()),
             behandlingDto.foreldrepengerDto() == null ? null : behandlingDto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper,
             tilbakekreving);
     }
@@ -424,5 +446,4 @@ public class BehandlingHendelseTask2 implements ProsessTaskHandler {
     private static List<Saksegenskap> mapFagsakEgenskaper(List<String> saksegenskaper) {
         return saksegenskaper.stream().map(Saksegenskap::valueOf).toList();
     }
-
 }
