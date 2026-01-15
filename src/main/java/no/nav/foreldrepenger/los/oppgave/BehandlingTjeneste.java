@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -17,7 +18,6 @@ import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Aksjonspunkt;
 import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.tilbakekreving.TilbakekrevingOppgaveEgenskapFinner;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
@@ -114,17 +114,37 @@ public class BehandlingTjeneste {
 
     private static BehandlingTilstand utledTilstandTilbake(LosBehandlingDto dto) {
         var aksjonspunkt = Optional.ofNullable(dto.aksjonspunkt()).orElseGet(List::of);
-        if (TilbakekrevingOppgaveEgenskapFinner.aktivVentBruker(aksjonspunkt)) {
+        if (aktivVentBruker(aksjonspunkt)) {
             return BehandlingTilstand.VENT_MANUELL;
-        } else if (TilbakekrevingOppgaveEgenskapFinner.aktivVentKrav(aksjonspunkt)) {
+        } else if (aktivVentKrav(aksjonspunkt)) {
             return BehandlingTilstand.VENT_REGISTERDATA;
-        } else if (TilbakekrevingOppgaveEgenskapFinner.aktivtBeslutterAp(aksjonspunkt)) {
+        } else if (aktivtBeslutterAp(aksjonspunkt)) {
             return BehandlingTilstand.BESLUTTER;
-        } else if (!TilbakekrevingOppgaveEgenskapFinner.aktiveApForutenBeslutterEllerVent(aksjonspunkt)) {
+        } else if (!aktiveApForutenBeslutterEllerVent(aksjonspunkt)) {
             return BehandlingTilstand.INGEN;
         } else {
             return BehandlingTilstand.AKSJONSPUNKT;
         }
+    }
+
+    private static boolean aktivVentBruker(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
+        return aksjonspunkter.stream()
+            .anyMatch(a -> "7001".equals(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
+    }
+
+    private static boolean aktivVentKrav(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
+        return aksjonspunkter.stream()
+            .anyMatch(a -> "7002".equals(a.definisjon()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
+    }
+
+    private static boolean aktivtBeslutterAp(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
+        return aksjonspunkter.stream()
+            .anyMatch(a -> Aksjonspunkttype.BESLUTTER.equals(a.type()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
+    }
+
+    private static boolean aktiveApForutenBeslutterEllerVent(List<LosBehandlingDto.LosAksjonspunktDto> aksjonspunkter) {
+        return aksjonspunkter.stream()
+            .anyMatch(a -> !Set.of(Aksjonspunkttype.BESLUTTER, Aksjonspunkttype.VENT).contains(a.type()) && Aksjonspunktstatus.OPPRETTET.equals(a.status()));
     }
 
     private static BehandlingTilstand utledTilstandFpsak(LosBehandlingDto dto) {
