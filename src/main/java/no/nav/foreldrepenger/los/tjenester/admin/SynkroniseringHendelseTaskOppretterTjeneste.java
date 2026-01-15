@@ -3,14 +3,12 @@ package no.nav.foreldrepenger.los.tjenester.admin;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.UUID;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingHendelseTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
@@ -58,7 +56,6 @@ public class SynkroniseringHendelseTaskOppretterTjeneste {
         prosessTaskData.setCallId(callId + kildeBehandlingId.behandlingId.toString());
         prosessTaskData.setPrioritet(4);
         prosessTaskData.setNesteKjøringEtter(kjøretidspunkt);
-        prosessTaskData.setProperty(BehandlingHendelseTask.HENDELSE_UUID, UUID.randomUUID().toString());
         prosessTaskData.setBehandlingUUid(kildeBehandlingId.behandlingId.getValue());
         prosessTaskData.setProperty(BehandlingHendelseTask.KILDE, kildeBehandlingId.kildesystem.name());
         prosessTaskTjeneste.lagre(prosessTaskData);
