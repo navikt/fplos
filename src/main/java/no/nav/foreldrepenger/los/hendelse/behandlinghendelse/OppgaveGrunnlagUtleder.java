@@ -45,7 +45,7 @@ class OppgaveGrunnlagUtleder {
     }
 
     private static OppgaveGrunnlag mapFraFpsak(LosBehandlingDto dto) {
-        var aksjonspunkter = mapAksjonspunkt(dto);
+        var aksjonspunkter = mapFpsakAksjonspunkt(dto);
         var behandlingsårsaker = mapBehandlingsårsaker(dto);
         var saksegenskaper = mapFagsakEgenskaper(dto.saksegenskaper());
         var behandlingsegenskaper = dto.behandlingsegenskaper().stream().map(OppgaveGrunnlag.Behandlingsegenskap::valueOf).toList();
@@ -71,8 +71,12 @@ class OppgaveGrunnlagUtleder {
         return dto.behandlingsårsaker().stream().map(OppgaveGrunnlagUtleder::map).toList();
     }
 
-    private static List<OppgaveGrunnlag.Aksjonspunkt> mapAksjonspunkt(LosBehandlingDto dto) {
+    private static List<OppgaveGrunnlag.Aksjonspunkt> mapFpsakAksjonspunkt(LosBehandlingDto dto) {
         return dto.aksjonspunkt().stream().map(ap -> new OppgaveGrunnlag.Aksjonspunkt(mapFraFpsak(ap), ap.status(), ap.fristTid())).toList();
+    }
+
+    private static List<OppgaveGrunnlag.Aksjonspunkt> mapFptilbakeAksjonspunkt(LosBehandlingDto dto) {
+        return dto.aksjonspunkt().stream().map(ap -> new OppgaveGrunnlag.Aksjonspunkt(mapFraFptilbake(ap), ap.status(), ap.fristTid())).toList();
     }
 
     private static FagsakYtelseType map(Ytelse ytelse) {
@@ -122,7 +126,7 @@ class OppgaveGrunnlagUtleder {
     }
 
     private static OppgaveGrunnlag mapFraFpTilbake(LosBehandlingDto behandlingDto, LosFagsakEgenskaperDto losFagsakEgenskaperDto) {
-        var aksjonspunkter = mapAksjonspunkt(behandlingDto);
+        var aksjonspunkter = mapFptilbakeAksjonspunkt(behandlingDto);
         var behandlingsårsaker = mapBehandlingsårsaker(behandlingDto);
 
         var behandlingsegenskaper = behandlingDto.behandlingsegenskaper().stream().map(egenskap -> switch (egenskap.toUpperCase()) {
@@ -137,6 +141,16 @@ class OppgaveGrunnlagUtleder {
             mapFagsakEgenskaper(losFagsakEgenskaperDto.saksegenskaper()),
             behandlingDto.foreldrepengerDto() == null ? null : behandlingDto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper,
             mapStatus(behandlingDto));
+    }
+
+    private static OppgaveGrunnlag.AksjonspunktType mapFraFptilbake(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
+        if (aksjonspunktDto.type() == Aksjonspunkttype.VENT) {
+            return OppgaveGrunnlag.AksjonspunktType.PÅ_VENT;
+        }
+        if (aksjonspunktDto.type() == Aksjonspunkttype.BESLUTTER) {
+            return OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER;
+        }
+        return OppgaveGrunnlag.AksjonspunktType.ANNET;
     }
 
     private static OppgaveGrunnlag.BehandlingStatus mapStatus(LosBehandlingDto behandlingDto) {

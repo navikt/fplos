@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,16 +30,14 @@ class KriterieUtleder {
     Set<AndreKriterierType> utledKriterier(OppgaveGrunnlag oppgaveGrunnlag) {
         var kriterier = new HashSet<AndreKriterierType>();
 
-        var aktiveAksjonspunkt = oppgaveGrunnlag.aksjonspunkt()
+        var aksjonspunkt = oppgaveGrunnlag.aksjonspunkt();
+        var aktiveAksjonspunkt = aksjonspunkt
             .stream()
             .filter(a -> a.status() == Aksjonspunktstatus.OPPRETTET)
             .map(OppgaveGrunnlag.Aksjonspunkt::type)
             .collect(Collectors.toSet());
         if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.PAPIRSØKNAD)) {
             kriterier.add(AndreKriterierType.PAPIRSØKNAD);
-        }
-        if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER)) {
-            kriterier.add(AndreKriterierType.TIL_BESLUTTER);
         }
         if (aktiveAksjonspunkt.contains(OppgaveGrunnlag.AksjonspunktType.KONTROLLER_TERMINBEKREFTELSE)) {
             kriterier.add(AndreKriterierType.TERMINBEKREFTELSE);
@@ -128,14 +127,42 @@ class KriterieUtleder {
             kriterier.add(AndreKriterierType.REVURDERING_INNTEKTSMELDING);
         }
 
-        if (oppgaveGrunnlag.aksjonspunkt()
-            .stream()
-            .anyMatch(a -> a.type() == OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER && a.status() == Aksjonspunktstatus.AVBRUTT)) {
-            kriterier.add(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
+        //Fpsak og fptilbake har forskjellig håndtering av retur fra beslutter.
+            // Fpsak avbryter beslutter AP
+            // Fptilbake fjerner beslutter AP, andre ganger holdes beslutter ap opprettet. Avhengig av hvor langt tilbake behandlingen hopper????
+        if (oppgaveGrunnlag.behandlingstype().gjelderTilbakebetaling() && opprettetBeslutterAp(aksjonspunkt)) {
+            if (opprettetAnnetApEnnBeslutter(aksjonspunkt)) {
+                kriterier.add(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
+            } else {
+                kriterier.add(AndreKriterierType.TIL_BESLUTTER);
+            }
+        }
+        if (!oppgaveGrunnlag.behandlingstype().gjelderTilbakebetaling()) {
+            if (opprettetBeslutterAp(aksjonspunkt)) {
+                kriterier.add(AndreKriterierType.TIL_BESLUTTER);
+            }
+            if (harAvbruttBeslutterAp(aksjonspunkt)) {
+                kriterier.add(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
+            }
         }
 
         kriterier.addAll(beskyttelsesbehov.getBeskyttelsesKriterier(oppgaveGrunnlag.saksnummer()));
 
         return kriterier;
+    }
+
+    private static boolean opprettetAnnetApEnnBeslutter(List<OppgaveGrunnlag.Aksjonspunkt> aksjonspunkt) {
+        return aksjonspunkt.stream().anyMatch(a -> a.status() == Aksjonspunktstatus.OPPRETTET && a.type() != OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER);
+    }
+
+    private static boolean opprettetBeslutterAp(List<OppgaveGrunnlag.Aksjonspunkt> aksjonspunkter) {
+        return aksjonspunkter.stream()
+            .anyMatch(a -> a.type() == OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER && a.status() == Aksjonspunktstatus.OPPRETTET);
+    }
+
+    private static boolean harAvbruttBeslutterAp(List<OppgaveGrunnlag.Aksjonspunkt> aksjonspunkt) {
+        return aksjonspunkt
+            .stream()
+            .anyMatch(a -> a.type() == OppgaveGrunnlag.AksjonspunktType.TIL_BESLUTTER && a.status() == Aksjonspunktstatus.AVBRUTT);
     }
 }

@@ -66,6 +66,10 @@ class ReservasjonUtleder {
     }
 
     private static boolean erManuellRevurdering(OppgaveGrunnlag oppgaveGrunnlag) {
+        if (BehandlingType.TILBAKEBETALING_REVURDERING == oppgaveGrunnlag.behandlingstype()) {
+            //Fptilbake behandlinger har ikke behandlingsårsaker, eneste måten å opprette en revurdering på er manuell saksbehandling
+            return true;
+        }
         return oppgaveGrunnlag.behandlingstype() == BehandlingType.REVURDERING && oppgaveGrunnlag.behandlingsårsaker()
             .contains(OppgaveGrunnlag.Behandlingsårsak.MANUELL);
     }

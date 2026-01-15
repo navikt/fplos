@@ -8,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
@@ -34,6 +37,7 @@ class BehandlingHendelseTask2 implements ProsessTaskHandler {
 
     static final String BEHANDLING_UUID = CommonTaskProperties.BEHANDLING_UUID;
     static final String KILDE = "kildesystem";
+    private static final Logger LOG = LoggerFactory.getLogger(BehandlingHendelseTask2.class);
 
     private final FpsakBehandlingKlient fpsakKlient;
     private final FptilbakeBehandlingKlient fptilbakeKlient;
@@ -74,14 +78,17 @@ class BehandlingHendelseTask2 implements ProsessTaskHandler {
         var oppgaveGrunnlag = oppgaveGrunnlagUtleder.lagGrunnlag(dto);
 
         var eksisterendeOppgave = finnEksisterendeOppgave(oppgaveGrunnlag.behandlingUuid());
+        eksisterendeOppgave.ifPresent(o -> LOG.info("Funnet eksisterende oppgave {} for behandling {}", o.getId(), oppgaveGrunnlag.behandlingUuid()));
 
         var skalLageOppgave = skalLageOppgave(oppgaveGrunnlag);
         if (skalLageOppgave) {
+            LOG.info("Oppretter oppgave for behandling {}", oppgaveGrunnlag.behandlingUuid());
             var oppgave = opprettOppgave(oppgaveGrunnlag);
             opprettReservasjon(oppgave, eksisterendeOppgave, oppgaveGrunnlag);
         }
 
         eksisterendeOppgave.ifPresent(o -> {
+            LOG.info("Avslutter eksisterende oppgave {} for behandling {}", o.getId(), oppgaveGrunnlag.behandlingUuid());
             o.avsluttOppgave();
             if (o.harAktivReservasjon()) {
                 avsluttReservasjon(o.getReservasjon());
@@ -101,11 +108,15 @@ class BehandlingHendelseTask2 implements ProsessTaskHandler {
 
     private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, OppgaveGrunnlag oppgaveGrunnlag) {
         var reservasjon = reservasjonUtleder.utledReservasjon(oppgave, eksisterendeOppgave, oppgaveGrunnlag);
-        reservasjon.ifPresent(reservasjonRepository::lagre);
+        reservasjon.ifPresent(r -> {
+            LOG.info("Opprettet reservasjon for oppgave {}", oppgave.getId());
+            reservasjonRepository.lagre(r);
+        });
     }
 
     private Oppgave opprettOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
         var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        LOG.info("Utledet kriterier {} for oppgave til behandling {}", kriterier, oppgaveGrunnlag.behandlingUuid());
 
         var oppgaveEgenskaper = kriterier.stream()
             .map(k -> new OppgaveEgenskap.Builder().medAndreKriterierType(k)
