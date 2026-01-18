@@ -1,7 +1,16 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder;
 
+import java.util.Comparator;
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.avdelingsleder.innlogget.AnsattInfoKlient;
@@ -10,17 +19,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.InitLinksDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 import no.nav.vedtak.sikkerhet.kontekst.AnsattGruppe;
-
-import java.util.Comparator;
-import java.util.List;
 
 @Path("/avdelingsleder")
 @ApplicationScoped
@@ -44,7 +43,7 @@ public class AvdelingslederRestTjeneste {
     @Path("/avdelinger")
     @Produces("application/json")
     @Operation(description = "Henter alle avdelinger", tags = "AvdelingslederTopp")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING, sporingslogg = false)
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<AvdelingDto> hentAvdelinger() {
         // erstattes av init-fetch når frontend er over på ny app
         return avdelingslederTjeneste.hentAvdelinger()

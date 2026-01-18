@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.junit.jupiter.api.Test;
+
 import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Context;
-
-import org.junit.jupiter.api.Test;
 
 class RestApiInputValideringAnnoteringTest extends RestApiTester {
 
@@ -27,9 +27,10 @@ class RestApiInputValideringAnnoteringTest extends RestApiTester {
     void alle_felter_i_objekter_som_brukes_som_inputDTO_skal_enten_ha_valideringsannotering_eller_være_av_godkjent_type() {
         for (var method : finnAlleRestMetoder()) {
             for (var i = 0; i < method.getParameterCount(); i++) {
-                assertThat(method.getParameterTypes()[i].isAssignableFrom(String.class)).as(
-                    "REST-metoder skal ikke har parameter som er String eller mer generelt. Bruk DTO-er og valider. " + printKlasseOgMetodeNavn.apply(
-                        method)).isFalse();
+                assertThat(method.getParameterTypes()[i].isAssignableFrom(String.class))
+                    .as("REST-metoder skal ikke har parameter som er String eller mer generelt. Bruk DTO-er og valider. " +
+                        printKlasseOgMetodeNavn.apply(method))
+                    .isFalse();
                 if (isCollectionOrMap(method.getParameterTypes()[i])) {
                     for (var param : method.getParameters()) {
                         if (param.getAnnotatedType().isAnnotationPresent(Valid.class)) {
@@ -38,15 +39,17 @@ class RestApiInputValideringAnnoteringTest extends RestApiTester {
                         if (param.getAnnotatedType() instanceof AnnotatedParameterizedType annotatedParameterizedType) {
                             var annotert = annotatedParameterizedType.getAnnotatedActualTypeArguments();
                             for (var ann : annotert) {
-                                assertThat(ann.isAnnotationPresent(Valid.class)).as(
-                                    "Alle parameter for REST-metoder skal være annotert med @Valid. Var ikke det for " +
-                                        printKlasseOgMetodeNavn.apply(method)).withFailMessage("Fant parametere som mangler @Valid annotation").isTrue();
+                                assertThat(ann.isAnnotationPresent(Valid.class))
+                                    .as("Alle parameter for REST-metoder skal være annotert med @Valid. Var ikke det for " +
+                                        printKlasseOgMetodeNavn.apply(method))
+                                    .withFailMessage("Fant parametere som mangler @Valid annotation").isTrue();
                             }
                         }
                     }
                 } else {
-                    assertThat(isRequiredAnnotationPresent(method.getParameters()[i])).as(
-                            "Alle parameter for REST-metoder skal være annotert med @Valid. Var ikke det for " + printKlasseOgMetodeNavn.apply(method))
+                    assertThat(isRequiredAnnotationPresent(method.getParameters()[i]))
+                        .as("Alle parameter for REST-metoder skal være annotert med @Valid. Var ikke det for " +
+                            printKlasseOgMetodeNavn.apply(method))
                         .withFailMessage("Fant parametere som mangler @Valid annotation '" + method.getParameters()[i].toString() + "'")
                         .isTrue();
                 }
@@ -59,9 +62,9 @@ class RestApiInputValideringAnnoteringTest extends RestApiTester {
     }
 
     private boolean isRequiredAnnotationPresent(Parameter parameter) {
-        final var validAnnotation = parameter.getAnnotation(Valid.class);
+        var validAnnotation = parameter.getAnnotation(Valid.class);
         if (validAnnotation == null) {
-            final var contextAnnotation = parameter.getAnnotation(Context.class);
+            var contextAnnotation = parameter.getAnnotation(Context.class);
             return contextAnnotation != null;
         }
         return true;

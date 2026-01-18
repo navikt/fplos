@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
@@ -10,6 +11,7 @@ public enum BehandlingVenteStatus implements Kodeverdi {
 
     @JsonValue
     private final String kode;
+    @JsonIgnore
     private final String navn;
 
     BehandlingVenteStatus(String kode, String navn) {

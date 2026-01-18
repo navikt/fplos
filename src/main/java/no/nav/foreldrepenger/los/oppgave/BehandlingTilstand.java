@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.oppgave;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.persistence.EnumeratedValue;
@@ -26,6 +27,7 @@ public enum BehandlingTilstand implements Kodeverdi {
     @JsonValue
     @EnumeratedValue
     private final String kode;
+    @JsonIgnore
     private final String navn;
 
     BehandlingTilstand(String kode, String navn) {

@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.oppgave;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
@@ -13,6 +14,7 @@ public enum FagsakStatus implements Kodeverdi {
 
     @JsonValue
     private String kode;
+    @JsonIgnore
     private final String navn;
 
     FagsakStatus(String kode, String navn) {

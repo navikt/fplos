@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.oppgave;
 
 import java.util.Arrays;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.persistence.EnumeratedValue;
@@ -19,6 +20,7 @@ public enum BehandlingType implements Kodeverdi {
     @JsonValue
     @EnumeratedValue
     private final String kode;
+    @JsonIgnore
     private final String navn;
 
     BehandlingType(String kode, String navn) {
