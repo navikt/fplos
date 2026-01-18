@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
 
 public enum OppgaveBehandlingStatus implements Kodeverdi {
@@ -12,6 +14,7 @@ public enum OppgaveBehandlingStatus implements Kodeverdi {
 
     @JsonValue
     private String kode;
+    @JsonIgnore
     private final String navn;
 
     OppgaveBehandlingStatus(String kode, String navn) {

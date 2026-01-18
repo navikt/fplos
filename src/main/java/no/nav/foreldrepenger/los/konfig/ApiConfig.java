@@ -6,25 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.glassfish.jersey.server.ServerProperties;
 
-import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
-import io.swagger.v3.oas.integration.GenericOpenApiContextBuilder;
-import io.swagger.v3.oas.integration.OpenApiConfigurationException;
-import io.swagger.v3.oas.integration.SwaggerConfiguration;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.servers.Server;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import no.nav.foreldrepenger.konfig.Environment;
-import no.nav.foreldrepenger.los.server.exceptions.ConstraintViolationMapper;
-import no.nav.foreldrepenger.los.server.exceptions.GeneralRestExceptionMapper;
-import no.nav.foreldrepenger.los.server.exceptions.JsonMappingExceptionMapper;
-import no.nav.foreldrepenger.los.server.exceptions.JsonParseExceptionMapper;
-import no.nav.foreldrepenger.los.tjenester.admin.AdminRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.admin.DriftsmeldingerRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.AvdelingslederRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
@@ -37,52 +23,20 @@ import no.nav.foreldrepenger.los.tjenester.migrering.MigreringRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.reservasjon.ReservasjonRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
-import no.nav.vedtak.exception.TekniskException;
-import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 
 @ApplicationPath(ApiConfig.API_URI)
 public class ApiConfig extends Application {
 
-    private static final Environment ENV = Environment.current();
-
     public static final String API_URI = "/api";
-
-    public ApiConfig() {
-
-        var oas = new OpenAPI();
-        var info = new Info().title("FPLOS").version("1.0").description("REST grensesnitt for fplos.");
-        oas.info(info).addServersItem(new Server().url(ENV.getProperty("context.path", "/fplos")));
-        var oasConfig = new SwaggerConfiguration().openAPI(oas)
-            .prettyPrint(true)
-            .resourceClasses(ApiConfig.getAllClasses().stream().map(Class::getName).collect(Collectors.toSet()));
-        try {
-            new GenericOpenApiContextBuilder<>().openApiConfiguration(oasConfig).buildContext(true).read();
-        } catch (OpenApiConfigurationException e) {
-            throw new TekniskException("OPENAPI", e.getMessage(), e);
-        }
-    }
 
     @Override
     public Set<Class<?>> getClasses() {
         // eksponert grensesnitt
         Set<Class<?>> classes = new HashSet<>(getAllClasses());
 
-        // Autentisering
-        classes.add(AuthenticationFilter.class);
-
-        // swagger
-        classes.add(OpenApiResource.class);
-
-        // Applikasjonsoppsett
-        classes.add(JacksonJsonConfig.class);
-
-        // ExceptionMappers pga de som finnes i Jackson+Jersey-media
-        classes.add(ConstraintViolationMapper.class);
-        classes.add(JsonMappingExceptionMapper.class);
-        classes.add(JsonParseExceptionMapper.class);
-
-        // Generell exceptionmapper m/logging for øvrige tilfelle
-        classes.add(GeneralRestExceptionMapper.class);
+        // Standard Jakarta RS oppsett for filtre og plugins
+        classes.addAll(FellesConfigClasses.getFellesContainerFilterClasses());
+        classes.addAll(FellesConfigClasses.getFellesRsExtConfigClasses());
 
         return Collections.unmodifiableSet(classes);
     }
@@ -100,9 +54,7 @@ public class ApiConfig extends Application {
         classes.add(NøkkeltallRestTjeneste.class);
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
-        classes.add(AdminRestTjeneste.class);
         classes.add(MigreringRestTjeneste.class);
-        classes.add(ProsessTaskRestTjeneste.class);
         return classes;
     }
 

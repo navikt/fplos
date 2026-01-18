@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.oppgave;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.persistence.EnumeratedValue;
@@ -41,6 +42,7 @@ public enum AndreKriterierType implements Kodeverdi {
     @JsonValue
     @EnumeratedValue
     private final String kode;
+    @JsonIgnore
     private final String navn;
 
     AndreKriterierType(String kode, String navn) {
