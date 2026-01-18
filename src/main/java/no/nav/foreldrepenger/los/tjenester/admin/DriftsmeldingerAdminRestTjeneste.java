@@ -41,7 +41,7 @@ public class DriftsmeldingerAdminRestTjeneste {
     @GET
     @Path("/aktive-driftsmeldinger")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Aktive driftsmeldinger", tags = "admin")
+    @Operation(description = "Aktive driftsmeldinger", tags = "driftsmelding")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<DriftsmeldingDto> hentAktiveDriftsmeldinger() {
         return driftsmeldingTjeneste.hentAktiveDriftsmeldinger().stream().map(DriftsmeldingerAdminRestTjeneste::tilDto).toList();
@@ -50,7 +50,7 @@ public class DriftsmeldingerAdminRestTjeneste {
     @GET
     @Path("/alle-driftsmeldinger")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Alle Driftsmeldinger", tags = "admin")
+    @Operation(description = "Alle Driftsmeldinger", tags = "driftsmelding")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<DriftsmeldingDto> hentAlleDriftsmeldinger() {
         return driftsmeldingTjeneste.hentAlleDriftsmeldinger().stream().map(DriftsmeldingerAdminRestTjeneste::tilDto).toList();
@@ -60,7 +60,7 @@ public class DriftsmeldingerAdminRestTjeneste {
     @Path("/opprett")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Opprett ny driftsmeldinger", tags = "admin")
+    @Operation(description = "Opprett ny driftsmeldinger", tags = "driftsmelding")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response opprettDriftsmelding(@Parameter(description = "jepp") @NotNull @Valid DriftsmeldingOpprettelseDto dto) {
         var melding = tilDriftsmelding(dto);
@@ -71,7 +71,7 @@ public class DriftsmeldingerAdminRestTjeneste {
     @POST
     @Path("/deaktiver")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Operation(description = "Deaktiver alle driftsmeldinger", tags = "admin")
+    @Operation(description = "Deaktiver alle driftsmeldinger", tags = "driftsmelding")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response deaktiverDriftsmeldinger() {
         driftsmeldingTjeneste.deaktiverDriftsmeldinger();
