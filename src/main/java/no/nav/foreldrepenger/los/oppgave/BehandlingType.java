@@ -36,7 +36,6 @@ public enum BehandlingType implements Kodeverdi {
         return kode;
     }
 
-
     public boolean gjelderTilbakebetaling() {
         return this == TILBAKEBETALING || this == TILBAKEBETALING_REVURDERING;
     }

@@ -66,7 +66,7 @@ class OppgaveEgenskapHåndtererTest {
     @Test
     void opprettOppgaveEgenskaperMedKode7Test() {
         when(oppgaveEgenskapFinner.getAndreKriterier()).thenReturn(List.of());
-        when(beskyttelsesbehov.getBeskyttelsesKriterier(any())).thenReturn(Set.of(AndreKriterierType.KODE7_SAK));
+        when(beskyttelsesbehov.getBeskyttelsesKriterier(any(Saksnummer.class))).thenReturn(Set.of(AndreKriterierType.KODE7_SAK));
         var oppgave = lagOppgave();
 
         egenskapHåndterer.håndterOppgaveEgenskaper(oppgave, oppgaveEgenskapFinner);

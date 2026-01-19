@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -8,25 +9,22 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
-
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.felles.util.DateAndTimeUtil;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Behandling;
 import no.nav.foreldrepenger.los.oppgave.BehandlingTilstand;
 import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
-
-import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
 
 
 @ApplicationScoped
@@ -172,7 +170,12 @@ public class ReservasjonTjeneste {
         };
     }
 
-    public void opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
+    public void opprettReservasjonOgLagre(Oppgave oppgave, String saksbehandler, String begrunnelse) {
+        var reservasjon = opprettReservasjon(oppgave, saksbehandler, begrunnelse);
+        reservasjonRepository.lagre(reservasjon);
+    }
+
+    public static Reservasjon opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
         var reservertTil = utvidetReservasjon();
         var reservasjon = new Reservasjon(oppgave);
         reservasjon.setReservertAv(saksbehandler);
@@ -180,7 +183,7 @@ public class ReservasjonTjeneste {
         reservasjon.setReservertTil(reservertTil);
         reservasjon.setFlyttetAv(BrukerIdent.brukerIdent());
         reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
-        reservasjonRepository.lagre(reservasjon);
+        return reservasjon;
     }
 
     public void reserverBasertPåAvsluttetReservasjon(Oppgave oppgave, Reservasjon gammelReservasjon) {
@@ -208,7 +211,7 @@ public class ReservasjonTjeneste {
     }
 
     private static LocalDateTime utvidetReservasjon() {
-        return LocalDateTime.now().plusHours(24).with(DateAndTimeUtil.justerTilNesteUkedag);
+        return LocalDate.now().plusDays(1).with(DateAndTimeUtil.justerTilNesteUkedag).atTime(19, 0);
     }
 
     private static LocalDateTime standardReservasjon() {
