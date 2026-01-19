@@ -2,7 +2,9 @@ package no.nav.foreldrepenger.los.reservasjon;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -13,8 +15,10 @@ import jakarta.persistence.PersistenceException;
 
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.felles.util.DateAndTimeUtil;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.Behandling;
+import no.nav.foreldrepenger.los.oppgave.BehandlingTilstand;
+import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
@@ -33,11 +37,15 @@ public class ReservasjonTjeneste {
 
     private OppgaveRepository oppgaveRepository;
     private ReservasjonRepository reservasjonRepository;
+    private BehandlingTjeneste behandlingTjeneste;
 
     @Inject
-    public ReservasjonTjeneste(OppgaveRepository oppgaveRepository, ReservasjonRepository reservasjonRepository) {
+    public ReservasjonTjeneste(OppgaveRepository oppgaveRepository,
+                               ReservasjonRepository reservasjonRepository,
+                               BehandlingTjeneste behandlingTjeneste) {
         this.oppgaveRepository = oppgaveRepository;
         this.reservasjonRepository = reservasjonRepository;
+        this.behandlingTjeneste = behandlingTjeneste;
     }
 
     public ReservasjonTjeneste() {
@@ -138,31 +146,30 @@ public class ReservasjonTjeneste {
         var sisteReserverteMetadata = reservasjonRepository.hentSisteReserverteMetadata(BrukerIdent.brukerIdent(), kunAktive);
         var oppgaveIder = sisteReserverteMetadata.stream().map(SisteReserverteMetadata::oppgaveId).toList();
         var oppgaveListe = oppgaveRepository.hentOppgaverReadOnly(oppgaveIder);
+        var behandlingTilstandMap = behandlingTjeneste.hentBehandlinger(oppgaveListe.stream().map(Oppgave::getBehandlingId).collect(Collectors.toSet()))
+            .stream().collect(Collectors.toMap(Behandling::getId, Behandling::getBehandlingTilstand));
         var oppgaveMap = oppgaveListe.stream().collect(Collectors.toMap(Oppgave::getId, Function.identity()));
         return sisteReserverteMetadata.stream().map(mr -> {
             var oppgave = oppgaveMap.get(mr.oppgaveId());
-            var status = mapStatus(oppgave, mr.sisteEventType());
+            var status = mapStatus(oppgave, behandlingTilstandMap);
             return new OppgaveBehandlingStatusWrapper(oppgave, status);
         }).toList();
 
     }
 
-    private static OppgaveBehandlingStatus mapStatus(Oppgave oppgave, OppgaveEventType sisteEventType) {
-        var erTilBeslutter = oppgave.getOppgaveEgenskaper().stream()
-            .anyMatch(egenskap -> AndreKriterierType.TIL_BESLUTTER.equals(egenskap.getAndreKriterierType()));
-        var erReturnertFraBeslutter = oppgave.getOppgaveEgenskaper().stream()
-            .anyMatch(egenskap -> AndreKriterierType.RETURNERT_FRA_BESLUTTER.equals(egenskap.getAndreKriterierType()));
-        if (sisteEventType.erVenteEvent()) {
-            return OppgaveBehandlingStatus.PÅ_VENT;
-        } else if (!oppgave.getAktiv()) {
-            return OppgaveBehandlingStatus.FERDIG;
-        } else if (erTilBeslutter) {
-            return OppgaveBehandlingStatus.TIL_BESLUTTER;
-        } else if (erReturnertFraBeslutter) {
-            return OppgaveBehandlingStatus.RETURNERT_FRA_BESLUTTER;
-        } else {
-            return OppgaveBehandlingStatus.UNDER_ARBEID;
-        }
+    private static OppgaveBehandlingStatus mapStatus(Oppgave oppgave, Map<UUID, BehandlingTilstand> behandlingTilstandSet) {
+        var behandlingTilstand = behandlingTilstandSet.getOrDefault(oppgave.getBehandlingId().getValue(), BehandlingTilstand.INGEN);
+        return switch (behandlingTilstand) {
+            case AKSJONSPUNKT -> {
+                var erReturnertFraBeslutter = oppgave.getOppgaveEgenskaper().stream()
+                    .anyMatch(egenskap -> AndreKriterierType.RETURNERT_FRA_BESLUTTER.equals(egenskap.getAndreKriterierType()));
+                yield erReturnertFraBeslutter ? OppgaveBehandlingStatus.RETURNERT_FRA_BESLUTTER : OppgaveBehandlingStatus.UNDER_ARBEID;
+            }
+            case OPPRETTET, INGEN, PAPIRSØKNAD -> OppgaveBehandlingStatus.UNDER_ARBEID;
+            case VENT_TIDLIG, VENT_KOMPLETT,VENT_REGISTERDATA, VENT_KLAGEINSTANS, VENT_KØ, VENT_MANUELL, VENT_SØKNAD -> OppgaveBehandlingStatus.PÅ_VENT;
+            case BESLUTTER -> OppgaveBehandlingStatus.TIL_BESLUTTER;
+            case AVSLUTTET -> OppgaveBehandlingStatus.FERDIG;
+        };
     }
 
     public void opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
@@ -175,7 +182,6 @@ public class ReservasjonTjeneste {
         reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
         reservasjonRepository.lagre(reservasjon);
     }
-
 
     public void reserverBasertPåAvsluttetReservasjon(Oppgave oppgave, Reservasjon gammelReservasjon) {
         var reservasjon = new Reservasjon(oppgave);

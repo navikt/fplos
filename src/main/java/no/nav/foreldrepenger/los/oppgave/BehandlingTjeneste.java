@@ -5,7 +5,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +47,10 @@ public class BehandlingTjeneste {
         } catch (Exception e) {
             LOG.info("Feil ved lagring av behandling fra {} med uuid {}: {}", kildeSystem, dto.behandlingUuid(), e.getMessage());
         }
+    }
+
+    public List<Behandling> hentBehandlinger(Set<BehandlingId> behandlingIder) {
+        return oppgaveRepository.finnBehandlinger(behandlingIder.stream().map(BehandlingId::getValue).collect(Collectors.toSet()));
     }
 
     public void lagreBehandling(LosBehandlingDto dto, Fagsystem kildeSystem) {
