@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +47,7 @@ class ReturFraBeslutterHendelseHåndtererTest {
     void setUp(EntityManager entityManager) {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
-        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager));
+        reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, new ReservasjonRepository(entityManager), new BehandlingTjeneste(oppgaveRepository));
         oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste); //mock(ReservasjonTjeneste.class));
         oppgaveEgenskapHåndterer = new OppgaveEgenskapHåndterer(Mockito.mock(Beskyttelsesbehov.class));
         behandlingFpsak = behandlingFpsak();
