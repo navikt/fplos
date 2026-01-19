@@ -83,16 +83,6 @@ public class Reservasjon extends BaseEntitet {
         return begrunnelse;
     }
 
-    public void frigiReservasjon(String begrunnelse) {
-        reservertTil = LocalDateTime.now().minusSeconds(1);
-        if (reservertAv == null) {
-            reservertAv = finnBrukernavn();
-        }
-        flyttetAv = null;
-        flyttetTidspunkt = null;
-        this.begrunnelse = begrunnelse;
-    }
-
     public void setReservertTil(LocalDateTime reservertTil) {
         this.reservertTil = reservertTil;
     }

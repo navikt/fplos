@@ -1,11 +1,13 @@
 package no.nav.foreldrepenger.los.server;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.nio.file.Path;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class VaultUtilTest {
 
@@ -33,6 +35,6 @@ class VaultUtilTest {
         var filNavn = "user";
 
         var message = assertThrows(IllegalStateException.class, () -> VaultUtil.lesFilVerdi(mappeNavn, filNavn));
-        assertThat(message.getMessage()).startsWith("Mangler vault konfig for %s/%s/%s".formatted(TEST_RESOURCES_PATH, mappeNavn, filNavn));
+        assertThat(message.getMessage()).startsWith("Mangler vault konfig for " + Path.of("%s/%s/%s".formatted(TEST_RESOURCES_PATH, mappeNavn, filNavn)));
     }
 }

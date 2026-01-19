@@ -78,10 +78,7 @@ public class OppgaveEgenskap extends BaseEntitet {
         }
 
         public Builder medSisteSaksbehandlerForTotrinn(String sisteSaksbehandler) {
-            if (sisteSaksbehandler == null || sisteSaksbehandler.isBlank()) {
-                throw new IllegalArgumentException("sisteSaksbehandlerForTotrinn kan ikke være null eller blank");
-            }
-            this.sisteSaksbehandlerForTotrinn = sisteSaksbehandler.toUpperCase();
+            this.sisteSaksbehandlerForTotrinn = sisteSaksbehandler != null ? sisteSaksbehandler.toUpperCase() : null;
             return this;
         }
 

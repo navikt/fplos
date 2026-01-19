@@ -46,7 +46,7 @@ public class ReturFraBeslutterOppgavetransisjonHåndterer implements FpsakOppgav
         oppgaveEgenskapHåndterer.håndterOppgaveEgenskaper(saksbehandlerOppgave, new FpsakOppgaveEgenskapFinner(behandling));
         oppgaveTjeneste.lagre(saksbehandlerOppgave);
         if (behandling.ansvarligSaksbehandlerIdent() != null) {
-            reservasjonTjeneste.opprettReservasjon(saksbehandlerOppgave, behandling.ansvarligSaksbehandlerIdent(), ReservasjonKonstanter.RETUR_FRA_BESLUTTER);
+            reservasjonTjeneste.opprettReservasjonOgLagre(saksbehandlerOppgave, behandling.ansvarligSaksbehandlerIdent(), ReservasjonKonstanter.RETUR_FRA_BESLUTTER);
         }
         LOG.info("Retur fra beslutter, oppretter oppgave og flytter reservasjon til ansvarlig saksbehandler");
         opprettOppgaveEventLogg(saksbehandlerOppgave, behandling.behandlendeEnhetId());
