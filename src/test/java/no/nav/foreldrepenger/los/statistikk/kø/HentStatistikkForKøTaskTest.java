@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,9 +74,11 @@ class HentStatistikkForKøTaskTest {
         entityManager.flush();
 
         // act
-        var statistikkOppgaveFilter = statistikkRepository.hentSisteStatistikkOppgaveFilter(oppgaveFilterId);
+        var statistikkOppgaveFilterOpt = statistikkRepository.hentSisteStatistikkOppgaveFilter(oppgaveFilterId, Set.of(InnslagType.REGELMESSIG));
 
         // assert
+        assertThat(statistikkOppgaveFilterOpt).isPresent();
+        var statistikkOppgaveFilter = statistikkOppgaveFilterOpt.get();
         assertThat(statistikkOppgaveFilter.getInnslagType()).isEqualTo(InnslagType.REGELMESSIG);
         assertThat(statistikkOppgaveFilter.getAntallAktive()).isEqualTo(22);
         assertThat(statistikkOppgaveFilter.getAntallTilgjengelige()).isEqualTo(13);

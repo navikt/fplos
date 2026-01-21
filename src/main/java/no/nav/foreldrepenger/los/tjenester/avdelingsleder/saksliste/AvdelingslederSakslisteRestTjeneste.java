@@ -1,9 +1,8 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste;
 
-import static no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste.tilAktiveOgTilgjenglige;
-
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,6 +24,7 @@ import no.nav.foreldrepenger.los.statistikk.kø.InnslagType;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
 import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteAndreKriterierDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteBehandlingstypeDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteFagsakYtelseTyperDto;
@@ -71,7 +71,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
         return filtersett.stream()
-            .map(of -> new SakslisteDto(of, tilAktiveOgTilgjenglige(statistikkRepository.hentSisteStatistikkOppgaveFilter(of.getId()))))
+            .map(of -> new SakslisteDto(of, statistikkRepository.hentSisteStatistikkOppgaveFilter(of.getId(), Set.of(InnslagType.REGELMESSIG, InnslagType.SNAPSHOT)).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
             .toList();
     }
 
