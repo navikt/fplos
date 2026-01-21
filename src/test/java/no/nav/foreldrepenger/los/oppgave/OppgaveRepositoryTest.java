@@ -30,8 +30,6 @@ import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
@@ -71,14 +69,6 @@ class OppgaveRepositoryTest {
         assertThat(oppgaveKøRepository.hentAntallOppgaver(alleOppgaverSpørring)).isEqualTo(4);
         assertThat(oppgaves).first().hasFieldOrPropertyWithValue("behandlendeEnhet", AVDELING_DRAMMEN_ENHET);
     }
-
-    @Test
-    void testHentingAvEventerVedBehandlingId() {
-        lagStandardSettMedOppgaver();
-        var event = oppgaveRepository.hentOppgaveEventer(behandlingId1).get(0);
-        assertThat(event.getBehandlingId()).isEqualTo(behandlingId1);
-    }
-
     private Saksnummer setupOppgaveMedEgenskaper(AndreKriterierType... kriterier) {
         var saksnummer = new Saksnummer(String.valueOf (Math.abs(new Random().nextLong() % 999999999)));
         var oppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medSaksnummer(saksnummer).build();
@@ -223,15 +213,6 @@ class OppgaveRepositoryTest {
         entityManager.persist(tredjeOppgave);
         entityManager.persist(fjerdeOppgave);
 
-        entityManager.persist(
-            new OppgaveEventLogg(behandlingId1, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(
-            new OppgaveEventLogg(behandlingId2, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(
-            new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, AndreKriterierType.PAPIRSØKNAD, AVDELING_DRAMMEN_ENHET));
-        entityManager.persist(
-            new OppgaveEventLogg(behandlingId3, OppgaveEventType.OPPRETTET, AndreKriterierType.TIL_BESLUTTER, AVDELING_DRAMMEN_ENHET));
-
         entityManager.flush();
     }
 
@@ -287,20 +268,6 @@ class OppgaveRepositoryTest {
         var oppgaveKommerPåNytt = lagOppgave(AVDELING_DRAMMEN_ENHET);
         persistFlush(oppgaveKommerPåNytt);
         assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
-    }
-
-    @Test
-    void skalKasteExceptionVedLukkingAvOppgaveDerDetFinnesFlereAktiveOppgaver() {
-        var første = lagOppgave(AVDELING_DRAMMEN_ENHET);
-        persistFlush(første);
-        var siste = lagOppgave(AVDELING_DRAMMEN_ENHET);
-        persistFlush(siste);
-        assertThat(DBTestUtil.hentAlle(entityManager, Oppgave.class)).hasSize(2);
-        assertThat(første()).isEqualTo(første);
-        assertThat(siste().getAktiv()).isTrue();
-        assertThat(første().getOpprettetTidspunkt()).isBefore(siste().getOpprettetTidspunkt());
-        var behandlingId = første.getBehandlingId();
-        assertThrows(IllegalStateException.class, () -> oppgaveTjeneste.avsluttOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlingId));
     }
 
     @Test

@@ -21,7 +21,6 @@ import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
@@ -104,15 +103,6 @@ public class OppgaveRepository {
             .setParameter("oppgaveId", oppgaveIder)
             .getSingleResult();
         return oppgaveIder.size() == fortsattTilgjengelige.intValue();
-    }
-
-    public List<OppgaveEventLogg> hentOppgaveEventer(BehandlingId behandlingId) {
-        Objects.requireNonNull(behandlingId, "behandlingId kan ikke være null");
-        return entityManager.createQuery("""
-            from oppgaveEventLogg oel
-            where oel.behandlingId = :behandlingId
-            order by oel.opprettetTidspunkt desc
-            """, OppgaveEventLogg.class).setParameter(BEHANDLING_ID_FELT_SQL, behandlingId).getResultList();
     }
 
     public void settSortering(Long sakslisteId, String sortering) {
