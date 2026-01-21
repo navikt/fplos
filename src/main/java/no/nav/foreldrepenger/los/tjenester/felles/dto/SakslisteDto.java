@@ -8,6 +8,7 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
+import no.nav.foreldrepenger.los.statistikk.AktiveOgTilgjenglige;
 
 public record SakslisteDto(Long sakslisteId,
                            String navn,
@@ -16,15 +17,19 @@ public record SakslisteDto(Long sakslisteId,
                            List<FagsakYtelseType> fagsakYtelseTyper,
                            List<AndreKriterierDto> andreKriterier,
                            @NotNull List<KøSorteringFeltDto> sorteringTyper,
-                           List<String> saksbehandlerIdenter) {
+                           List<String> saksbehandlerIdenter,
+                           StatistikkDto gjeldendeStatistikk) {
 
-    public SakslisteDto(OppgaveFiltrering of) {
+    public SakslisteDto(OppgaveFiltrering of, AktiveOgTilgjenglige aktiveOgTilgjenglige) {
+        var statistikk = aktiveOgTilgjenglige != null ? new StatistikkDto(aktiveOgTilgjenglige.aktive(), aktiveOgTilgjenglige.tilgjenglige()) : null;
         this(of.getId(), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
-            AndreKriterierDto.listeFra(of.getFiltreringAndreKriterierTyper()), KøSorteringFeltDto.alle(), saksbehandlerIdenter(of.getSaksbehandlere()));
+            AndreKriterierDto.listeFra(of.getFiltreringAndreKriterierTyper()), KøSorteringFeltDto.alle(), saksbehandlerIdenter(of.getSaksbehandlere()), statistikk);
     }
 
     private static List<String> saksbehandlerIdenter(List<Saksbehandler> saksbehandlere) {
         return saksbehandlere.stream().map(Saksbehandler::getSaksbehandlerIdent).toList();
     }
 
+    public record StatistikkDto(int alleOppgaver, int tilgjengligeOppgaver) {
+    }
 }

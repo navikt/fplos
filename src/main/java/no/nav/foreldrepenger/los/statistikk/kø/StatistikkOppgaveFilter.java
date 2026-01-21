@@ -30,16 +30,21 @@ public class StatistikkOppgaveFilter implements Serializable {
     @Column(name = "ANTALL_TILGJENGELIGE", updatable = false, nullable = false)
     private Integer antallTilgjengelige;
 
+    @Column(name = "INNSLAG_TYPE", updatable = false)
+    private InnslagType innslagType;
+
     public StatistikkOppgaveFilter() {
         // for hibernate
     }
 
-    public StatistikkOppgaveFilter(Long oppgaveFilterId, Long tidsstempel, LocalDate statistikkDato, Integer antallAktive, Integer antallTilgjengelige) {
+    public StatistikkOppgaveFilter(Long oppgaveFilterId, Long tidsstempel, LocalDate statistikkDato, Integer antallAktive, Integer antallTilgjengelige,
+                                   InnslagType innslagType) {
         this.oppgaveFilterId = oppgaveFilterId;
         this.tidsstempel = tidsstempel;
         this.statistikkDato = statistikkDato;
         this.antallAktive = antallAktive;
         this.antallTilgjengelige = antallTilgjengelige;
+        this.innslagType = innslagType;
     }
 
     public Long getTidsstempel() {
@@ -60,6 +65,10 @@ public class StatistikkOppgaveFilter implements Serializable {
 
     public Integer getAntallTilgjengelige() {
         return antallTilgjengelige;
+    }
+
+    public InnslagType getInnslagType() {
+        return innslagType;
     }
 
     @Override

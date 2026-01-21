@@ -3,13 +3,13 @@ package no.nav.foreldrepenger.los.statistikk;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.statistikk.kø.InnslagType;
 import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 
 @ApplicationScoped
@@ -33,6 +33,9 @@ public class StatistikkRepository {
 
     public void lagreStatistikkOppgaveFilter(StatistikkOppgaveFilter statistikk) {
         entityManager.persist(statistikk);
+        if (InnslagType.REGELMESSIG.equals(statistikk.getInnslagType())) {
+            fjernSnapshotStatistikkOppgaveFilterTidligereEnn(statistikk.getOppgaveFilterId(), statistikk.getTidsstempel());
+        }
     }
 
     public List<OppgaveEnhetYtelseBehandling> hentÅpneOppgaverPerEnhetYtelseBehandling() {
@@ -90,5 +93,39 @@ public class StatistikkRepository {
             """, StatistikkEnhetYtelseBehandling.class)
             .setParameter("tidsstempel", startpunkt)
             .getResultList();
+    }
+
+    public StatistikkOppgaveFilter hentSisteStatistikkOppgaveFilter(Long oppgaveFilterId) {
+        return entityManager.createQuery("""
+            SELECT s FROM StatistikkOppgaveFilter s
+            where s.oppgaveFilterId = :oppgaveFilterId
+            ORDER BY s.tidsstempel DESC
+            """, StatistikkOppgaveFilter.class)
+            .setParameter("oppgaveFilterId", oppgaveFilterId)
+            .setMaxResults(1)
+            .getSingleResult();
+    }
+
+    public List<StatistikkOppgaveFilter> hentStatistikkOppgaveFilterFraFom(Long oppgaveFilterId, LocalDate fom) {
+        var startpunkt = fom.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return entityManager.createQuery("""
+            SELECT s FROM StatistikkOppgaveFilter s
+            WHERE s.oppgaveFilterId = :oppgaveFilterId AND s.tidsstempel >= :tidsstempel
+            ORDER BY s.tidsstempel
+            """, StatistikkOppgaveFilter.class)
+            .setParameter("tidsstempel", startpunkt)
+            .setParameter("oppgaveFilterId", oppgaveFilterId)
+            .getResultList();
+    }
+
+    private void fjernSnapshotStatistikkOppgaveFilterTidligereEnn(Long oppgaveFilterId, long tidsstempel) {
+        entityManager.createQuery("""
+            DELETE FROM StatistikkOppgaveFilter s
+            WHERE s.oppgaveFilterId = :oppgaveFilterId AND s.innslagType =: innslagtype AND s.tidsstempel < :tidsstempel
+            """)
+            .setParameter("oppgaveFilterId", oppgaveFilterId)
+            .setParameter("innslagtype", InnslagType.SNAPSHOT)
+            .setParameter("tidsstempel", tidsstempel)
+            .executeUpdate();
     }
 }

@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste;
 
+import static no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste.tilAktiveOgTilgjenglige;
+
+import java.time.LocalDate;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +20,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
+import no.nav.foreldrepenger.los.statistikk.kø.InnslagType;
+import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
+import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteAndreKriterierDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteBehandlingstypeDto;
@@ -42,10 +49,16 @@ public class AvdelingslederSakslisteRestTjeneste {
 
     public static final String AVDELINGSLEDER_SAKSLISTER = "AvdelingslederSakslister";
     private AvdelingslederTjeneste avdelingslederTjeneste;
+    private KøStatistikkTjeneste køStatistikkTjeneste;
+    private StatistikkRepository statistikkRepository;
 
     @Inject
-    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste) {
+    public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste,
+                                               KøStatistikkTjeneste køStatistikkTjeneste,
+                                               StatistikkRepository statistikkRepository) {
         this.avdelingslederTjeneste = avdelingslederTjeneste;
+        this.køStatistikkTjeneste = køStatistikkTjeneste;
+        this.statistikkRepository = statistikkRepository;
     }
 
     AvdelingslederSakslisteRestTjeneste() {
@@ -57,7 +70,9 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
-        return filtersett.stream().map(SakslisteDto::new).toList();
+        return filtersett.stream()
+            .map(of -> new SakslisteDto(of, tilAktiveOgTilgjenglige(statistikkRepository.hentSisteStatistikkOppgaveFilter(of.getId()))))
+            .toList();
     }
 
     @POST
@@ -90,6 +105,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     public void lagreBehandlingstype(@NotNull @Parameter(description = "Sakslistens behandlingstype") @Valid SakslisteBehandlingstypeDto sakslisteBehandlingstype) {
         avdelingslederTjeneste.endreFiltreringBehandlingType(sakslisteBehandlingstype.getSakslisteId(), sakslisteBehandlingstype.getBehandlingType(),
             sakslisteBehandlingstype.isChecked());
+        oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteBehandlingstype.getSakslisteId());
     }
 
     @POST
@@ -98,6 +114,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreFagsakYtelseTyper(@NotNull @Parameter(description = "Ytelsestyper") @Valid SakslisteFagsakYtelseTyperDto dto) {
         avdelingslederTjeneste.endreFagsakYtelseType(dto.getSakslisteId(), dto.getFagsakYtelseType(), dto.isChecked());
+        oppdaterStatistikkForOppgavefilterEtterEndring(dto.getSakslisteId());
     }
 
 
@@ -108,6 +125,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     public void lagreAndreKriterierType(@NotNull @Parameter(description = "Sakslistens 'andre kriterier'") @Valid SakslisteAndreKriterierDto sakslisteAndreKriterierDto) {
         avdelingslederTjeneste.endreFiltreringAndreKriterierType(sakslisteAndreKriterierDto.getSakslisteId(),
             sakslisteAndreKriterierDto.getAndreKriterierType(), sakslisteAndreKriterierDto.isChecked(), sakslisteAndreKriterierDto.isInkluder());
+        oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteAndreKriterierDto.getSakslisteId());
     }
 
     @POST
@@ -116,6 +134,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreSortering(@NotNull @Parameter(description = "Sakslistens sortering") @Valid SakslisteSorteringDto sakslisteSortering) {
         avdelingslederTjeneste.settSortering(sakslisteSortering.getSakslisteId(), sakslisteSortering.getSakslisteSorteringValg());
+        oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteSortering.getSakslisteId());
     }
 
     @POST
@@ -125,6 +144,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     public void lagreSorteringTidsintervallDato(@NotNull @Parameter(description = "Sakslistens sorteringsintervall gitt datoer") @Valid SakslisteSorteringIntervallDatoDto sakslisteSorteringIntervallDato) {
         avdelingslederTjeneste.settSorteringTidsintervallDato(sakslisteSorteringIntervallDato.getSakslisteId(),
             sakslisteSorteringIntervallDato.getFomDato(), sakslisteSorteringIntervallDato.getTomDato());
+        oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteSorteringIntervallDato.getSakslisteId());
     }
 
     @POST
@@ -133,6 +153,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreSorteringTidsintervall(@NotNull @Parameter(description = "Intervall som filtrererer/sorterer numerisk") @Valid SakslisteSorteringIntervallDto intervall) {
         avdelingslederTjeneste.settSorteringNumeriskIntervall(intervall.getSakslisteId(), intervall.getFra(), intervall.getTil());
+        oppdaterStatistikkForOppgavefilterEtterEndring(intervall.getSakslisteId());
     }
 
     @POST
@@ -146,6 +167,7 @@ public class AvdelingslederSakslisteRestTjeneste {
             () -> {
                 throw new IllegalArgumentException("Fant ikke listen");
             });
+        oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteId);
     }
 
     @POST
@@ -160,5 +182,12 @@ public class AvdelingslederSakslisteRestTjeneste {
         } else {
             avdelingslederTjeneste.fjernSaksbehandlerFraListe(sakslisteId, saksbehandlerIdent);
         }
+    }
+
+    private void oppdaterStatistikkForOppgavefilterEtterEndring(Long sakslisteId) {
+        var antallOppgaver = køStatistikkTjeneste.hentAntallOppgaver(sakslisteId);
+        var antallTilgjengeligeOppgaver = køStatistikkTjeneste.hentAntallTilgjengeligeOppgaverFor(sakslisteId);
+        var statistikkOppgaveFilter = new StatistikkOppgaveFilter(sakslisteId, System.currentTimeMillis(), LocalDate.now(), antallOppgaver, antallTilgjengeligeOppgaver, InnslagType.SNAPSHOT);
+        statistikkRepository.lagreStatistikkOppgaveFilter(statistikkOppgaveFilter);
     }
 }

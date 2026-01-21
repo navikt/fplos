@@ -1,6 +1,9 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -16,7 +19,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+import no.nav.foreldrepenger.los.statistikk.AktiveOgTilgjenglige;
 import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
+import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingFørsteUttakDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingVentefristUtløperDto;
@@ -92,4 +97,21 @@ public class NøkkeltallRestTjeneste {
     public List<NøkkeltallBehandlingVentefristUtløperDto> getAlleVentefristerForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return nøkkeltallRepository.hentVentefristUkefordelt(avdelingEnhet.getAvdelingEnhet());
     }
+
+    @GET
+    @Path("/oppgaver")
+    @Operation(description = "Hent statistikk for kø den siste måneden")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public List<AktiveOgTilgjenglige> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam("oppgaveFilterId") @NotNull @Valid Long oppgaveFilterId) {
+        return statistikkRepository.hentStatistikkOppgaveFilterFraFom(oppgaveFilterId, LocalDate.now().minusMonths(1)).stream()
+            .map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige)
+            .sorted(Comparator.comparing(AktiveOgTilgjenglige::tidspunkt))
+            .toList();
+    }
+
+    public static AktiveOgTilgjenglige tilAktiveOgTilgjenglige(StatistikkOppgaveFilter s) {
+        var tid = Instant.ofEpochMilli(s.getTidsstempel()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return new AktiveOgTilgjenglige(tid, s.getAntallAktive(), s.getAntallTilgjengelige());
+    }
+
 }

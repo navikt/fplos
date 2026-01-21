@@ -47,7 +47,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<SakslisteDto> hentSakslister() {
         var filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
-        return filtre.stream().map(SakslisteDto::new).toList();
+        return filtre.stream().map(of -> new SakslisteDto(of, null)).toList();
     }
 
     @GET
