@@ -40,6 +40,8 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
+import static no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste.tilAktiveOgTilgjenglige;
+
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path("avdelingsleder/sakslister")
@@ -70,8 +72,9 @@ public class AvdelingslederSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<SakslisteDto> hentAvdelingensSakslister(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
+        var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
         return filtersett.stream()
-            .map(of -> new SakslisteDto(of, statistikkRepository.hentSisteStatistikkOppgaveFilter(of.getId(), Set.of(InnslagType.REGELMESSIG, InnslagType.SNAPSHOT)).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
+            .map(of -> new SakslisteDto(of, tilAktiveOgTilgjenglige(statistikkMap.getOrDefault(of.getId(), null))))
             .toList();
     }
 

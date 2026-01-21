@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -129,5 +130,23 @@ public class StatistikkRepository {
             .setParameter("oppgaveFilterId", oppgaveFilterId)
             .setParameter("innslagtype", InnslagType.SNAPSHOT)
             .executeUpdate();
+    }
+
+    public Map<Long, StatistikkOppgaveFilter> hentSisteStatistikkForAlleOppgaveFiltre() {
+        var alleStatistikk = entityManager.createQuery("""
+        SELECT s FROM StatistikkOppgaveFilter s
+        WHERE (s.oppgaveFilterId, s.tidsstempel) IN (
+            SELECT s2.oppgaveFilterId, MAX(s2.tidsstempel)
+            FROM StatistikkOppgaveFilter s2
+            GROUP BY s2.oppgaveFilterId
+        )
+        """, StatistikkOppgaveFilter.class)
+            .getResultList();
+
+        return alleStatistikk.stream()
+            .collect(java.util.stream.Collectors.toMap(
+                StatistikkOppgaveFilter::getOppgaveFilterId,
+                s -> s
+            ));
     }
 }
