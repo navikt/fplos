@@ -114,11 +114,12 @@ public class StatistikkRepository {
         var startpunkt = fom.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         return entityManager.createQuery("""
             SELECT s FROM StatistikkOppgaveFilter s
-            WHERE s.oppgaveFilterId = :oppgaveFilterId AND s.tidsstempel >= :tidsstempel
+            WHERE s.oppgaveFilterId = :oppgaveFilterId AND s.tidsstempel >= :tidsstempel and s.innslagType = :innslagtype
             ORDER BY s.tidsstempel
             """, StatistikkOppgaveFilter.class)
             .setParameter("tidsstempel", startpunkt)
             .setParameter("oppgaveFilterId", oppgaveFilterId)
+            .setParameter("innslagtype", InnslagType.REGELMESSIG)
             .getResultList();
     }
 
