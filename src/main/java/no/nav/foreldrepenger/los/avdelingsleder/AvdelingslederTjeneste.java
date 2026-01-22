@@ -112,7 +112,6 @@ public class AvdelingslederTjeneste {
             f.leggTilSaksbehandler(saksbehandler);
             oppgaveRepository.lagre(f);
         });
-        oppgaveRepository.refresh(saksbehandler);
     }
 
     public void fjernSaksbehandlerFraListe(Long oppgaveFiltreringId, String saksbehandlerIdent) {
@@ -121,7 +120,6 @@ public class AvdelingslederTjeneste {
             f.fjernSaksbehandler(saksbehandler);
             oppgaveRepository.lagre(f);
         });
-        oppgaveRepository.refresh(saksbehandler);
     }
 
     public List<Avdeling> hentAvdelinger() {

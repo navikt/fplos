@@ -1,4 +1,4 @@
-package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer;
+package no.nav.foreldrepenger.los.beskyttelsesbehov;
 
 import java.util.Set;
 

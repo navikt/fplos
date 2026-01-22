@@ -1,33 +1,13 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
-import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
-import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
-import no.nav.foreldrepenger.los.domene.typer.aktør.Fødselsnummer;
-import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.BehandlingType;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
+import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;

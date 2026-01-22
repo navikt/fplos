@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventLogg;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
@@ -79,11 +75,6 @@ class OppgaveTjenesteTest {
         oppgaveRepository.lagre(førstegangOppgaveBergen);
         entityManager.refresh(oppgaveFiltrering);
         return oppgaveFiltrering.getId();
-    }
-
-    private static OppgaveEventLogg opprettOppgaveEventLogg(Oppgave oppgave) {
-        return new OppgaveEventLogg(oppgave.behandlingId, OppgaveEventType.OPPRETTET,
-            null, oppgave.getBehandlendeEnhet());
     }
 
     @Test

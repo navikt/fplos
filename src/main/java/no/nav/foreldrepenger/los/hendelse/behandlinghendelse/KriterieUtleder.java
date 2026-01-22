@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.Beskyttelsesbehov;
+import no.nav.foreldrepenger.los.beskyttelsesbehov.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;

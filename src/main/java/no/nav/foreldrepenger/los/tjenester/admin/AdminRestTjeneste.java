@@ -95,7 +95,7 @@ public class AdminRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response slettTidligsteMultiAktiv(@NotNull @Valid EnkelBehandlingIdDto behandlingId) {
         var behandlinger = behandlingId.getBehandlingId();
-        oppgaveTjeneste.adminAvsluttMultiOppgaveUtenEventLoggAvsluttTilknyttetReservasjon(behandlinger);
+        oppgaveTjeneste.adminAvsluttMultiOppgaveAvsluttTilknyttetReservasjon(behandlinger);
         return Response.ok().build();
     }
 

@@ -180,28 +180,8 @@ public class Oppgave extends BaseEntitet {
         oppgaveAvsluttet = LocalDateTime.now();
     }
 
-    public void gjenåpneOppgave() {
-        aktiv = true;
-        oppgaveAvsluttet = null;
-    }
-
     public boolean harAktivReservasjon() {
         return reservasjon != null && reservasjon.erAktiv();
-    }
-
-    public void avstemMedOppgave(Oppgave other) {
-        this.behandlingOpprettet = other.behandlingOpprettet;
-        this.aktørId = other.aktørId;
-        this.behandlendeEnhet = other.behandlendeEnhet;
-        this.behandlingsfrist = other.behandlingsfrist;
-        this.saksnummer = other.saksnummer;
-        this.førsteStønadsdag = other.førsteStønadsdag;
-        this.behandlingType = other.behandlingType;
-        this.fagsakYtelseType = other.fagsakYtelseType;
-        this.system = other.system;
-        this.reservasjon = other.reservasjon;
-        this.feilutbetalingStart = other.feilutbetalingStart;
-        this.feilutbetalingBelop = other.feilutbetalingBelop;
     }
 
     public static Builder builder() {

@@ -9,9 +9,7 @@ import java.util.stream.Stream;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.oppgaveeventlogg.OppgaveEventType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 
 @ApplicationScoped
@@ -32,7 +30,7 @@ public class ReservasjonRepository {
         *   (Prinsippet for aktuell_tid er omtrent når saksbehandler sist tok i behandlingen, og dette er sorteringen som benyttes i visning.)
         *   Svakhet:
         *       1-1 relasjon mellom oppgave og reservasjon. Dersom saksbehandler ikke har skapt aktivitet (i.e løst AP) som gir ferske oppgaver
-        *       vil ev. nye reservasjoner overskrive. Alternativet pt er å bruke reservasjon_event_logg.
+        *       vil ev. nye reservasjoner overskrive.
         * Siste join henter siste oppgave tilkyttet behandlingen, uavhengig av "eier" av denne.
         */
         var kunAktiveValue = kunAktive ? List.of("J") : List.of("J", "N");
