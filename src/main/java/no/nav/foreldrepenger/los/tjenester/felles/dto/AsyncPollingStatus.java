@@ -95,7 +95,7 @@ public class AsyncPollingStatus {
         CANCELLED(418),
         HALTED(418);
 
-        private int httpStatus;
+        private final int httpStatus;
 
         Status(int httpStatus) {
             this.httpStatus = httpStatus;

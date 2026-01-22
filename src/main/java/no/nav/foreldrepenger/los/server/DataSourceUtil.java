@@ -11,8 +11,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.micrometer.core.instrument.Metrics;
 import no.nav.foreldrepenger.konfig.Environment;
 
-import static no.nav.foreldrepenger.los.server.VaultUtil.lesFilVerdi;
-
 class DataSourceUtil {
     private static final Environment ENV = Environment.current();
 
