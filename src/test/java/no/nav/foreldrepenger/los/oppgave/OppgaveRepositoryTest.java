@@ -401,14 +401,6 @@ class OppgaveRepositoryTest {
         return oppgaveKøRepository.hentOppgaver(query);
     }
 
-    private Oppgave første() {
-        return DBTestUtil.hentAlle(entityManager, Oppgave.class).get(0);
-    }
-
-    private Oppgave siste() {
-        return DBTestUtil.hentAlle(entityManager, Oppgave.class).get(1);
-    }
-
     private Oppgave lagOppgave(LocalDate opprettetDato) {
         return basicOppgaveBuilder(opprettetDato).build();
     }
