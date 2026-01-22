@@ -2,7 +2,7 @@ package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,8 +40,6 @@ import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
-import static no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste.tilAktiveOgTilgjenglige;
-
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path("avdelingsleder/sakslister")
@@ -74,7 +72,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
         return filtersett.stream()
-            .map(of -> new SakslisteDto(of, tilAktiveOgTilgjenglige(statistikkMap.getOrDefault(of.getId(), null))))
+            .map(of -> new SakslisteDto(of, Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
             .toList();
     }
 

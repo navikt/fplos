@@ -1,7 +1,9 @@
 package no.nav.foreldrepenger.los.statistikk;
 
-import no.nav.foreldrepenger.los.statistikk.kø.InnslagType;
-import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import no.nav.foreldrepenger.los.statistikk.kø.InnslagType;
+import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)

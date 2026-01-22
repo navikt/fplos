@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
@@ -30,7 +32,8 @@ public class StatistikkOppgaveFilter implements Serializable {
     @Column(name = "ANTALL_TILGJENGELIGE", updatable = false, nullable = false)
     private Integer antallTilgjengelige;
 
-    @Column(name = "INNSLAG_TYPE", updatable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "INNSLAG_TYPE", updatable = false, nullable = false)
     private InnslagType innslagType;
 
     public StatistikkOppgaveFilter() {

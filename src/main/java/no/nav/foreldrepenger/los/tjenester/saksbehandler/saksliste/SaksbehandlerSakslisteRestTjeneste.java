@@ -1,6 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,6 +16,8 @@ import jakarta.ws.rs.core.MediaType;
 
 import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
+import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SakslisteDto;
@@ -29,11 +32,13 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 public class SaksbehandlerSakslisteRestTjeneste {
 
     private OppgaveKøTjeneste oppgaveKøTjeneste;
+    private StatistikkRepository statistikkRepository;
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
-    public SaksbehandlerSakslisteRestTjeneste(OppgaveKøTjeneste oppgaveKøTjeneste, SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
+    public SaksbehandlerSakslisteRestTjeneste(OppgaveKøTjeneste oppgaveKøTjeneste, StatistikkRepository statistikkRepository, SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
+        this.statistikkRepository = statistikkRepository;
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
@@ -47,7 +52,8 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<SakslisteDto> hentSakslister() {
         var filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
-        return filtre.stream().map(of -> new SakslisteDto(of, null)).toList();
+        var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
+        return filtre.stream().map(of -> new SakslisteDto(of, Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null))).toList();
     }
 
     @GET
