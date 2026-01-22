@@ -3,13 +3,16 @@ package no.nav.foreldrepenger.los.statistikk;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.statistikk.kø.InnslagType;
 import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 
 @ApplicationScoped
@@ -33,6 +36,9 @@ public class StatistikkRepository {
 
     public void lagreStatistikkOppgaveFilter(StatistikkOppgaveFilter statistikk) {
         entityManager.persist(statistikk);
+        if (InnslagType.REGELMESSIG.equals(statistikk.getInnslagType())) {
+            fjernSnapshotStatistikkOppgaveFilterTidligereEnn(statistikk.getOppgaveFilterId());
+        }
     }
 
     public List<OppgaveEnhetYtelseBehandling> hentÅpneOppgaverPerEnhetYtelseBehandling() {
@@ -90,5 +96,58 @@ public class StatistikkRepository {
             """, StatistikkEnhetYtelseBehandling.class)
             .setParameter("tidsstempel", startpunkt)
             .getResultList();
+    }
+
+    public Optional<StatistikkOppgaveFilter> hentSisteStatistikkOppgaveFilter(Long oppgaveFilterId, Set<InnslagType> inkluderTyper) {
+        return entityManager.createQuery("""
+            SELECT s FROM StatistikkOppgaveFilter s
+            where s.oppgaveFilterId = :oppgaveFilterId AND s.innslagType IN :innslagstyper
+            ORDER BY s.tidsstempel DESC
+            """, StatistikkOppgaveFilter.class)
+            .setParameter("oppgaveFilterId", oppgaveFilterId)
+            .setParameter("innslagstyper", inkluderTyper)
+            .getResultStream()
+            .findFirst();
+    }
+
+    public List<StatistikkOppgaveFilter> hentStatistikkOppgaveFilterFraFom(Long oppgaveFilterId, LocalDate fom) {
+        var startpunkt = fom.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return entityManager.createQuery("""
+            SELECT s FROM StatistikkOppgaveFilter s
+            WHERE s.oppgaveFilterId = :oppgaveFilterId AND s.tidsstempel >= :tidsstempel and s.innslagType = :innslagtype
+            ORDER BY s.tidsstempel
+            """, StatistikkOppgaveFilter.class)
+            .setParameter("tidsstempel", startpunkt)
+            .setParameter("oppgaveFilterId", oppgaveFilterId)
+            .setParameter("innslagtype", InnslagType.REGELMESSIG)
+            .getResultList();
+    }
+
+    private void fjernSnapshotStatistikkOppgaveFilterTidligereEnn(Long oppgaveFilterId) {
+        entityManager.createQuery("""
+            DELETE FROM StatistikkOppgaveFilter s
+            WHERE s.oppgaveFilterId = :oppgaveFilterId AND s.innslagType = :innslagtype
+            """)
+            .setParameter("oppgaveFilterId", oppgaveFilterId)
+            .setParameter("innslagtype", InnslagType.SNAPSHOT)
+            .executeUpdate();
+    }
+
+    public Map<Long, StatistikkOppgaveFilter> hentSisteStatistikkForAlleOppgaveFiltre() {
+        var alleStatistikk = entityManager.createQuery("""
+        SELECT s FROM StatistikkOppgaveFilter s
+        WHERE (s.oppgaveFilterId, s.tidsstempel) IN (
+            SELECT s2.oppgaveFilterId, MAX(s2.tidsstempel)
+            FROM StatistikkOppgaveFilter s2
+            GROUP BY s2.oppgaveFilterId
+        )
+        """, StatistikkOppgaveFilter.class)
+            .getResultList();
+
+        return alleStatistikk.stream()
+            .collect(java.util.stream.Collectors.toMap(
+                StatistikkOppgaveFilter::getOppgaveFilterId,
+                s -> s
+            ));
     }
 }

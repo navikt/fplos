@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
@@ -30,16 +32,22 @@ public class StatistikkOppgaveFilter implements Serializable {
     @Column(name = "ANTALL_TILGJENGELIGE", updatable = false, nullable = false)
     private Integer antallTilgjengelige;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "INNSLAG_TYPE", updatable = false, nullable = false)
+    private InnslagType innslagType;
+
     public StatistikkOppgaveFilter() {
         // for hibernate
     }
 
-    public StatistikkOppgaveFilter(Long oppgaveFilterId, Long tidsstempel, LocalDate statistikkDato, Integer antallAktive, Integer antallTilgjengelige) {
+    public StatistikkOppgaveFilter(Long oppgaveFilterId, Long tidsstempel, LocalDate statistikkDato, Integer antallAktive, Integer antallTilgjengelige,
+                                   InnslagType innslagType) {
         this.oppgaveFilterId = oppgaveFilterId;
         this.tidsstempel = tidsstempel;
         this.statistikkDato = statistikkDato;
         this.antallAktive = antallAktive;
         this.antallTilgjengelige = antallTilgjengelige;
+        this.innslagType = innslagType;
     }
 
     public Long getTidsstempel() {
@@ -60,6 +68,10 @@ public class StatistikkOppgaveFilter implements Serializable {
 
     public Integer getAntallTilgjengelige() {
         return antallTilgjengelige;
+    }
+
+    public InnslagType getInnslagType() {
+        return innslagType;
     }
 
     @Override

@@ -1,8 +1,12 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,14 +20,19 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+import no.nav.foreldrepenger.los.statistikk.AktiveOgTilgjenglige;
 import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
+import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingFørsteUttakDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingVentefristUtløperDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdeling;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagUkeMåned;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.SakslisteIdDto;
+import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
+import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
@@ -91,5 +100,22 @@ public class NøkkeltallRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<NøkkeltallBehandlingVentefristUtløperDto> getAlleVentefristerForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         return nøkkeltallRepository.hentVentefristUkefordelt(avdelingEnhet.getAvdelingEnhet());
+    }
+
+    @GET
+    @Path("/statistikk-oppgave-filter")
+    @Operation(description = "Hent statistikk for kø den siste måneden")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public List<AktiveOgTilgjenglige> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId,
+                                                                                  @NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+        return statistikkRepository.hentStatistikkOppgaveFilterFraFom(sakslisteId.getVerdi(), LocalDate.now().minusMonths(1)).stream()
+            .map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige)
+            .sorted(Comparator.comparing(AktiveOgTilgjenglige::tidspunkt))
+            .toList();
+    }
+
+    public static AktiveOgTilgjenglige tilAktiveOgTilgjenglige(StatistikkOppgaveFilter s) {
+        var tid = Instant.ofEpochMilli(s.getTidsstempel()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return new AktiveOgTilgjenglige(tid, s.getAntallAktive(), s.getAntallTilgjengelige());
     }
 }
