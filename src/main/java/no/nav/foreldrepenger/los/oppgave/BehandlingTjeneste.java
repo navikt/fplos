@@ -86,8 +86,7 @@ public class BehandlingTjeneste {
         return switch (dto.behandlingsstatus()) {
             case OPPRETTET, UTREDES -> utledFraAksjonspunkt(dto, kildeSystem);
             case FATTER_VEDTAK -> BehandlingTilstand.BESLUTTER;
-            case IVERKSETTER_VEDTAK -> BehandlingTilstand.AVSLUTTET;
-            case AVSLUTTET -> BehandlingTilstand.AVSLUTTET;
+            case IVERKSETTER_VEDTAK, AVSLUTTET -> BehandlingTilstand.AVSLUTTET;
         };
     }
 

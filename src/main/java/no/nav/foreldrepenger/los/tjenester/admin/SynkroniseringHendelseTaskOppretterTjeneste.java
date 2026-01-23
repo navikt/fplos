@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.tjenester.admin;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

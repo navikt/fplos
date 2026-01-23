@@ -5,8 +5,6 @@ import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.BEHANDLINGSFRIST
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.FEILUTBETALINGSTART;
 import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,7 +31,6 @@ import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
 @ExtendWith(JpaExtension.class)
 class OppgaveRepositoryTest {
@@ -45,7 +42,6 @@ class OppgaveRepositoryTest {
 
     private EntityManager entityManager;
     private OppgaveRepository oppgaveRepository;
-    private OppgaveTjeneste oppgaveTjeneste;
     private OppgaveKøRepository oppgaveKøRepository;
 
 
@@ -54,7 +50,6 @@ class OppgaveRepositoryTest {
         this.entityManager = entityManager;
         oppgaveRepository = new OppgaveRepository(entityManager);
         oppgaveKøRepository = new OppgaveKøRepository(entityManager);
-        oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, mock(ReservasjonTjeneste.class));
     }
 
     @Test
@@ -404,14 +399,6 @@ class OppgaveRepositoryTest {
         var query = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.FØRSTE_STØNADSDAG, List.of(), List.of(), List.of(), List.of(), false,
             filtrerFomDato, filtrerTomDato, null, null, Filtreringstype.ALLE);
         return oppgaveKøRepository.hentOppgaver(query);
-    }
-
-    private Oppgave første() {
-        return DBTestUtil.hentAlle(entityManager, Oppgave.class).get(0);
-    }
-
-    private Oppgave siste() {
-        return DBTestUtil.hentAlle(entityManager, Oppgave.class).get(1);
     }
 
     private Oppgave lagOppgave(LocalDate opprettetDato) {

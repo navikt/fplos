@@ -1,14 +1,24 @@
-package no.nav.foreldrepenger.los.tjenester.reservasjon;
+package no.nav.foreldrepenger.los.reservasjon;
+
+import no.nav.foreldrepenger.los.felles.util.DateAndTimeUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-final class ReservasjonTidspunktUtil {
+public final class ReservasjonTidspunktUtil {
 
     private ReservasjonTidspunktUtil() {
     }
 
-    static LocalDateTime utledReservasjonTidspunkt(LocalDate date) {
+    public static LocalDateTime standardReservasjon() {
+        return LocalDate.now().plusDays(1).with(DateAndTimeUtil.justerTilNesteUkedag).atTime(19, 0);
+    }
+
+    public static LocalDateTime utvidReservasjon(LocalDateTime eksisterende) {
+        return eksisterende.plusHours(24).with(DateAndTimeUtil.justerTilNesteUkedag);
+    }
+
+    public static LocalDateTime utledReservasjonTidspunkt(LocalDate date) {
         var localDateTime = date.atTime(23, 59);
         sjekkGrenseverdier(localDateTime);
         return localDateTime;
