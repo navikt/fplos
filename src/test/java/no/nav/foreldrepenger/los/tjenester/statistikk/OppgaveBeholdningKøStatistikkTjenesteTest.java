@@ -4,7 +4,6 @@ import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_E
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

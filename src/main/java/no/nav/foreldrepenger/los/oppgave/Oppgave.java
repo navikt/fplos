@@ -103,10 +103,6 @@ public class Oppgave extends BaseEntitet {
         oppgaveEgenskap.setOppgave(this);
     }
 
-    public void tilbakestillOppgaveEgenskaper() {
-        oppgaveEgenskaper.clear();
-    }
-
     public Long getId() {
         return id;
     }

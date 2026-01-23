@@ -13,7 +13,7 @@ public enum FagsakStatus implements Kodeverdi {
     AVSLUTTET("AVSLU", "Avsluttet");
 
     @JsonValue
-    private String kode;
+    private final String kode;
     @JsonIgnore
     private final String navn;
 

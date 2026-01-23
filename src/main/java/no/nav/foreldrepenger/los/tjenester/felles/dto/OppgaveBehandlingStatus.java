@@ -13,7 +13,7 @@ public enum OppgaveBehandlingStatus implements Kodeverdi {
     UNDER_ARBEID("UNDER_ARBEID", "Under arbeid");
 
     @JsonValue
-    private String kode;
+    private final String kode;
     @JsonIgnore
     private final String navn;
 

@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import jakarta.inject.Inject;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
-import no.nav.foreldrepenger.los.felles.util.DateAndTimeUtil;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Behandling;
 import no.nav.foreldrepenger.los.oppgave.BehandlingTilstand;
@@ -25,6 +23,9 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
+
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.standardReservasjon;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.utvidReservasjon;
 
 
 @ApplicationScoped
@@ -113,7 +114,7 @@ public class ReservasjonTjeneste {
 
     public Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse) {
         return oppgaveRepository.hentReservasjon(oppgaveId).map(res -> {
-            res.setReservertTil(res.getReservertTil().plusHours(24).with(DateAndTimeUtil.justerTilNesteUkedag));
+            res.setReservertTil(utvidReservasjon(res.getReservertTil()));
             res.setReservertAv(brukernavn);
             res.setFlyttetAv(BrukerIdent.brukerIdent());
             res.setFlyttetTidspunkt(LocalDateTime.now());
@@ -127,7 +128,7 @@ public class ReservasjonTjeneste {
     public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
         var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
             .orElseThrow(() -> new IllegalStateException(FANT_IKKE_RESERVASJON_TILKNYTTET_OPPGAVE_ID + oppgaveId));
-        reservasjon.setReservertTil(utvidetReservasjon(reservasjon.getReservertTil()));
+        reservasjon.setReservertTil(utvidReservasjon(reservasjon.getReservertTil()));
         reservasjonRepository.lagre(reservasjon);
         return reservasjon;
     }
@@ -170,13 +171,8 @@ public class ReservasjonTjeneste {
         };
     }
 
-    public void opprettReservasjonOgLagre(Oppgave oppgave, String saksbehandler, String begrunnelse) {
-        var reservasjon = opprettReservasjon(oppgave, saksbehandler, begrunnelse);
-        reservasjonRepository.lagre(reservasjon);
-    }
-
     public static Reservasjon opprettReservasjon(Oppgave oppgave, String saksbehandler, String begrunnelse) {
-        var reservertTil = utvidetReservasjon();
+        var reservertTil = standardReservasjon();
         var reservasjon = new Reservasjon(oppgave);
         reservasjon.setReservertAv(saksbehandler);
         reservasjon.setBegrunnelse(begrunnelse);
@@ -186,35 +182,4 @@ public class ReservasjonTjeneste {
         return reservasjon;
     }
 
-    public void reserverBasertPåAvsluttetReservasjon(Oppgave oppgave, Reservasjon gammelReservasjon) {
-        var reservasjon = new Reservasjon(oppgave);
-        reservasjon.setReservertTil(standardReservasjon());
-        reservasjon.setReservertAv(gammelReservasjon.getReservertAv());
-        reservasjon.setBegrunnelse(gammelReservasjon.getBegrunnelse());
-        reservasjonRepository.lagre(reservasjon);
-    }
-
-    public Reservasjon reserverOppgaveBasertPåEksisterendeReservasjon(Oppgave oppgave, Reservasjon reservasjon, LocalDateTime nyVarighetTil) {
-        var nyReservasjon = new Reservasjon(oppgave);
-        nyReservasjon.setReservertTil(nyVarighetTil);
-        nyReservasjon.setReservertAv(reservasjon.getReservertAv());
-        nyReservasjon.setFlyttetTidspunkt(reservasjon.getFlyttetTidspunkt());
-        nyReservasjon.setFlyttetAv(reservasjon.getFlyttetAv());
-        nyReservasjon.setBegrunnelse(reservasjon.getBegrunnelse());
-        reservasjonRepository.lagre(nyReservasjon);
-        reservasjonRepository.refresh(oppgave);
-        return nyReservasjon;
-    }
-
-    private static LocalDateTime utvidetReservasjon(LocalDateTime eksisterende) {
-        return eksisterende.plusHours(24).with(DateAndTimeUtil.justerTilNesteUkedag);
-    }
-
-    private static LocalDateTime utvidetReservasjon() {
-        return LocalDate.now().plusDays(1).with(DateAndTimeUtil.justerTilNesteUkedag).atTime(19, 0);
-    }
-
-    private static LocalDateTime standardReservasjon() {
-        return LocalDateTime.now().plusHours(8).with(DateAndTimeUtil.justerTilNesteUkedag);
-    }
 }
