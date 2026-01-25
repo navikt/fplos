@@ -1,36 +1,34 @@
-package no.nav.foreldrepenger.los.oppgave;
+package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Aksjonspunkt;
-
-import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.Aksjonspunkt;
+import no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak.OppgaveUtil;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
+import no.nav.foreldrepenger.los.oppgave.Behandling;
+import no.nav.foreldrepenger.los.oppgave.BehandlingTilstand;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
 import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
 @ApplicationScoped
 public class BehandlingTjeneste {
-
-    private static final Logger LOG = LoggerFactory.getLogger(BehandlingTjeneste.class);
 
     private OppgaveRepository oppgaveRepository;
 
@@ -42,25 +40,28 @@ public class BehandlingTjeneste {
     BehandlingTjeneste() {
     }
 
-    public void safeLagreBehandling(LosBehandlingDto dto, Fagsystem kildeSystem) {
-        try {
-            lagreBehandling(dto, kildeSystem);
-        } catch (Exception e) {
-            LOG.info("Feil ved lagring av behandling fra {} med uuid {}: {}", kildeSystem, dto.behandlingUuid(), e.getMessage());
-        }
-    }
-
     public List<Behandling> hentBehandlinger(Set<BehandlingId> behandlingIder) {
         return oppgaveRepository.finnBehandlinger(behandlingIder.stream().map(BehandlingId::getValue).collect(Collectors.toSet()));
     }
 
-    public void lagreBehandling(LosBehandlingDto dto, Fagsystem kildeSystem) {
+    public void mottaBehandlingMigrering(LosBehandlingDto dto, LosFagsakEgenskaperDto egenskaper,
+                                         Fagsystem kildeSystem, Set<AndreKriterierType> beskyttelseKriterier) {
+        var eksisterendeBehandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
+        var grunnlag = OppgaveGrunnlagUtleder.lagGrunnlag(dto, egenskaper);
+        var nyeKriterier = KriterieUtleder.utledKriterier(grunnlag, beskyttelseKriterier);
+        lagreBehandling(dto, kildeSystem, eksisterendeBehandling, nyeKriterier);
+    }
+
+    public void lagreBehandling(LosBehandlingDto dto, Fagsystem kildeSystem,
+                                Optional<Behandling> eksisterendeBehandling,
+                                Set<AndreKriterierType> nyeKriterier) {
         var tilstand = mapBehandlingTilstand(dto, kildeSystem);
-        var behandling = oppgaveRepository.finnBehandling(dto.behandlingUuid());
-        if (BehandlingTilstand.VENT_SØKNAD.equals(tilstand) && behandling.isEmpty()) {
+        if (BehandlingTilstand.VENT_SØKNAD.equals(tilstand) && eksisterendeBehandling.isEmpty()) {
             return;
         }
-        var builder = Behandling.builder(behandling)
+        var eksisterendeKriterier = oppgaveRepository.finnBehandlingKriterier(dto.behandlingUuid());
+        var kriterierEndret = eksisterendeKriterier.size() != nyeKriterier.size() || !eksisterendeKriterier.containsAll(nyeKriterier);
+        var builder = Behandling.builder(eksisterendeBehandling)
             .medId(dto.behandlingUuid())
             .medSaksnummer(new Saksnummer(dto.saksnummer()))
             .medAktørId(new AktørId(dto.aktørId().getAktørId()))
@@ -79,8 +80,15 @@ public class BehandlingTjeneste {
             .medFeilutbetalingStart(Optional.ofNullable(dto.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::førsteFeilutbetalingDato).orElse(null))
             ;
         oppgaveRepository.lagreBehandling(builder.build());
+        if (kriterierEndret) {
+            var fjernes = eksisterendeKriterier.isEmpty() ? EnumSet.noneOf(AndreKriterierType.class) : EnumSet.copyOf(eksisterendeKriterier);
+            fjernes.removeAll(nyeKriterier);
+            oppgaveRepository.fjernBehandlingEgenskaper(dto.behandlingUuid(), fjernes);
+            var leggesTil = nyeKriterier.isEmpty() ? EnumSet.noneOf(AndreKriterierType.class) : EnumSet.copyOf(nyeKriterier);
+            leggesTil.removeAll(eksisterendeKriterier);
+            oppgaveRepository.nyeBehandlingEgenskaper(dto.behandlingUuid(), leggesTil);
+        }
     }
-
 
     private BehandlingTilstand mapBehandlingTilstand(LosBehandlingDto dto, Fagsystem kildeSystem) {
         return switch (dto.behandlingsstatus()) {

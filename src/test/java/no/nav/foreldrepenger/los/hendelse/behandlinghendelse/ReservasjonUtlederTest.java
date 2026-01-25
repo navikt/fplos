@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import static no.nav.foreldrepenger.los.domene.typer.Fagsystem.FPSAK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -25,29 +22,19 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter;
 
 class ReservasjonUtlederTest {
 
     public static final String ENHET = "4401";
     public static final String SAKSBEHANDLER = "Z999999";
-    private ReservasjonUtleder reservasjonUtleder;
-    private OppgaveRepository oppgaveRepository;
-
-    @BeforeEach
-    void setup() {
-        oppgaveRepository = mock(OppgaveRepository.class);
-        reservasjonUtleder = new ReservasjonUtleder(oppgaveRepository);
-    }
 
     @Test
     void skalOpprettReservasjonNårIngenEksisterendeOppgaveOgManuellRevurderingMedSaksbehandler() {
         var nyOppgave = lagOppgaveMedEnhet();
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedManuellRevurdering(SAKSBEHANDLER);
-        when(oppgaveRepository.finnBehandling(oppgaveGrunnlag.behandlingUuid())).thenReturn(Optional.empty());
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isPresent();
         assertThat(result.get().getReservertAv()).isEqualTo(SAKSBEHANDLER);
@@ -59,9 +46,8 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedEnhet();
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
         var behandling = lagBehandling(BehandlingTilstand.VENT_MANUELL);
-        when(oppgaveRepository.finnBehandling(oppgaveGrunnlag.behandlingUuid())).thenReturn(Optional.of(behandling));
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), Optional.of(behandling), oppgaveGrunnlag);
 
         assertThat(result).isPresent();
         assertThat(result.get().getReservertAv()).isEqualTo(SAKSBEHANDLER);
@@ -71,9 +57,8 @@ class ReservasjonUtlederTest {
     void skalIkkeOpprettReservasjonNårIngenEksisterendeOppgaveOgIngenSaksbehandler() {
         var nyOppgave = lagOppgaveMedEnhet();
         var oppgaveGrunnlag = lagOppgaveGrunnlag(null);
-        when(oppgaveRepository.finnBehandling(oppgaveGrunnlag.behandlingUuid())).thenReturn(Optional.empty());
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -83,9 +68,8 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedEnhet();
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
         var behandling = lagBehandling(BehandlingTilstand.AKSJONSPUNKT);
-        when(oppgaveRepository.finnBehandling(oppgaveGrunnlag.behandlingUuid())).thenReturn(Optional.of(behandling));
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), Optional.of(behandling), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -96,7 +80,7 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedEnhet();
         var oppgaveGrunnlag = lagOppgaveGrunnlagWithEnhet("4402", SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -107,7 +91,7 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedKriterie(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isPresent();
         assertThat(result.get().getReservertAv()).isEqualTo(SAKSBEHANDLER);
@@ -121,7 +105,7 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedKriterie(AndreKriterierType.PAPIRSØKNAD);
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -132,7 +116,7 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedEnhet();
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -143,7 +127,7 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedKriterie(AndreKriterierType.TIL_BESLUTTER);
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -154,7 +138,7 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedEnhet();
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -165,7 +149,7 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedKriterie(AndreKriterierType.PAPIRSØKNAD);
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -176,7 +160,7 @@ class ReservasjonUtlederTest {
         var nyOppgave = lagOppgaveMedEnhet();
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.of(eksisterendeOppgave), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -187,7 +171,7 @@ class ReservasjonUtlederTest {
         var oppgave2 = lagOppgaveMedKriterie(AndreKriterierType.PAPIRSØKNAD);
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
 
-        var result = reservasjonUtleder.utledReservasjon(oppgave2, Optional.of(oppgave1), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(oppgave2, Optional.of(oppgave1), Optional.empty(), oppgaveGrunnlag);
 
         assertThat(result).isEmpty();
     }
@@ -199,9 +183,8 @@ class ReservasjonUtlederTest {
         var oppgaveGrunnlag = lagOppgaveGrunnlag(SAKSBEHANDLER);
         var tilstand = BehandlingTilstand.valueOf(tilstandStr);
         var behandling = lagBehandling(tilstand);
-        when(oppgaveRepository.finnBehandling(oppgaveGrunnlag.behandlingUuid())).thenReturn(Optional.of(behandling));
 
-        var result = reservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), oppgaveGrunnlag);
+        var result = ReservasjonUtleder.utledReservasjon(nyOppgave, Optional.empty(), Optional.of(behandling), oppgaveGrunnlag);
 
         assertThat(result).isPresent().hasValueSatisfying(res -> assertThat(res.getReservertAv()).isEqualTo(SAKSBEHANDLER));
     }

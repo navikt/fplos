@@ -13,11 +13,13 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import no.nav.foreldrepenger.los.beskyttelsesbehov.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
+import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.BehandlingStatus;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
-import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
+import no.nav.foreldrepenger.los.oppgave.Behandling;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
@@ -30,6 +32,7 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskHandler;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Kildesystem;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
+import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
 @Dependent
 @ProsessTask(value = "håndter.behandlinghendelse", firstDelay = 10, thenDelay = 10)
@@ -45,10 +48,8 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
     private final BehandlingTjeneste behandlingTjeneste;
 
     private final OppgaveRepository oppgaveRepository;
-    private final KriterieUtleder kriterieUtleder;
     private final ReservasjonRepository reservasjonRepository;
-    private final ReservasjonUtleder reservasjonUtleder;
-    private final OppgaveGrunnlagUtleder oppgaveGrunnlagUtleder;
+    private final Beskyttelsesbehov beskyttelsesbehov;
 
     @Inject
     BehandlingHendelseTask(FpsakBehandlingKlient fpsakKlient,
@@ -56,35 +57,41 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
                            BehandlingTjeneste behandlingTjeneste,
                            OppgaveRepository oppgaveRepository,
                            ReservasjonRepository reservasjonRepository,
-                           KriterieUtleder kriterieUtleder,
-                           ReservasjonUtleder reservasjonUtleder,
-                           OppgaveGrunnlagUtleder oppgaveGrunnlagUtleder) {
+                           Beskyttelsesbehov beskyttelsesbehov) {
         this.fpsakKlient = fpsakKlient;
         this.fptilbakeKlient = fptilbakeKlient;
         this.behandlingTjeneste = behandlingTjeneste;
         this.oppgaveRepository = oppgaveRepository;
-        this.kriterieUtleder = kriterieUtleder;
         this.reservasjonRepository = reservasjonRepository;
-        this.reservasjonUtleder = reservasjonUtleder;
-        this.oppgaveGrunnlagUtleder = oppgaveGrunnlagUtleder;
+        this.beskyttelsesbehov = beskyttelsesbehov;
     }
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
         var behandlingUuid = UUID.fromString(prosessTaskData.getPropertyValue(BEHANDLING_UUID));
-        var kilde = Kildesystem.valueOf(prosessTaskData.getPropertyValue(KILDE));
+        var kilde = switch (Kildesystem.valueOf(prosessTaskData.getPropertyValue(KILDE))) {
+            case FPSAK -> Fagsystem.FPSAK;
+            case FPTILBAKE -> Fagsystem.FPTILBAKE;
+        };
 
+        // Hent eksterne data
         var dto = hentDto(behandlingUuid, kilde);
-        var oppgaveGrunnlag = oppgaveGrunnlagUtleder.lagGrunnlag(dto);
+        var egenskaper = hentFagsakEgenskaper(dto, kilde);
+        var beskyttelseKriterier = beskyttelsesbehov.getBeskyttelsesKriterier(new Saksnummer(dto.saksnummer()));
 
-        var eksisterendeOppgave = finnEksisterendeOppgave(oppgaveGrunnlag.behandlingUuid());
-        eksisterendeOppgave.ifPresent(o -> LOG.info("Funnet eksisterende oppgave {} for behandling {}", o.getId(), oppgaveGrunnlag.behandlingUuid()));
+        // Hent eksisterende oppgave og behandling
+        var eksisterendeOppgave = oppgaveRepository.hentAktivOppgave(new BehandlingId(behandlingUuid));
+        var eksisterendeBehandling = oppgaveRepository.finnBehandling(behandlingUuid);
+
+        // Bygg grunnlag for videre logikk
+        var oppgaveGrunnlag = OppgaveGrunnlagUtleder.lagGrunnlag(dto, egenskaper);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, beskyttelseKriterier);
 
         var skalLageOppgave = skalLageOppgave(oppgaveGrunnlag);
         if (skalLageOppgave) {
             LOG.info("Oppretter oppgave for behandling {}", oppgaveGrunnlag.behandlingUuid());
-            var oppgave = opprettOppgave(oppgaveGrunnlag);
-            opprettReservasjon(oppgave, eksisterendeOppgave, oppgaveGrunnlag);
+            var oppgave = opprettOppgave(oppgaveGrunnlag, kilde, kriterier);
+            opprettReservasjon(oppgave, eksisterendeOppgave, eksisterendeBehandling, oppgaveGrunnlag);
         }
 
         eksisterendeOppgave.ifPresent(o -> {
@@ -95,10 +102,7 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
             }
         });
 
-        behandlingTjeneste.safeLagreBehandling(dto, switch (kilde) {
-            case FPSAK -> Fagsystem.FPSAK;
-            case FPTILBAKE -> Fagsystem.FPTILBAKE;
-        });
+        behandlingTjeneste.lagreBehandling(dto, kilde, eksisterendeBehandling, kriterier);
     }
 
     private void avsluttReservasjon(Reservasjon reservasjon) {
@@ -106,16 +110,16 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         reservasjonRepository.lagre(reservasjon);
     }
 
-    private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave, OppgaveGrunnlag oppgaveGrunnlag) {
-        var reservasjon = reservasjonUtleder.utledReservasjon(oppgave, eksisterendeOppgave, oppgaveGrunnlag);
+    private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave,
+                                    Optional<Behandling> eksisterendeBehandling, OppgaveGrunnlag oppgaveGrunnlag) {
+        var reservasjon = ReservasjonUtleder.utledReservasjon(oppgave, eksisterendeOppgave, eksisterendeBehandling, oppgaveGrunnlag);
         reservasjon.ifPresent(r -> {
             LOG.info("Opprettet reservasjon for oppgave {}", oppgave.getId());
             reservasjonRepository.lagre(r);
         });
     }
 
-    private Oppgave opprettOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+    private Oppgave opprettOppgave(OppgaveGrunnlag oppgaveGrunnlag, Fagsystem kilde, Set<AndreKriterierType> kriterier) {
         LOG.info("Utledet kriterier {} for oppgave til behandling {}", kriterier, oppgaveGrunnlag.behandlingUuid());
 
         var oppgaveEgenskaper = kriterier.stream()
@@ -125,7 +129,7 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
             .collect(Collectors.toSet());
 
         var oppgave = Oppgave.builder()
-            .medSystem(Fagsystem.FPSAK)
+            .medSystem(kilde)
             .medSaksnummer(oppgaveGrunnlag.saksnummer())
             .medAktørId(oppgaveGrunnlag.aktørId())
             .medBehandlendeEnhet(oppgaveGrunnlag.behandlendeEnhetId())
@@ -143,7 +147,7 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         return oppgave;
     }
 
-    private boolean skalLageOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
+    private static boolean skalLageOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
         var erPåVent = oppgaveGrunnlag.aksjonspunkt().stream()
             .filter(aksjonspunkt -> aksjonspunkt.status() == Aksjonspunktstatus.OPPRETTET)
             .anyMatch(a -> a.type() == AksjonspunktType.PÅ_VENT);
@@ -153,12 +157,15 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         return !erPåVent && underBehandlingStatus && harOpprettetAksjonspunkt;
     }
 
-    private Optional<Oppgave> finnEksisterendeOppgave(UUID behandlingUuid) {
-        return oppgaveRepository.hentAktivOppgave(new BehandlingId(behandlingUuid));
-    }
-
-    private LosBehandlingDto hentDto(UUID behandlingUuid, Kildesystem kilde) {
-        return kilde.equals(Kildesystem.FPSAK) ? fpsakKlient.hentLosBehandlingDto(behandlingUuid) : fptilbakeKlient.hentLosBehandlingDto(
+    private LosBehandlingDto hentDto(UUID behandlingUuid, Fagsystem kilde) {
+        return kilde.equals(Fagsystem.FPSAK) ? fpsakKlient.hentLosBehandlingDto(behandlingUuid) : fptilbakeKlient.hentLosBehandlingDto(
             behandlingUuid);
     }
+
+    private LosFagsakEgenskaperDto hentFagsakEgenskaper(LosBehandlingDto dto, Fagsystem kilde) {
+        return kilde.equals(Fagsystem.FPSAK)
+            ? new LosFagsakEgenskaperDto(dto.saksegenskaper())
+            : fpsakKlient.hentLosFagsakEgenskaperDto(new Saksnummer(dto.saksnummer()));
+    }
+
 }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
-import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
+import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
