@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import java.util.List;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
@@ -15,7 +13,6 @@ import no.nav.vedtak.hendelser.behandling.Ytelse;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
-@ApplicationScoped
 class OppgaveGrunnlagUtleder {
 
     private static final String KONTROLLER_TERMINBEKREFTELSE_KODE = "5001";
@@ -24,30 +21,21 @@ class OppgaveGrunnlagUtleder {
     private static final String VURDER_FORMKRAV_KODE = "5082";
     private static final List<String> RELEVANT_NÆRING = List.of("5039", "5049", "5058", "5046", "5051", "5089", "5082", "5035");
 
-    private FpsakBehandlingKlient fpsakKlient;
-
-    @Inject
-    OppgaveGrunnlagUtleder(FpsakBehandlingKlient fpsakKlient) {
-        this.fpsakKlient = fpsakKlient;
+    private OppgaveGrunnlagUtleder() {
     }
 
-    OppgaveGrunnlagUtleder() {
-        //CDI
-    }
-
-    OppgaveGrunnlag lagGrunnlag(LosBehandlingDto dto) {
+    static OppgaveGrunnlag lagGrunnlag(LosBehandlingDto dto, LosFagsakEgenskaperDto fagsakEgenskaperDto) {
         if (dto.kildesystem().equals(Kildesystem.FPSAK)) {
-            return mapFraFpsak(dto);
+            return mapFraFpsak(dto, fagsakEgenskaperDto);
+        } else {
+            return mapFraFpTilbake(dto, fagsakEgenskaperDto);
         }
-        var losFagsakEgenskaperDto = fpsakKlient.hentLosFagsakEgenskaperDto(new Saksnummer(dto.saksnummer()));
-
-        return mapFraFpTilbake(dto, losFagsakEgenskaperDto);
     }
 
-    private static OppgaveGrunnlag mapFraFpsak(LosBehandlingDto dto) {
+    private static OppgaveGrunnlag mapFraFpsak(LosBehandlingDto dto, LosFagsakEgenskaperDto fagsakEgenskaperDto) {
         var aksjonspunkter = mapFpsakAksjonspunkt(dto);
         var behandlingsårsaker = mapBehandlingsårsaker(dto);
-        var saksegenskaper = mapFagsakEgenskaper(dto.saksegenskaper());
+        var saksegenskaper = mapFagsakEgenskaper(fagsakEgenskaperDto.saksegenskaper());
         var behandlingsegenskaper = dto.behandlingsegenskaper().stream().map(OppgaveGrunnlag.Behandlingsegenskap::valueOf).toList();
         return new OppgaveGrunnlag(dto.behandlingUuid(), new Saksnummer(dto.saksnummer()), map(dto.ytelse()), new AktørId(dto.aktørId().getAktørId()),
             mapBehandlingType(dto), dto.opprettetTidspunkt(), dto.behandlendeEnhetId(), dto.behandlingsfrist(), dto.ansvarligSaksbehandlerIdent(),

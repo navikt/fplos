@@ -6,34 +6,23 @@ import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunn
 import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.Behandlingsårsak;
 import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.Saksegenskap;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import no.nav.foreldrepenger.los.beskyttelsesbehov.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 
-@ApplicationScoped
 class KriterieUtleder {
 
-    private Beskyttelsesbehov beskyttelsesbehov;
-
-    @Inject
-    KriterieUtleder(Beskyttelsesbehov beskyttelsesbehov) {
-        this.beskyttelsesbehov = beskyttelsesbehov;
-    }
-
-    KriterieUtleder() {
+    private KriterieUtleder() {
         //CDI
     }
 
-    Set<AndreKriterierType> utledKriterier(OppgaveGrunnlag oppgaveGrunnlag) {
-        var kriterier = new HashSet<AndreKriterierType>();
+    static Set<AndreKriterierType> utledKriterier(OppgaveGrunnlag oppgaveGrunnlag, Set<AndreKriterierType> beskyttelseKriterier) {
+        var kriterier = EnumSet.noneOf(AndreKriterierType.class);
 
         var aksjonspunkt = oppgaveGrunnlag.aksjonspunkt();
         var aktiveAksjonspunkt = aksjonspunkt
@@ -141,7 +130,7 @@ class KriterieUtleder {
             }
         }
 
-        kriterier.addAll(beskyttelsesbehov.getBeskyttelsesKriterier(oppgaveGrunnlag.saksnummer()));
+        kriterier.addAll(beskyttelseKriterier);
 
         return kriterier;
     }

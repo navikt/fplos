@@ -1,9 +1,12 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
-import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.*;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.Aksjonspunkt;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.AksjonspunktType;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.BehandlingStatus;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.Behandlingsegenskap;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.Behandlingsårsak;
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.Saksegenskap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,12 +14,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.beskyttelsesbehov.Beskyttelsesbehov;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
@@ -25,16 +26,7 @@ import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 class KriterieUtlederTest {
 
     public static final String ENHET_ID = "4401";
-    private KriterieUtleder kriterieUtleder;
-    private Beskyttelsesbehov beskyttelsesbehov;
     private static final Saksnummer SAKSNUMMER = new Saksnummer("123456");
-
-    @BeforeEach
-    void setup() {
-        beskyttelsesbehov = mock(Beskyttelsesbehov.class);
-        when(beskyttelsesbehov.getBeskyttelsesKriterier(SAKSNUMMER)).thenReturn(Set.of());
-        kriterieUtleder = new KriterieUtleder(beskyttelsesbehov);
-    }
 
     @Test
     void skalUtledePapirsøknadKriterie() {
@@ -42,7 +34,7 @@ class KriterieUtlederTest {
             LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunkt(aksjonspunkt);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.PAPIRSØKNAD);
     }
@@ -53,7 +45,7 @@ class KriterieUtlederTest {
             LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunkt(aksjonspunkt);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.TIL_BESLUTTER);
     }
@@ -64,7 +56,7 @@ class KriterieUtlederTest {
             Aksjonspunktstatus.OPPRETTET, LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunkt(aksjonspunkt);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.TERMINBEKREFTELSE);
     }
@@ -75,7 +67,7 @@ class KriterieUtlederTest {
             LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunkt(aksjonspunkt);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.ARBEID_INNTEKT);
     }
@@ -86,7 +78,7 @@ class KriterieUtlederTest {
             LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunkt(aksjonspunkt);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.VURDER_FORMKRAV);
     }
@@ -97,7 +89,7 @@ class KriterieUtlederTest {
             Aksjonspunktstatus.OPPRETTET, LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunktOgSaksegenskap(aksjonspunkt, Saksegenskap.BOSATT_UTLAND);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.VURDER_EØS_OPPTJENING);
     }
@@ -108,7 +100,7 @@ class KriterieUtlederTest {
             Aksjonspunktstatus.OPPRETTET, LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunktOgSaksegenskap(aksjonspunkt, Saksegenskap.EØS_BOSATT_NORGE);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.VURDER_EØS_OPPTJENING);
     }
@@ -119,7 +111,7 @@ class KriterieUtlederTest {
             LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunktOgSaksegenskap(aksjonspunkt, Saksegenskap.NÆRING);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.NÆRING);
     }
@@ -128,7 +120,7 @@ class KriterieUtlederTest {
     void skalUtledePraksisUtsettelseKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap.PRAKSIS_UTSETTELSE);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.PRAKSIS_UTSETTELSE);
     }
@@ -137,7 +129,7 @@ class KriterieUtlederTest {
     void skalUtledeEØSSakKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap.EØS_BOSATT_NORGE);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.EØS_SAK);
     }
@@ -146,7 +138,7 @@ class KriterieUtlederTest {
     void skalUtledeUtlandssakKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap.BOSATT_UTLAND);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.UTLANDSSAK);
     }
@@ -155,7 +147,7 @@ class KriterieUtlederTest {
     void skalUtledeSammensattKontrollKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap.SAMMENSATT_KONTROLL);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.SAMMENSATT_KONTROLL);
     }
@@ -164,7 +156,7 @@ class KriterieUtlederTest {
     void skalUtledeDødKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap.DØD);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.DØD);
     }
@@ -173,7 +165,7 @@ class KriterieUtlederTest {
     void skalUtledeBareFantRettKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap.BARE_FAR_RETT);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.BARE_FAR_RETT);
     }
@@ -182,7 +174,7 @@ class KriterieUtlederTest {
     void skalUtledeHasterKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap.HASTER);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.HASTER);
     }
@@ -191,7 +183,7 @@ class KriterieUtlederTest {
     void skalUtledeMorUkjentUtlandKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsegenskap(Behandlingsegenskap.MOR_UKJENT_UTLAND);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.MOR_UKJENT_UTLAND);
     }
@@ -200,7 +192,7 @@ class KriterieUtlederTest {
     void skalUtledeSykdomsvurderingKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsegenskap(Behandlingsegenskap.SYKDOMSVURDERING);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.VURDER_SYKDOM);
     }
@@ -209,7 +201,7 @@ class KriterieUtlederTest {
     void skalUtledeOverFireRettsgebyrKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsegenskap(Behandlingsegenskap.TILBAKEKREVING_OVER_FIRE_RETTSGEBYR);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.OVER_FIRE_RETTSGEBYR);
     }
@@ -219,7 +211,7 @@ class KriterieUtlederTest {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedTilbakebetaling(BehandlingType.TILBAKEBETALING,
             List.of(Behandlingsegenskap.SYKDOMSVURDERING), false);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.IKKE_VARSLET);
     }
@@ -229,7 +221,7 @@ class KriterieUtlederTest {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedTilbakebetaling(BehandlingType.TILBAKEBETALING,
             List.of(Behandlingsegenskap.TILBAKEKREVING_SENDT_VARSEL), false);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).doesNotContain(AndreKriterierType.IKKE_VARSLET);
     }
@@ -238,7 +230,7 @@ class KriterieUtlederTest {
     void skalUtledeUtbetalingTilBrukerNårIngenRefusjonskrav() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedRefusjonskrav(false);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.UTBETALING_TIL_BRUKER);
     }
@@ -247,7 +239,7 @@ class KriterieUtlederTest {
     void skalUtledeUtbetalingTilBrukerNårDirecteUtbetaling() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedRefusjonskravOgBehandlingsegenskap(true, Behandlingsegenskap.DIREKTE_UTBETALING);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.UTBETALING_TIL_BRUKER);
     }
@@ -256,7 +248,7 @@ class KriterieUtlederTest {
     void skalUtledeFaresignalKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedFaresignaler(true);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.VURDER_FARESIGNALER);
     }
@@ -265,7 +257,7 @@ class KriterieUtlederTest {
     void skalUtledeFaresignalKriterieNårBehandlingsegenskapInneholder() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsegenskap(Behandlingsegenskap.FARESIGNALER);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.VURDER_FARESIGNALER);
     }
@@ -274,7 +266,7 @@ class KriterieUtlederTest {
     void skalUtledePleiepengerKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsårsak(Behandlingsårsak.PLEIEPENGER);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.PLEIEPENGER);
     }
@@ -283,7 +275,7 @@ class KriterieUtlederTest {
     void skalUtledeUtsattStartKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsårsak(Behandlingsårsak.UTSATT_START);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.UTSATT_START);
     }
@@ -292,7 +284,7 @@ class KriterieUtlederTest {
     void skalUtledeNyttVedtakKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsårsak(Behandlingsårsak.OPPHØR_NY_SAK);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.NYTT_VEDTAK);
     }
@@ -301,7 +293,7 @@ class KriterieUtlederTest {
     void skalUtledeBerørtBehandlingKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsårsak(Behandlingsårsak.BERØRT);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.BERØRT_BEHANDLING);
     }
@@ -310,7 +302,7 @@ class KriterieUtlederTest {
     void skalUtledeKlagePåTilbakebetatingKriterie() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingsårsak(Behandlingsårsak.KLAGE_TILBAKEBETALING);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.KLAGE_PÅ_TILBAKEBETALING);
     }
@@ -320,7 +312,7 @@ class KriterieUtlederTest {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingstype(FagsakYtelseType.FORELDREPENGER, BehandlingType.REVURDERING,
             List.of(Behandlingsårsak.SØKNAD));
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.ENDRINGSSØKNAD);
     }
@@ -330,7 +322,7 @@ class KriterieUtlederTest {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedBehandlingstype(FagsakYtelseType.FORELDREPENGER, BehandlingType.REVURDERING,
             List.of(Behandlingsårsak.INNTEKTSMELDING));
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.REVURDERING_INNTEKTSMELDING);
     }
@@ -341,7 +333,7 @@ class KriterieUtlederTest {
             LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunkt(aksjonspunkt);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.RETURNERT_FRA_BESLUTTER);
     }
@@ -352,7 +344,7 @@ class KriterieUtlederTest {
             LocalDateTime.now());
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunkt(aksjonspunkt);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).doesNotContain(AndreKriterierType.PAPIRSØKNAD);
     }
@@ -361,7 +353,7 @@ class KriterieUtlederTest {
     void skalIkkeUtledeEØSOpptjeningUtenAksjonspunkt() {
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap.BOSATT_UTLAND);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).doesNotContain(AndreKriterierType.VURDER_EØS_OPPTJENING);
     }
@@ -377,7 +369,7 @@ class KriterieUtlederTest {
             List.of(aksjonspunkt1, aksjonspunkt2), List.of(), false, false, List.of(Saksegenskap.DØD), LocalDate.now().plusMonths(1),
             List.of(), BehandlingStatus.OPPRETTET);
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
         assertThat(kriterier).contains(AndreKriterierType.PAPIRSØKNAD, AndreKriterierType.DØD);
     }
@@ -385,11 +377,10 @@ class KriterieUtlederTest {
     @Test
     void skalLeggeTilBeskyttelsesbehovKriterier() {
         var beskyttelsesKriterie = AndreKriterierType.VURDER_FARESIGNALER;
-        when(beskyttelsesbehov.getBeskyttelsesKriterier(SAKSNUMMER)).thenReturn(Set.of(beskyttelsesKriterie));
         var oppgaveGrunnlag = lagOppgaveGrunnlagMedAksjonspunkt(
             new Aksjonspunkt(AksjonspunktType.PAPIRSØKNAD, Aksjonspunktstatus.OPPRETTET, LocalDateTime.now()));
 
-        var kriterier = kriterieUtleder.utledKriterier(oppgaveGrunnlag);
+        var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of(beskyttelsesKriterie));
 
         assertThat(kriterier).contains(beskyttelsesKriterie, AndreKriterierType.PAPIRSØKNAD);
     }

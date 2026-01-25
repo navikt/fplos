@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.standardReservasjon;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.utvidReservasjon;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -16,16 +19,13 @@ import jakarta.inject.Inject;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
+import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Behandling;
 import no.nav.foreldrepenger.los.oppgave.BehandlingTilstand;
-import no.nav.foreldrepenger.los.oppgave.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
-
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.standardReservasjon;
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.utvidReservasjon;
 
 
 @ApplicationScoped

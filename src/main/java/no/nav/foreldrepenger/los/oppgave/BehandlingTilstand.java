@@ -1,12 +1,13 @@
 package no.nav.foreldrepenger.los.oppgave;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import jakarta.persistence.EnumeratedValue;
 import no.nav.foreldrepenger.los.felles.Kodeverdi;
-
-import java.util.Set;
 
 public enum BehandlingTilstand implements Kodeverdi {
 
@@ -24,6 +25,8 @@ public enum BehandlingTilstand implements Kodeverdi {
     BESLUTTER("BESLUTTER", "Beslutter"),
     AVSLUTTET("AVSLUTTET", "Avsluttet");
 
+    private static final Set<BehandlingTilstand> VENT = EnumSet.of(VENT_KOMPLETT, VENT_KØ, VENT_MANUELL,
+        VENT_REGISTERDATA, VENT_TIDLIG, VENT_KLAGEINSTANS, VENT_SØKNAD);
 
 
     @JsonValue
@@ -46,6 +49,6 @@ public enum BehandlingTilstand implements Kodeverdi {
     }
 
     public boolean erPåVent() {
-        return Set.of(VENT_KOMPLETT, VENT_KØ, VENT_MANUELL, VENT_REGISTERDATA, VENT_TIDLIG, VENT_KLAGEINSTANS, VENT_SØKNAD).contains(this);
+        return VENT.contains(this);
     }
 }

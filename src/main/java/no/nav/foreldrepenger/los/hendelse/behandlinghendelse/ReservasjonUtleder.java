@@ -2,32 +2,22 @@ package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
 import java.util.Optional;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.Behandling;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonKonstanter;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 
-@ApplicationScoped
 class ReservasjonUtleder {
 
-    private OppgaveRepository oppgaveRepository;
-
-    @Inject
-    ReservasjonUtleder(OppgaveRepository oppgaveRepository) {
-        this.oppgaveRepository = oppgaveRepository;
-    }
-
-    ReservasjonUtleder() {
+    private ReservasjonUtleder() {
         //CDI
     }
 
-    Optional<Reservasjon> utledReservasjon(Oppgave nyOppgave, Optional<Oppgave> eksisterendeOppgaveOpt, OppgaveGrunnlag oppgaveGrunnlag) {
+    static Optional<Reservasjon> utledReservasjon(Oppgave nyOppgave, Optional<Oppgave> eksisterendeOppgaveOpt,
+                                           Optional<Behandling> eksisterendeBehandlingOpt, OppgaveGrunnlag oppgaveGrunnlag) {
         if (eksisterendeOppgaveOpt.isPresent()) {
             var eksisterendeOppgave = eksisterendeOppgaveOpt.get();
             if (harEndretEnhet(oppgaveGrunnlag, eksisterendeOppgave)) {
@@ -49,15 +39,14 @@ class ReservasjonUtleder {
             }
             return Optional.empty();
         }
-        var lagretBehandling = oppgaveRepository.finnBehandling(oppgaveGrunnlag.behandlingUuid());
-        if (oppgaveGrunnlag.ansvarligSaksbehandlerIdent() != null && (erNyManuellRevurdering(oppgaveGrunnlag, lagretBehandling) || erPåVent(
-            lagretBehandling))) {
+        if (oppgaveGrunnlag.ansvarligSaksbehandlerIdent() != null && (erNyManuellRevurdering(oppgaveGrunnlag, eksisterendeBehandlingOpt) || erPåVent(
+            eksisterendeBehandlingOpt))) {
             return Optional.of(ReservasjonTjeneste.opprettReservasjon(nyOppgave, oppgaveGrunnlag.ansvarligSaksbehandlerIdent(), null));
         }
         return Optional.empty();
     }
 
-    private boolean erPåVent(Optional<Behandling> lagretBehandling) {
+    private static boolean erPåVent(Optional<Behandling> lagretBehandling) {
         return lagretBehandling.stream().anyMatch(behandling -> behandling.getBehandlingTilstand().erPåVent());
     }
 
