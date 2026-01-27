@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,9 +29,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.Oppgav
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagUkeMåned;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SakslisteIdDto;
-import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
-import no.nav.vedtak.sikkerhet.abac.TilpassetAbacAttributt;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 
@@ -116,6 +113,6 @@ public class NøkkeltallRestTjeneste {
 
     public static AktiveOgTilgjenglige tilAktiveOgTilgjenglige(StatistikkOppgaveFilter s) {
         var tid = Instant.ofEpochMilli(s.getTidsstempel()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return new AktiveOgTilgjenglige(tid, s.getAntallAktive(), s.getAntallTilgjengelige());
+        return new AktiveOgTilgjenglige(tid, s.getAntallAktive(), s.getAntallTilgjengelige(), s.getAntallVentende());
     }
 }

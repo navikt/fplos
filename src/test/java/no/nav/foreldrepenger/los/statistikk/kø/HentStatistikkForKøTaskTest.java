@@ -44,10 +44,10 @@ class HentStatistikkForKøTaskTest {
         when(køStatistikkTjeneste.hentAntallTilgjengeligeOppgaverFor(any())).thenReturn(15);
         var oppgaveFilterId = 1L;
         var nå = LocalDateTime.now();
-        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(3)), nå.toLocalDate(), 1, 2, InnslagType.REGELMESSIG));
-        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(2)), nå.toLocalDate(), 1, 2, InnslagType.REGELMESSIG));
-        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(1).minusMinutes(13)), nå.toLocalDate(), 1, 2, InnslagType.SNAPSHOT));
-        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(1)), nå.toLocalDate(), 1, 2, InnslagType.REGELMESSIG));
+        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(3)), nå.toLocalDate(), 1, 2, 3, InnslagType.REGELMESSIG));
+        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(2)), nå.toLocalDate(), 1, 2, 3, InnslagType.REGELMESSIG));
+        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(1).minusMinutes(13)), nå.toLocalDate(), 1, 2, 2, InnslagType.SNAPSHOT));
+        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(1)), nå.toLocalDate(), 1, 2, 2, InnslagType.REGELMESSIG));
         entityManager.flush();
 
         // act
@@ -69,8 +69,8 @@ class HentStatistikkForKøTaskTest {
         // arrange
         var oppgaveFilterId = 1L;
         var nå = LocalDateTime.now();
-        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(1)), nå.toLocalDate(), 22, 13, InnslagType.REGELMESSIG));
-        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(2)), nå.toLocalDate(), 5, 2, InnslagType.REGELMESSIG));
+        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(1)), nå.toLocalDate(), 22, 13, 2, InnslagType.REGELMESSIG));
+        entityManager.persist(new StatistikkOppgaveFilter(oppgaveFilterId, localDateTimeTilMillis(nå.minusHours(2)), nå.toLocalDate(), 5, 2, 2, InnslagType.REGELMESSIG));
         entityManager.flush();
 
         // act

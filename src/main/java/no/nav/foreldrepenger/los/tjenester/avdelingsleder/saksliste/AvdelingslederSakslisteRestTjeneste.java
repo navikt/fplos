@@ -188,7 +188,9 @@ public class AvdelingslederSakslisteRestTjeneste {
     private void oppdaterStatistikkForOppgavefilterEtterEndring(Long sakslisteId) {
         var antallOppgaver = køStatistikkTjeneste.hentAntallOppgaver(sakslisteId);
         var antallTilgjengeligeOppgaver = køStatistikkTjeneste.hentAntallTilgjengeligeOppgaverFor(sakslisteId);
-        var statistikkOppgaveFilter = new StatistikkOppgaveFilter(sakslisteId, System.currentTimeMillis(), LocalDate.now(), antallOppgaver, antallTilgjengeligeOppgaver, InnslagType.SNAPSHOT);
+        var antallVentendeBehandlinger = køStatistikkTjeneste.hentAntallVentendeBehandlingerFor(sakslisteId);
+        var statistikkOppgaveFilter = new StatistikkOppgaveFilter(sakslisteId, System.currentTimeMillis(), LocalDate.now(), antallOppgaver,
+            antallTilgjengeligeOppgaver, antallVentendeBehandlinger, InnslagType.SNAPSHOT);
         statistikkRepository.lagreStatistikkOppgaveFilter(statistikkOppgaveFilter);
     }
 }
