@@ -3,12 +3,15 @@ package no.nav.foreldrepenger.los.domene.typer;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class BehandlingId {
 
+    @JsonValue
     @Column(name = "behandling_id")
     private UUID value;
 
