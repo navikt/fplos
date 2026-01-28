@@ -2,22 +2,20 @@ package no.nav.foreldrepenger.los.avdelingsleder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.persistence.EntityManager;
-
-import no.nav.foreldrepenger.los.DBTestUtil;
-
-import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
+import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
@@ -90,12 +88,12 @@ class AvdelingslederTjenesteTest {
         liste.leggTilFilter(BehandlingType.TILBAKEBETALING);
         persistAndFlush(liste);
         avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.BELØP);
-        avdelingslederTjeneste.settSorteringNumeriskIntervall(liste.getId(), 100L, 200L);
+        avdelingslederTjeneste.settSorteringNumeriskIntervall(liste.getId(), 100L, 200L, Periodefilter.RELATIV_PERIODE_DAGER);
         entityManager.refresh(liste);
         assertThat(liste)
             .matches(d -> d.getFra().equals(100L))
             .matches(d -> d.getTil().equals(200L))
-            .matches(OppgaveFiltrering::getErDynamiskPeriode)
+            .matches(d -> d.getPeriodefilter() == Periodefilter.RELATIV_PERIODE_DAGER)
             .matches(d -> d.getSortering() == KøSortering.BELØP);
 
         // sett standard sortering når det ikke lenger er filter på behandlingtype tilbakebetaling
@@ -104,7 +102,7 @@ class AvdelingslederTjenesteTest {
         assertThat(liste)
             .matches(d -> d.getFra() == null)
             .matches(d -> d.getTil() == null)
-            .matches(d -> !d.getErDynamiskPeriode())
+            .matches(d -> d.getPeriodefilter() == Periodefilter.FAST_PERIODE)
             .matches(d -> d.getSortering() == KøSortering.BEHANDLINGSFRIST);
     }
 
