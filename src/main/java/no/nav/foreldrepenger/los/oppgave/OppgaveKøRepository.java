@@ -68,7 +68,7 @@ public class OppgaveKøRepository {
             new ArrayList<>(),
             new ArrayList<>(),
             new ArrayList<>(),
-            false,
+            Periodefilter.FAST_PERIODE,
             null,
             null,
             null,
@@ -228,19 +228,33 @@ public class OppgaveKøRepository {
         var gjelderKunDatoFelt = datemap.getOrDefault(sortering, Boolean.FALSE);
 
         var sbuilder = new StringBuilder();
-        if (oppgavespørring.isErDynamiskPeriode()) {
+
+
+        if (oppgavespørring.getPeriodeFilterType() == Periodefilter.RELATIV_PERIODE_DAGER) {
             // Filtrerer på antall dager relativt til i dag.
             // Perioden man ser på kan være i fortid eller fremtid, avhengig av positiv/negativ verdi på filtrerFra/Til
-            var fomAntallDagerFrem = oppgavespørring.getFiltrerFra();
-            if (fomAntallDagerFrem != null) {
-                var aktuellFomDato = LocalDate.now().plusDays(fomAntallDagerFrem);
-                putDatoParam(parameters, "filterFom", aktuellFomDato, gjelderKunDatoFelt, true);
+            if (oppgavespørring.getFiltrerFra() != null) {
+                var fomDato = LocalDate.now().plusDays(oppgavespørring.getFiltrerFra());
+                putDatoParam(parameters, "filterFom", fomDato, gjelderKunDatoFelt, true);
                 sbuilder.append("AND ").append(feltLiteral).append(" >= :filterFom ");
             }
-            var tomAntallDagerFrem = oppgavespørring.getFiltrerTil();
-            if (tomAntallDagerFrem != null) {
-                var aktuellTomDato = LocalDate.now().plusDays(tomAntallDagerFrem);
-                putDatoParam(parameters, "filterTom", aktuellTomDato, gjelderKunDatoFelt, false);
+            if (oppgavespørring.getFiltrerTil() != null) {
+                var tomDato = LocalDate.now().plusDays(oppgavespørring.getFiltrerTil());
+                putDatoParam(parameters, "filterTom", tomDato, gjelderKunDatoFelt, false);
+                sbuilder.append("AND ").append(feltLiteral).append(" <= :filterTom ");
+            }
+
+        } else if (oppgavespørring.getPeriodeFilterType() == Periodefilter.RELATIV_PERIODE_MÅNEDER) {
+            // Filtrerer på antall måneder relativt til inneværende måned.
+            // Perioden man ser på kan være i fortid eller fremtid, avhengig av positiv/negativ verdi på filtrerFra/Til
+            if (oppgavespørring.getFiltrerFra() != null) {
+                var fomDato = LocalDate.now().plusMonths(oppgavespørring.getFiltrerFra()).withDayOfMonth(1);
+                putDatoParam(parameters, "filterFom", fomDato, gjelderKunDatoFelt, true);
+                sbuilder.append("AND ").append(feltLiteral).append(" >= :filterFom ");
+            }
+            if (oppgavespørring.getFiltrerTil() != null) {
+                var tomDato = LocalDate.now().plusMonths(oppgavespørring.getFiltrerTil()).withDayOfMonth(1);
+                putDatoParam(parameters, "filterTom", tomDato, gjelderKunDatoFelt, false);
                 sbuilder.append("AND ").append(feltLiteral).append(" <= :filterTom ");
             }
         } else {

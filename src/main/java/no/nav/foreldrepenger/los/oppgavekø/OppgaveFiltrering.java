@@ -27,6 +27,7 @@ import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
@@ -66,6 +67,10 @@ public class OppgaveFiltrering extends BaseEntitet {
     @Convert(converter = BooleanToStringConverter.class)
     @Column(name = "ER_DYNAMISK_PERIODE")
     private boolean erDynamiskPeriode = Boolean.FALSE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PERIODEFILTER_TYPE")
+    private Periodefilter periodefilter = Periodefilter.FAST_PERIODE;
 
     @Column(name = "FOM_DATO")
     private LocalDate fomDato;
@@ -119,8 +124,8 @@ public class OppgaveFiltrering extends BaseEntitet {
         return avdeling;
     }
 
-    public boolean getErDynamiskPeriode() {
-        return erDynamiskPeriode;
+    public Periodefilter getPeriodefilter() {
+        return periodefilter;
     }
 
     public LocalDate getFomDato() {
