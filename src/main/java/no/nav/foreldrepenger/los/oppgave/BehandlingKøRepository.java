@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
+
 import org.hibernate.jpa.HibernateHints;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -17,6 +19,15 @@ public class BehandlingKøRepository {
     private static final String SELECT_COUNT_FROM_BEHANDLING = "SELECT count(1) from Behandling o ";
 
     private static final String BEHANDLINGOPPRETTET_FELT_SQL = "o.opprettet";
+
+    private static final Map<KøSortering, Boolean> SORTERING_ER_DATE_FELT = Map.of(
+        KøSortering.BEHANDLINGSFRIST, true,
+        KøSortering.OPPRETT_BEHANDLING, false,
+        KøSortering.FØRSTE_STØNADSDAG, true,
+        KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, true,
+        KøSortering.FEILUTBETALINGSTART, true,
+        KøSortering.BELØP, false
+    );
 
     private EntityManager entityManager;
 
@@ -49,7 +60,7 @@ public class BehandlingKøRepository {
             .append(OppgaveKøRepository.filtrerYtelseType(oppgavespørring, parameters))
             .append(andreKriterierSubquery(oppgavespørring, parameters))
             .append(OppgaveKøRepository.beløpFilter(oppgavespørring, parameters))
-            .append(OppgaveKøRepository.datoFilter(oppgavespørring, parameters, BEHANDLINGOPPRETTET_FELT_SQL));
+            .append(OppgaveKøRepository.datoFilter(oppgavespørring, parameters, SORTERING_ER_DATE_FELT, BEHANDLINGOPPRETTET_FELT_SQL));
 
         var query = entityManager.createQuery(qlStringBuilder.toString(), Long.class);
         parameters.forEach(query::setParameter);

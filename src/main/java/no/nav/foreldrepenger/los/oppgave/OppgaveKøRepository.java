@@ -37,6 +37,15 @@ public class OppgaveKøRepository {
     private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingStart ASC";
     private static final String ORDER_BY_FEILUTBETALINGBELOP_DESC = "ORDER BY o.feilutbetalingBelop DESC";
 
+    private static final Map<KøSortering, Boolean> SORTERING_ER_DATE_FELT = Map.of(
+        KøSortering.BEHANDLINGSFRIST, false,
+        KøSortering.OPPRETT_BEHANDLING, false,
+        KøSortering.FØRSTE_STØNADSDAG, true,
+        KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, true,
+        KøSortering.FEILUTBETALINGSTART, false,
+        KøSortering.BELØP, false
+    );
+
     private EntityManager entityManager;
 
     OppgaveKøRepository() { }
@@ -89,7 +98,7 @@ public class OppgaveKøRepository {
         qlStringBuilder.append(filtrerBortEgneBeslutterOppgaver(oppgavespørring, parameters));
         qlStringBuilder.append(" AND o.aktiv = true ");
         qlStringBuilder.append(beløpFilter(oppgavespørring, parameters));
-        qlStringBuilder.append(datoFilter(oppgavespørring, parameters, BEHANDLINGOPPRETTET_FELT_SQL));
+        qlStringBuilder.append(datoFilter(oppgavespørring, parameters, SORTERING_ER_DATE_FELT, BEHANDLINGOPPRETTET_FELT_SQL));
 
         if (!kunCountQuery) {
             qlStringBuilder.append(orderBy(oppgavespørring));
@@ -199,7 +208,8 @@ public class OppgaveKøRepository {
             )""";
     }
 
-    static String datoFilter(Oppgavespørring oppgavespørring, Map<String, Object> parameters, String behandlingOpprettetSQL) {
+    static String datoFilter(Oppgavespørring oppgavespørring, Map<String, Object> parameters,
+                             Map<KøSortering, Boolean> datemap, String behandlingOpprettetSQL) {
         var sortering = oppgavespørring.getSortering();
 
         if (KøSortering.BELØP.equals(sortering)) {
@@ -215,9 +225,7 @@ public class OppgaveKøRepository {
             case BELØP -> throw new IllegalArgumentException("Utviklerfeil: beløpsfilter håndteres i annen metode");
         };
 
-        var gjelderKunDatoFelt =
-            Objects.equals(KøSortering.FØRSTE_STØNADSDAG, sortering) ||
-                Objects.equals(KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, sortering); // Første stønadsdag er LocalDate i entiteten, øvrige LocalDateTime
+        var gjelderKunDatoFelt = datemap.getOrDefault(sortering, Boolean.FALSE);
 
         var sbuilder = new StringBuilder();
         if (oppgavespørring.isErDynamiskPeriode()) {
