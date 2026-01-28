@@ -2,6 +2,7 @@ package no.nav.foreldrepenger.los.statistikk.kø;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +33,9 @@ public class StatistikkOppgaveFilter implements Serializable {
     @Column(name = "ANTALL_TILGJENGELIGE", updatable = false, nullable = false)
     private Integer antallTilgjengelige;
 
+    @Column(name = "ANTALL_VENTENDE")
+    private Integer antallVentende;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "INNSLAG_TYPE", updatable = false, nullable = false)
     private InnslagType innslagType;
@@ -40,13 +44,15 @@ public class StatistikkOppgaveFilter implements Serializable {
         // for hibernate
     }
 
-    public StatistikkOppgaveFilter(Long oppgaveFilterId, Long tidsstempel, LocalDate statistikkDato, Integer antallAktive, Integer antallTilgjengelige,
+    public StatistikkOppgaveFilter(Long oppgaveFilterId, Long tidsstempel, LocalDate statistikkDato,
+                                   Integer antallAktive, Integer antallTilgjengelige, Integer antallVentende,
                                    InnslagType innslagType) {
         this.oppgaveFilterId = oppgaveFilterId;
         this.tidsstempel = tidsstempel;
         this.statistikkDato = statistikkDato;
         this.antallAktive = antallAktive;
         this.antallTilgjengelige = antallTilgjengelige;
+        this.antallVentende = antallVentende;
         this.innslagType = innslagType;
     }
 
@@ -68,6 +74,10 @@ public class StatistikkOppgaveFilter implements Serializable {
 
     public Integer getAntallTilgjengelige() {
         return antallTilgjengelige;
+    }
+
+    public  Integer getAntallVentende() {
+        return Optional.ofNullable(antallVentende).orElse(0);
     }
 
     public InnslagType getInnslagType() {
