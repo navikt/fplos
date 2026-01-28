@@ -21,7 +21,7 @@ public record SakslisteDto(Long sakslisteId,
                            StatistikkDto gjeldendeStatistikk) {
 
     public SakslisteDto(OppgaveFiltrering of, AktiveOgTilgjenglige aktiveOgTilgjenglige) {
-        var statistikk = aktiveOgTilgjenglige != null ? new StatistikkDto(aktiveOgTilgjenglige.aktive(), aktiveOgTilgjenglige.tilgjengelige()) : null;
+        var statistikk = aktiveOgTilgjenglige != null ? new StatistikkDto(aktiveOgTilgjenglige.aktive(), aktiveOgTilgjenglige.tilgjengelige(), aktiveOgTilgjenglige.ventende()) : null;
         this(of.getId(), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
             AndreKriterierDto.listeFra(of.getFiltreringAndreKriterierTyper()), KøSorteringFeltDto.alle(), saksbehandlerIdenter(of.getSaksbehandlere()), statistikk);
     }
@@ -30,6 +30,6 @@ public record SakslisteDto(Long sakslisteId,
         return saksbehandlere.stream().map(Saksbehandler::getSaksbehandlerIdent).toList();
     }
 
-    public record StatistikkDto(int alleOppgaver, int tilgjengeligeOppgaver) {
+    public record StatistikkDto(int alleOppgaver, int tilgjengeligeOppgaver, int behandlingerPåVent) {
     }
 }
