@@ -89,7 +89,7 @@ public class OppgaveKøRepository {
         qlStringBuilder.append(filtrerBortEgneBeslutterOppgaver(oppgavespørring, parameters));
         qlStringBuilder.append(" AND o.aktiv = true ");
         qlStringBuilder.append(beløpFilter(oppgavespørring, parameters));
-        qlStringBuilder.append(datoFilter(oppgavespørring, parameters));
+        qlStringBuilder.append(datoFilter(oppgavespørring, parameters, BEHANDLINGOPPRETTET_FELT_SQL));
 
         if (!kunCountQuery) {
             qlStringBuilder.append(orderBy(oppgavespørring));
@@ -102,7 +102,7 @@ public class OppgaveKøRepository {
         return query;
     }
 
-    private static String beløpFilter(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
+    static String beløpFilter(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
         if (!KøSortering.BELØP.equals(oppgavespørring.getSortering())) {
             return "";
         }
@@ -158,7 +158,7 @@ public class OppgaveKøRepository {
         return sb.toString();
     }
 
-    private static String filtrerBehandlingType(Oppgavespørring queryDto, Map<String, Object> parameters) {
+    static String filtrerBehandlingType(Oppgavespørring queryDto, Map<String, Object> parameters) {
         if (queryDto.getBehandlingTyper().isEmpty()) {
             return "";
         }
@@ -166,7 +166,7 @@ public class OppgaveKøRepository {
         return "AND o.behandlingType in :behtyper ";
     }
 
-    private static String filtrerYtelseType(Oppgavespørring queryDto, Map<String, Object> parameters) {
+    static String filtrerYtelseType(Oppgavespørring queryDto, Map<String, Object> parameters) {
         if (queryDto.getYtelseTyper().isEmpty()) {
             return "";
         }
@@ -199,7 +199,7 @@ public class OppgaveKøRepository {
             )""";
     }
 
-    private static String datoFilter(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
+    static String datoFilter(Oppgavespørring oppgavespørring, Map<String, Object> parameters, String behandlingOpprettetSQL) {
         var sortering = oppgavespørring.getSortering();
 
         if (KøSortering.BELØP.equals(sortering)) {
@@ -209,7 +209,7 @@ public class OppgaveKøRepository {
 
         var feltLiteral = switch (sortering) {
             case BEHANDLINGSFRIST -> BEHANDLINGSFRIST_FELT_SQL;
-            case OPPRETT_BEHANDLING -> BEHANDLINGOPPRETTET_FELT_SQL;
+            case OPPRETT_BEHANDLING -> behandlingOpprettetSQL;
             case FØRSTE_STØNADSDAG, FØRSTE_STØNADSDAG_SYNKENDE -> FØRSTE_STØNADSDAG_FELT_SQL;
             case FEILUTBETALINGSTART -> FEILUTBETALINGSTART_FELT_SQL;
             case BELØP -> throw new IllegalArgumentException("Utviklerfeil: beløpsfilter håndteres i annen metode");
@@ -217,7 +217,7 @@ public class OppgaveKøRepository {
 
         var gjelderKunDatoFelt =
             Objects.equals(KøSortering.FØRSTE_STØNADSDAG, sortering) ||
-            Objects.equals(KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, sortering); // Første stønadsdag er LocalDate i entiteten, øvrige LocalDateTime
+                Objects.equals(KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, sortering); // Første stønadsdag er LocalDate i entiteten, øvrige LocalDateTime
 
         var sbuilder = new StringBuilder();
         if (oppgavespørring.isErDynamiskPeriode()) {
