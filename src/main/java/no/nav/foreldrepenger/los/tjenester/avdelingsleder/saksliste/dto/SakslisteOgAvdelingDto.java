@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto;
 
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SakslisteIdDto;
@@ -19,14 +20,6 @@ public class SakslisteOgAvdelingDto implements AbacDto {
     @Valid
     private AvdelingEnhetDto avdelingEnhet;
 
-    public SakslisteOgAvdelingDto() {
-    }
-
-    public SakslisteOgAvdelingDto(SakslisteIdDto sakslisteId, AvdelingEnhetDto avdelingEnhet) {
-        this.sakslisteId = sakslisteId;
-        this.avdelingEnhet = avdelingEnhet;
-    }
-
     public SakslisteIdDto getSakslisteId() {
         return sakslisteId;
     }
@@ -34,10 +27,9 @@ public class SakslisteOgAvdelingDto implements AbacDto {
     public AvdelingEnhetDto getAvdelingEnhet() {
         return avdelingEnhet;
     }
-
     @Override
     public String toString() {
-        return "SakslisteOgAvdelingDto{" + "sakslisteId='" + sakslisteId + '\'' + "avdelingEnhet='" + avdelingEnhet + '\'' + '}';
+        return "SakslisteOgAvdelingDto{" + "sakslisteId=" + sakslisteId + ", avdelingEnhet=" + avdelingEnhet+ '}';
     }
 
     @Override

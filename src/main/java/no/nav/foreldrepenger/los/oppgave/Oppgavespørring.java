@@ -1,5 +1,7 @@
 package no.nav.foreldrepenger.los.oppgave;
 
+import static java.util.function.Predicate.not;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -8,8 +10,6 @@ import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 
-import static java.util.function.Predicate.not;
-
 public class Oppgavespørring {
     private final KøSortering sortering;
     private final String enhetsnummer;
@@ -17,7 +17,7 @@ public class Oppgavespørring {
     private final List<FagsakYtelseType> ytelseTyper;
     private final List<AndreKriterierType> inkluderAndreKriterierTyper;
     private final List<AndreKriterierType> ekskluderAndreKriterierTyper;
-    private final boolean erDynamiskPeriode;
+    private final Periodefilter periodefilter;
     private final LocalDate filtrerFomDato;
     private final LocalDate filtrerTomDato;
     private final Long filtrerFra;
@@ -33,7 +33,7 @@ public class Oppgavespørring {
             oppgaveFiltrering.getFagsakYtelseTyper(),
             inkluderAndreKriterierTyperFra(oppgaveFiltrering),
             ekskluderAndreKriterierTyperFra(oppgaveFiltrering),
-            oppgaveFiltrering.getErDynamiskPeriode(),
+            oppgaveFiltrering.getPeriodefilter(),
             oppgaveFiltrering.getFomDato(),
             oppgaveFiltrering.getTomDato(),
             oppgaveFiltrering.getFra(),
@@ -49,7 +49,7 @@ public class Oppgavespørring {
                            List<FagsakYtelseType> ytelseTyper,
                            List<AndreKriterierType> inkluderAndreKriterierTyper,
                            List<AndreKriterierType> ekskluderAndreKriterierTyper,
-                           boolean erDynamiskPeriode,
+                           Periodefilter periodefilter,
                            LocalDate filtrerFomDato,
                            LocalDate filtrerTomDato,
                            Long filtrerFra,
@@ -61,7 +61,7 @@ public class Oppgavespørring {
         this.ytelseTyper = ytelseTyper;
         this.inkluderAndreKriterierTyper = inkluderAndreKriterierTyper;
         this.ekskluderAndreKriterierTyper = ekskluderAndreKriterierTyper;
-        this.erDynamiskPeriode = erDynamiskPeriode;
+        this.periodefilter = periodefilter;
         this.filtrerFomDato = filtrerFomDato;
         this.filtrerTomDato = filtrerTomDato;
         this.filtrerFra = filtrerFra;
@@ -97,8 +97,8 @@ public class Oppgavespørring {
         return ekskluderAndreKriterierTyper;
     }
 
-    public boolean isErDynamiskPeriode() {
-        return erDynamiskPeriode;
+    public Periodefilter getPeriodefilter() {
+        return periodefilter;
     }
 
     public LocalDate getFiltrerFomDato() {
@@ -145,7 +145,7 @@ public class Oppgavespørring {
     public String toString() {
         return "Oppgavespørring{" + "sortering=" + sortering + "enhetsnummer=" + enhetsnummer + ", behandlingTyper=" + behandlingTyper + ", ytelseTyper="
             + ytelseTyper + ", inkluderAndreKriterierTyper=" + inkluderAndreKriterierTyper + ", ekskluderAndreKriterierTyper="
-            + ekskluderAndreKriterierTyper + ", erDynamiskPeriode=" + erDynamiskPeriode + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
+            + ekskluderAndreKriterierTyper + ", periodefilter=" + periodefilter + ", filtrerFomDato=" + filtrerFomDato + ", filtrerTomDato="
             + filtrerTomDato + ", filtrerFra=" + filtrerFra + ", filtrerTil=" + filtrerTil + ", filtreringstype=" + filtreringstype + '}';
     }
 }
