@@ -33,10 +33,10 @@ public class SlettGamleOppgaverTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var mndTilbake = Optional.ofNullable(prosessTaskData.getPropertyValue(MND_TILBAKE)).map(Long::valueOf).orElse(100L);
+        var mndTilbake = Optional.ofNullable(prosessTaskData.getPropertyValue(MND_TILBAKE)).map(Long::valueOf).orElse(15L);
         var antallSlettet = slettEldreUtløpteOppgaver(mndTilbake);
         LOG.info("Slettet {} utdaterte oppgaver eldre enn {} måneder", antallSlettet, mndTilbake);
-        if (mndTilbake > 13) {
+        if (mndTilbake > 3) {
             var nesteTask = ProsessTaskData.forProsessTask(SlettGamleOppgaverTask.class);
             nesteTask.setProperty(MND_TILBAKE, String.valueOf(mndTilbake - 1));
             prosessTaskTjeneste.lagre(nesteTask);
@@ -44,7 +44,7 @@ public class SlettGamleOppgaverTask implements ProsessTaskHandler {
     }
 
     private int slettEldreUtløpteOppgaver(Long mndTilbake) {
-        var før = LocalDate.now().minusMonths(mndTilbake).atStartOfDay();
+        var før = LocalDate.now().minusMonths(mndTilbake).withDayOfMonth(1).atStartOfDay();
         entityManager.createNativeQuery("delete from RESERVASJON where oppgave_id in (select id from OPPGAVE where aktiv = 'N' AND coalesce(endret_tid, opprettet_tid) < :foer)")
             .setParameter("foer", før)
             .executeUpdate();
