@@ -26,12 +26,12 @@ import no.nav.foreldrepenger.los.tjenester.admin.DriftsmeldingerAdminRestTjenest
 import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 
-@ApplicationPath(ForvaltningApiConfig.FORVALTNING_URI)
+@ApplicationPath(ForvaltningApiConfig.API_URL)
 public class ForvaltningApiConfig extends Application {
 
     private static final Environment ENV = Environment.current();
 
-    public static final String FORVALTNING_URI = "/forvaltning/api";
+    public static final String API_URL = "/forvaltning/api";
 
     public ForvaltningApiConfig() {
         var info = new Info()
