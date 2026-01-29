@@ -62,6 +62,9 @@ public class BaseEntitet implements Serializable {
         return endretTidspunkt;
     }
 
+    public void setEndretTidspunkt(LocalDateTime endretTidspunkt) {
+        this.endretTidspunkt = endretTidspunkt;
+    }
 
     protected static String finnBrukernavn() {
         return Optional.ofNullable(KontekstHolder.getKontekst()).map(Kontekst::getKompaktUid).orElse(BRUKERNAVN_NÅR_SIKKERHETSKONTEKST_IKKE_FINNES);
