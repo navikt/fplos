@@ -30,14 +30,13 @@ public class MottattHendelseRepository {
     }
 
     public void registrerMottattHendelse(String hendelseUid) {
-        entityManager.createNativeQuery("INSERT INTO MOTTATT_HENDELSE (hendelse_uid) VALUES (:hendelse_uid)")
-            .setParameter("hendelse_uid", hendelseUid)
-            .executeUpdate();
+        var hendelse = new MottattHendelse(hendelseUid);
+        entityManager.persist(hendelse);
         entityManager.flush();
     }
 
     public void slettMånedsGamle() {
-        entityManager.createNativeQuery("DELETE FROM MOTTATT_HENDELSE WHERE opprettet_tid < :foer")
+        entityManager.createQuery("DELETE FROM MottattHendelse WHERE opprettetTidspunkt < :foer")
             .setParameter("foer", LocalDateTime.now().minusWeeks(4))
             .executeUpdate();
         entityManager.flush();
