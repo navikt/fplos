@@ -1,16 +1,23 @@
 package no.nav.foreldrepenger.los.konfig;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import no.nav.foreldrepenger.konfig.Environment;
+
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.validation.internal.ValidationExceptionMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
+import no.nav.foreldrepenger.los.server.exceptions.ConstraintViolationMapper;
+import no.nav.foreldrepenger.los.server.exceptions.GeneralRestExceptionMapper;
+import no.nav.foreldrepenger.los.server.exceptions.JsonMappingExceptionMapper;
+import no.nav.foreldrepenger.los.server.exceptions.JsonParseExceptionMapper;
 import no.nav.foreldrepenger.los.tjenester.admin.DriftsmeldingerRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.AvdelingslederRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
@@ -25,41 +32,33 @@ import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjen
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
 
 @ApplicationPath(ApiConfig.API_URI)
-public class ApiConfig extends Application {
+public class ApiConfig extends ResourceConfig {
 
     public static final String API_URI = "/api";
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        // eksponert grensesnitt
-        Set<Class<?>> classes = new HashSet<>(getAllClasses());
-
-        // Standard Jakarta RS oppsett for filtre og plugins
-        classes.addAll(FellesConfigClasses.getFellesContainerFilterClasses());
-        classes.addAll(FellesConfigClasses.getFellesRsExtConfigClasses());
-
-        return Collections.unmodifiableSet(classes);
+    public ApiConfig() {
+        registerClasses(getFellesConfigClasses());
+        registerClasses(getApplicationClasses());
+        setProperties(getApplicationProperties());
     }
 
-    private static Collection<Class<?>> getAllClasses() {
-        Set<Class<?>> classes = new HashSet<>();
-        classes.add(KodeverkRestTjeneste.class);
-        classes.add(DriftsmeldingerRestTjeneste.class);
-        classes.add(SaksbehandlerSakslisteRestTjeneste.class);
-        classes.add(OppgaveRestTjeneste.class);
-        classes.add(AvdelingslederSakslisteRestTjeneste.class);
-        classes.add(AvdelingslederSaksbehandlerRestTjeneste.class);
-        classes.add(AvdelingReservasjonerRestTjeneste.class);
-        classes.add(ReservasjonRestTjeneste.class);
-        classes.add(NøkkeltallRestTjeneste.class);
-        classes.add(AvdelingslederRestTjeneste.class);
-        classes.add(AvdelingslederOppgaveRestTjeneste.class);
-        classes.add(MigreringRestTjeneste.class);
-        return classes;
+    private static Set<Class<?>> getApplicationClasses() {
+        return Set.of(KodeverkRestTjeneste.class, DriftsmeldingerRestTjeneste.class, SaksbehandlerSakslisteRestTjeneste.class,
+            OppgaveRestTjeneste.class, AvdelingslederSakslisteRestTjeneste.class, AvdelingslederSaksbehandlerRestTjeneste.class,
+            AvdelingReservasjonerRestTjeneste.class, ReservasjonRestTjeneste.class, NøkkeltallRestTjeneste.class, AvdelingslederRestTjeneste.class,
+            AvdelingslederOppgaveRestTjeneste.class, MigreringRestTjeneste.class);
     }
 
-    @Override
-    public Map<String, Object> getProperties() {
+    static Set<Class<?>> getFellesConfigClasses() {
+        return Set.of(AuthenticationFilter.class, // Autentisering
+            GeneralRestExceptionMapper.class, // Exception handling
+            ConstraintViolationMapper.class, // Exception handling
+            JacksonJsonConfig.class // Json
+        );
+    }
+
+
+    private static Map<String, Object> getApplicationProperties() {
         Map<String, Object> properties = new HashMap<>();
         // Ref Jersey doc
         properties.put(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
