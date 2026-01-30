@@ -3,13 +3,13 @@ package no.nav.foreldrepenger.los.oppgavekø;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 
 @Entity(name = "OppgaveFiltreringOppdaterer")
 @Table(name = "OPPGAVE_FILTRERING")
@@ -23,9 +23,9 @@ public class OppgaveFiltreringOppdaterer extends BaseEntitet {
     @Column(name = "sortering")
     private String sortering;
 
-    @Convert(converter = BooleanToStringConverter.class)
-    @Column(name = "ER_DYNAMISK_PERIODE")
-    private boolean erDynamiskPeriode = Boolean.FALSE;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PERIODEFILTER_TYPE")
+    private Periodefilter periodefilter;
 
     @Column(name = "FOM_DATO")
     private LocalDate fomDato;
@@ -49,8 +49,8 @@ public class OppgaveFiltreringOppdaterer extends BaseEntitet {
         return this;
     }
 
-    public OppgaveFiltreringOppdaterer endreErDynamiskPeriode(boolean erDynamiskPeriode) {
-        this.erDynamiskPeriode = erDynamiskPeriode;
+    public OppgaveFiltreringOppdaterer endrePeriodefilter(Periodefilter periodefilter) {
+        this.periodefilter = periodefilter;
         return this;
     }
 

@@ -3,11 +3,11 @@ package no.nav.foreldrepenger.los.oppgave;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.hibernate.jpa.HibernateHints;
 
@@ -20,6 +20,9 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
 @ApplicationScoped
 public class OppgaveKøRepository {
+
+
+
 
     private static final String SELECT_FROM_OPPGAVE = "from Oppgave o ";
     private static final String SELECT_COUNT_FROM_OPPGAVE = "SELECT count(1) from Oppgave o ";
@@ -68,7 +71,7 @@ public class OppgaveKøRepository {
             new ArrayList<>(),
             new ArrayList<>(),
             new ArrayList<>(),
-            false,
+            Periodefilter.FAST_PERIODE,
             null,
             null,
             null,
@@ -228,19 +231,33 @@ public class OppgaveKøRepository {
         var gjelderKunDatoFelt = datemap.getOrDefault(sortering, Boolean.FALSE);
 
         var sbuilder = new StringBuilder();
-        if (oppgavespørring.isErDynamiskPeriode()) {
+
+
+        if (oppgavespørring.getPeriodefilter() == Periodefilter.RELATIV_PERIODE_DAGER) {
             // Filtrerer på antall dager relativt til i dag.
             // Perioden man ser på kan være i fortid eller fremtid, avhengig av positiv/negativ verdi på filtrerFra/Til
-            var fomAntallDagerFrem = oppgavespørring.getFiltrerFra();
-            if (fomAntallDagerFrem != null) {
-                var aktuellFomDato = LocalDate.now().plusDays(fomAntallDagerFrem);
-                putDatoParam(parameters, "filterFom", aktuellFomDato, gjelderKunDatoFelt, true);
+            if (oppgavespørring.getFiltrerFra() != null) {
+                var fomDato = LocalDate.now().plusDays(oppgavespørring.getFiltrerFra());
+                putDatoParam(parameters, "filterFom", fomDato, gjelderKunDatoFelt, true);
                 sbuilder.append("AND ").append(feltLiteral).append(" >= :filterFom ");
             }
-            var tomAntallDagerFrem = oppgavespørring.getFiltrerTil();
-            if (tomAntallDagerFrem != null) {
-                var aktuellTomDato = LocalDate.now().plusDays(tomAntallDagerFrem);
-                putDatoParam(parameters, "filterTom", aktuellTomDato, gjelderKunDatoFelt, false);
+            if (oppgavespørring.getFiltrerTil() != null) {
+                var tomDato = LocalDate.now().plusDays(oppgavespørring.getFiltrerTil());
+                putDatoParam(parameters, "filterTom", tomDato, gjelderKunDatoFelt, false);
+                sbuilder.append("AND ").append(feltLiteral).append(" <= :filterTom ");
+            }
+
+        } else if (oppgavespørring.getPeriodefilter() == Periodefilter.RELATIV_PERIODE_MÅNEDER) {
+            // Filtrerer på antall måneder relativt til inneværende måned.
+            // Perioden man ser på kan være i fortid eller fremtid, avhengig av positiv/negativ verdi på filtrerFra/Til
+            if (oppgavespørring.getFiltrerFra() != null) {
+                var fomDato = YearMonth.now().plusMonths(oppgavespørring.getFiltrerFra()).atDay(1);
+                putDatoParam(parameters, "filterFom", fomDato, gjelderKunDatoFelt, true);
+                sbuilder.append("AND ").append(feltLiteral).append(" >= :filterFom ");
+            }
+            if (oppgavespørring.getFiltrerTil() != null) {
+                var tomDato = YearMonth.now().plusMonths(oppgavespørring.getFiltrerTil()).atEndOfMonth();
+                putDatoParam(parameters, "filterTom", tomDato, gjelderKunDatoFelt, false);
                 sbuilder.append("AND ").append(feltLiteral).append(" <= :filterTom ");
             }
         } else {

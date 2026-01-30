@@ -19,6 +19,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
 import no.nav.foreldrepenger.los.statistikk.kø.InnslagType;
 import no.nav.foreldrepenger.los.statistikk.kø.KøStatistikkTjeneste;
@@ -153,7 +154,8 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Operation(description = "Sett sakslistens sorteringsintervall", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreSorteringTidsintervall(@NotNull @Parameter(description = "Intervall som filtrererer/sorterer numerisk") @Valid SakslisteSorteringIntervallDto intervall) {
-        avdelingslederTjeneste.settSorteringNumeriskIntervall(intervall.getSakslisteId(), intervall.getFra(), intervall.getTil());
+        var periodefilter = intervall.getPeriodefilter() == null ? Periodefilter.RELATIV_PERIODE_DAGER : intervall.getPeriodefilter();
+        avdelingslederTjeneste.settSorteringNumeriskIntervall(intervall.getSakslisteId(), intervall.getFra(), intervall.getTil(), periodefilter);
         oppdaterStatistikkForOppgavefilterEtterEndring(intervall.getSakslisteId());
     }
 
@@ -164,10 +166,13 @@ public class AvdelingslederSakslisteRestTjeneste {
     public void lagreSorteringTidsintervallValg(@NotNull @Parameter(description = "id til sakslisten") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
         var sakslisteId = sakslisteOgAvdelingDto.getSakslisteId().getVerdi();
         var oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId);
-        oppgaveFiltrering.ifPresentOrElse(of -> avdelingslederTjeneste.settSorteringTidsintervallValg(sakslisteId, !of.getErDynamiskPeriode()),
-            () -> {
-                throw new IllegalArgumentException("Fant ikke listen");
-            });
+        oppgaveFiltrering.ifPresentOrElse(of -> {
+            var periodefilter = of.getPeriodefilter()
+                == Periodefilter.FAST_PERIODE ? Periodefilter.RELATIV_PERIODE_DAGER : Periodefilter.FAST_PERIODE;
+            avdelingslederTjeneste.settSorteringTidsintervallValg(sakslisteId, periodefilter);
+        }, () -> {
+            throw new IllegalArgumentException("Fant ikke listen");
+        });
         oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteId);
     }
 

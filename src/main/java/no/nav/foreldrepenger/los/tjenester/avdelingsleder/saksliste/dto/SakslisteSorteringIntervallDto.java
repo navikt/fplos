@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.FplosAbacAttributtType;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SakslisteIdDto;
@@ -31,15 +32,8 @@ public class SakslisteSorteringIntervallDto implements AbacDto {
     @Valid
     private AvdelingEnhetDto avdelingEnhet;
 
-    public SakslisteSorteringIntervallDto() {
-    }
-
-    public SakslisteSorteringIntervallDto(SakslisteIdDto sakslisteId, Long fra, Long til, AvdelingEnhetDto avdelingEnhet) {
-        this.sakslisteId = sakslisteId;
-        this.fra = fra;
-        this.til = til;
-        this.avdelingEnhet = avdelingEnhet;
-    }
+    @Valid
+    private Periodefilter periodefilter;
 
     public Long getSakslisteId() {
         return sakslisteId.getVerdi();
@@ -57,9 +51,14 @@ public class SakslisteSorteringIntervallDto implements AbacDto {
         return avdelingEnhet;
     }
 
+    public Periodefilter getPeriodefilter() {
+        return periodefilter;
+    }
+
     @Override
     public String toString() {
-        return "SakslisteSorteringIntervallDto{" + "sakslisteId='" + sakslisteId + '\'' + "fra='" + fra + '\'' + "til='" + til + '\'' + '}';
+        return "SakslisteSorteringIntervallDto{" + "sakslisteId=" + sakslisteId + ", fra=" + fra + ", til=" + til + ", avdelingEnhet=" + avdelingEnhet
+            + ", periodefilter=" + periodefilter + '}';
     }
 
     @Override

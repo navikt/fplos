@@ -15,6 +15,7 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
@@ -130,12 +131,12 @@ public class AvdelingslederTjeneste {
         oppgaveRepository.settSorteringTidsintervallDato(oppgaveFiltreringId, fomDato, tomDato);
     }
 
-    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til) {
-        oppgaveRepository.settSorteringNumeriskIntervall(oppgaveFiltreringId, fra, til);
+    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til, Periodefilter periodefilter) {
+        oppgaveRepository.settSorteringNumeriskIntervall(oppgaveFiltreringId, fra, til, periodefilter);
     }
 
-    public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode) {
-        oppgaveRepository.settSorteringTidsintervallValg(oppgaveFiltreringId, erDynamiskPeriode);
+    public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, Periodefilter periodefilter) {
+        oppgaveRepository.settSorteringTidsintervallValg(oppgaveFiltreringId, periodefilter);
     }
 
     private OppgaveFiltrering hentFiltrering(Long oppgavefiltreringId) {

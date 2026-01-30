@@ -108,7 +108,7 @@ public class OppgaveRepository {
     public void settSortering(Long sakslisteId, String sortering) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, sakslisteId)
             .endreSortering(sortering)
-            .endreErDynamiskPeriode(false)
+            .endrePeriodefilter(Periodefilter.FAST_PERIODE)
             .endreFomDato(null)
             .endreTomDato(null)
             .endreFraVerdi(null)
@@ -118,7 +118,7 @@ public class OppgaveRepository {
 
     public void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-            .endreErDynamiskPeriode(false)
+            .endrePeriodefilter(Periodefilter.FAST_PERIODE)
             .endreFraVerdi(null)
             .endreTilVerdi(null)
             .endreFomDato(fomDato)
@@ -126,9 +126,9 @@ public class OppgaveRepository {
         entityManager.flush();
     }
 
-    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til) {
+    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til, Periodefilter periodefilter) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-            .endreErDynamiskPeriode(true)
+            .endrePeriodefilter(periodefilter)
             .endreFomDato(null)
             .endreTomDato(null)
             .endreFraVerdi(fra)
@@ -136,9 +136,9 @@ public class OppgaveRepository {
         entityManager.flush();
     }
 
-    public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, boolean erDynamiskPeriode) {
+    public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, Periodefilter periodefilter) {
         entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-            .endreErDynamiskPeriode(erDynamiskPeriode)
+            .endrePeriodefilter(periodefilter)
             .endreFomDato(null)
             .endreTomDato(null)
             .endreFraVerdi(null)
