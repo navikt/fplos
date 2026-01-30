@@ -9,7 +9,6 @@ import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -30,7 +29,6 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 
 
 @Entity(name = "OppgaveFiltrering")
@@ -63,10 +61,6 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     @Column(name = "AVDELING_ID", updatable = false, insertable = false)
     private Long avdelingId;
-
-    @Convert(converter = BooleanToStringConverter.class)
-    @Column(name = "ER_DYNAMISK_PERIODE")
-    private boolean erDynamiskPeriode = Boolean.FALSE;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "PERIODEFILTER_TYPE")
@@ -213,11 +207,6 @@ public class OppgaveFiltrering extends BaseEntitet {
 
         public Builder medAvdeling(Avdeling avdeling) {
             tempOppgaveFiltrering.avdeling = avdeling;
-            return this;
-        }
-
-        public Builder medErDynamiskPeriode(boolean erDynamiskPeriode) {
-            tempOppgaveFiltrering.erDynamiskPeriode = erDynamiskPeriode;
             return this;
         }
 
