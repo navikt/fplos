@@ -1,6 +1,8 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
@@ -29,6 +31,8 @@ import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
 @ApplicationScoped
 public class BehandlingTjeneste {
+
+    public static Period BEHOLD_HELE_MÅNEDER  = Period.ofMonths(3);
 
     private OppgaveRepository oppgaveRepository;
 
@@ -59,6 +63,10 @@ public class BehandlingTjeneste {
         if (BehandlingTilstand.VENT_SØKNAD.equals(tilstand) && eksisterendeBehandling.isEmpty()) {
             return;
         }
+        // Forkast hendelser som kommer når gamle saker  avsluttes
+        if (BehandlingTilstand.AVSLUTTET.equals(tilstand) && skalForkasteGamleAvsluttet(dto, eksisterendeBehandling)) {
+            return;
+        }
         var eksisterendeKriterier = oppgaveRepository.finnBehandlingKriterier(dto.behandlingUuid());
         var kriterierEndret = eksisterendeKriterier.size() != nyeKriterier.size() || !eksisterendeKriterier.containsAll(nyeKriterier);
         var builder = Behandling.builder(eksisterendeBehandling)
@@ -73,7 +81,7 @@ public class BehandlingTjeneste {
             .medAktiveAksjonspunkt(mapAktiveAksjonspunkt(dto))
             .medVentefrist(mapTidligsteVentefrist(dto))
             .medOpprettet(dto.opprettetTidspunkt())
-            .medAvsluttet(Behandlingsstatus.AVSLUTTET.equals(dto.behandlingsstatus()) ? LocalDateTime.now() : null)
+            .medAvsluttet(dto.avsluttetTidspunkt())
             .medBehandlingsfrist(dto.behandlingsfrist())
             .medFørsteStønadsdag(Optional.ofNullable(dto.foreldrepengerDto()).map(LosBehandlingDto.LosForeldrepengerDto::førsteUttakDato).orElse(null))
             .medFeilutbetalingBelop(Optional.ofNullable(dto.tilbakeDto()).map(LosBehandlingDto.LosTilbakeDto::feilutbetaltBeløp).orElse(null))
@@ -88,6 +96,11 @@ public class BehandlingTjeneste {
             leggesTil.removeAll(eksisterendeKriterier);
             oppgaveRepository.nyeBehandlingEgenskaper(dto.behandlingUuid(), leggesTil);
         }
+    }
+
+    private boolean skalForkasteGamleAvsluttet(LosBehandlingDto dto, Optional<Behandling> eksisterendeBehandling) {
+        return eksisterendeBehandling.filter(b -> !BehandlingTilstand.AVSLUTTET.equals(b.getBehandlingTilstand())).isEmpty()
+            && dto.avsluttetTidspunkt() != null && dto.avsluttetTidspunkt().isBefore(LocalDateTime.now().minus(BEHOLD_HELE_MÅNEDER).withDayOfMonth(1));
     }
 
     private BehandlingTilstand mapBehandlingTilstand(LosBehandlingDto dto, Fagsystem kildeSystem) {

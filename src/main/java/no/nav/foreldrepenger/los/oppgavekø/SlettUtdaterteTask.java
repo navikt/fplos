@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingTjeneste;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +34,7 @@ public class SlettUtdaterteTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        var før = LocalDate.now().minusMonths(3).withDayOfMonth(1).atStartOfDay();
+        var før = LocalDate.now().minus(BehandlingTjeneste.BEHOLD_HELE_MÅNEDER).withDayOfMonth(1).atStartOfDay();
         int slettetReservasjonerAntall = slettEldreUtløpteReservasjoner(før);
         LOG.info("LOS vedlikehold: Slettet {} utdaterte reservasjoner", slettetReservasjonerAntall);
 
