@@ -162,4 +162,15 @@ public class AdminRestTjeneste {
         return Response.ok().build();
     }
 
+    @POST
+    @Path("/slett-behandling-inaktiv-enheter")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Fjerne behandlinger fra historisk enheter (avsluttet sak)", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response slettBehandlingerSomIkkeSkalLagre() {
+        organisasjonRepository.slettBehandlingerSomIkkeSkalBevares();
+        return Response.ok().build();
+    }
+
 }

@@ -89,6 +89,11 @@ public class OrganisasjonRepository {
         LOG.info("Slettet {} løse gruppe-knytninger", slettedeRader);
     }
 
+    public void slettBehandlingerSomIkkeSkalBevares() {
+        entityManager.createQuery("DELETE FROM Behandling where behandlendeEnhet in (:enhet)")
+            .setParameter("enhet", List.of("4812", "4833", "4842", "4847", "4849")).executeUpdate();
+    }
+
 
     public void slettØvrigeEnhetsdata(String avdelingEnhet) {
         var avdeling = hentAvdelingFraEnhet(avdelingEnhet).orElse(null);
@@ -96,9 +101,9 @@ public class OrganisasjonRepository {
             LOG.info("Enhet er aktiv {}, avslutter.", avdelingEnhet);
             return;
         }
-        entityManager.createNativeQuery("DELETE FROM RESERVASJON where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
-        entityManager.createNativeQuery("DELETE FROM OPPGAVE_EGENSKAP where OPPGAVE_ID in (select id from oppgave where behandlende_enhet = :enhet)").setParameter("enhet", avdelingEnhet).executeUpdate();
-        entityManager.createNativeQuery("DELETE FROM OPPGAVE where behandlende_enhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();
+        entityManager.createQuery("DELETE FROM Reservasjon where oppgave.id in (select id from Oppgave where behandlendeEnhet = :enhetr)").setParameter("enhetr", avdelingEnhet).executeUpdate();
+        entityManager.createQuery("DELETE FROM OppgaveEgenskap where oppgave.id in (select id from Oppgave where behandlendeEnhet = :enhete)").setParameter("enhete", avdelingEnhet).executeUpdate();
+        entityManager.createQuery("DELETE FROM Oppgave where behandlendeEnhet = :enhet").setParameter("enhet", avdelingEnhet).executeUpdate();
         entityManager.flush();
     }
 

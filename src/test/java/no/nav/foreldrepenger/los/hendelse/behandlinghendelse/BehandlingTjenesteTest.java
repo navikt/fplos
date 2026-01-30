@@ -122,7 +122,7 @@ class BehandlingTjenesteTest {
 
     static LosBehandlingDto lagLosBehandlingDto(Kildesystem kildesystem, List<String> sakegenskaper, LosAksjonspunktDto... dto) {
         return new LosBehandlingDto(UUID.randomUUID(), kildesystem, "42", Ytelse.FORELDREPENGER, new AktørId("1234567890123"),
-            Behandlingstype.KLAGE, Behandlingsstatus.UTREDES, LocalDateTime.now(), AVDELING_BERGEN_ENHET, LocalDate.now(),
+            Behandlingstype.KLAGE, Behandlingsstatus.UTREDES, LocalDateTime.now(), null, AVDELING_BERGEN_ENHET, LocalDate.now(),
             "z999999", List.of(dto), Optional.ofNullable((List<Behandlingsårsak>) null).orElse(List.of()), false,
             true, sakegenskaper, new LosBehandlingDto.LosForeldrepengerDto(LocalDate.now()), List.of(), null);
     }
@@ -211,14 +211,14 @@ class BehandlingTjenesteTest {
 
     static LosBehandlingDto lagSekvensDto(UUID behandling, LosAksjonspunktDto... dto) {
         return new LosBehandlingDto(behandling, Kildesystem.FPSAK, "42", Ytelse.FORELDREPENGER, new AktørId("1234567890123"),
-            Behandlingstype.FØRSTEGANGS, Behandlingsstatus.UTREDES, LocalDateTime.now(), AVDELING_BERGEN_ENHET, LocalDate.now(),
+            Behandlingstype.FØRSTEGANGS, Behandlingsstatus.UTREDES, LocalDateTime.now(), null, AVDELING_BERGEN_ENHET, LocalDate.now(),
             "z999999", List.of(dto), List.of(), false,
             true, List.of(), new LosBehandlingDto.LosForeldrepengerDto(LocalDate.now()), List.of(), null);
     }
 
     static LosBehandlingDto lagSekvensDtoAvsluttet(UUID behandling, LosAksjonspunktDto... dto) {
         return new LosBehandlingDto(behandling, Kildesystem.FPSAK, "42", Ytelse.FORELDREPENGER, new AktørId("1234567890123"),
-            Behandlingstype.FØRSTEGANGS, Behandlingsstatus.AVSLUTTET, LocalDateTime.now(), AVDELING_BERGEN_ENHET, LocalDate.now(),
+            Behandlingstype.FØRSTEGANGS, Behandlingsstatus.AVSLUTTET, LocalDateTime.now(), LocalDateTime.now(), AVDELING_BERGEN_ENHET, LocalDate.now(),
             "z999999", List.of(dto), List.of(), false,
             true, List.of(), new LosBehandlingDto.LosForeldrepengerDto(LocalDate.now()), List.of(), null);
     }
