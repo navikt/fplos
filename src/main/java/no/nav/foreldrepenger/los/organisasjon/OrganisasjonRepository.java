@@ -90,6 +90,8 @@ public class OrganisasjonRepository {
     }
 
     public void slettBehandlingerSomIkkeSkalBevares() {
+        entityManager.createQuery("DELETE FROM BehandlingEgenskap where behandlingId in (select id from Behandling where behandlendeEnhet in (:enhet))")
+            .setParameter("enhet", List.of("4812", "4833", "4842", "4847", "4849")).executeUpdate();
         entityManager.createQuery("DELETE FROM Behandling where behandlendeEnhet in (:enhet)")
             .setParameter("enhet", List.of("4812", "4833", "4842", "4847", "4849")).executeUpdate();
     }
