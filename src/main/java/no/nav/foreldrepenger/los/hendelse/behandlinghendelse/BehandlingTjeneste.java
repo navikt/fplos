@@ -1,6 +1,5 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Comparator;
@@ -25,7 +24,6 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingTilstand;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunkttype;
-import no.nav.vedtak.hendelser.behandling.Behandlingsstatus;
 import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 import no.nav.vedtak.hendelser.behandling.los.LosFagsakEgenskaperDto;
 
