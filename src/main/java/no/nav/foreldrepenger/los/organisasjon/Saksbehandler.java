@@ -31,6 +31,12 @@ public class Saksbehandler extends BaseEntitet {
     @Column(name = "SAKSBEHANDLER_UUID")
     private UUID saksbehandlerUuid;
 
+    @Column(name = "NAVN")
+    private String navn;
+
+    @Column(name = "ANSATT_ENHET")
+    private String ansattVedEnhet;
+
     @ManyToMany
     @JoinTable(name = "AVDELING_SAKSBEHANDLER", joinColumns = {@JoinColumn(name = "SAKSBEHANDLER_ID")}, inverseJoinColumns = {@JoinColumn(name = "AVDELING_ID")})
     private List<Avdeling> avdelinger = new ArrayList<>();
@@ -42,9 +48,11 @@ public class Saksbehandler extends BaseEntitet {
         //CDI
     }
 
-    public Saksbehandler(String saksbehandlerIdent, UUID saksbehandlerUuid) {
+    public Saksbehandler(String saksbehandlerIdent, UUID saksbehandlerUuid, String navn, String ansattVedEnhet) {
         this.saksbehandlerIdent = saksbehandlerIdent;
         this.saksbehandlerUuid = saksbehandlerUuid;
+        this.navn = navn;
+        this.ansattVedEnhet = ansattVedEnhet;
     }
 
     public Long getId() {
@@ -65,6 +73,22 @@ public class Saksbehandler extends BaseEntitet {
 
     public Optional<UUID> getSaksbehandlerUuidHvisFinnes() {
         return Optional.ofNullable(saksbehandlerUuid);
+    }
+
+    public String getNavn() {
+        return navn;
+    }
+
+    public void setNavn(String navn) {
+        this.navn = navn;
+    }
+
+    public String getAnsattVedEnhet() {
+        return ansattVedEnhet;
+    }
+
+    public void setAnsattVedEnhet(String ansattVedEnhet) {
+        this.ansattVedEnhet = ansattVedEnhet;
     }
 
     public List<Avdeling> getAvdelinger() {

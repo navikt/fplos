@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
-import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +18,10 @@ import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
@@ -90,7 +89,7 @@ class OppgaveKøTjenesteTest {
     @Test
     void hentAlleOppgaveFiltrering() {
         var lagtInnLister = leggInnEtSettMedLister(3);
-        var saksbehandler = new Saksbehandler("1234567", UUID.randomUUID());
+        var saksbehandler = new Saksbehandler("1234567", UUID.randomUUID(), "Navn Navnesen", "1234");
         entityManager.persist(saksbehandler);
         entityManager.flush();
 

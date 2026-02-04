@@ -24,6 +24,7 @@ import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftOpprettAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
+import no.nav.vedtak.felles.prosesstask.api.ProsessTaskGruppe;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskStatus;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.felles.prosesstask.api.TaskType;
@@ -159,6 +160,23 @@ public class AdminRestTjeneste {
             taskData.setNesteKjøringEtter(LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)));
             prosessTaskTjeneste.lagre(taskData);
         }
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/populer-saksbehandler-navn")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Fjerne saksbehandlere fra grupper når saksbehandler mangler i avdeling", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response populerSaksbehandlereNavn() {
+        var gruppe = new ProsessTaskGruppe();
+        organisasjonRepository.hentAlleSaksbehandlere().forEach(s -> {
+                var t = ProsessTaskData.forProsessTask(OppdaterSaksbehandlerTask.class);
+                t.setProperty(OppdaterSaksbehandlerTask.IDENT, s.getSaksbehandlerIdent());
+                gruppe.addNesteSekvensiell(t);
+            });
+        prosessTaskTjeneste.lagre(gruppe);
         return Response.ok().build();
     }
 
