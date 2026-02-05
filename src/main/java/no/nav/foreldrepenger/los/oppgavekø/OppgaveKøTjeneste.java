@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,6 +67,12 @@ public class OppgaveKøTjeneste {
         var oppgavespørring = new Oppgavespørring(oppgaveFilter.get(), Filtreringstype.LEDIGE);
         oppgavespørring.setMaksAntall(maksAntall);
         return oppgaveKøRepository.hentOppgaver(oppgavespørring);
+    }
+
+    public int hentAntallSaksbehandlere(Long sakslisteId) {
+        return oppgaveRepository.hentOppgaveFilterSett(sakslisteId)
+            .map(OppgaveFiltrering::getSaksbehandlere)
+            .map(Collection::size).orElse(0);
     }
 
 }
