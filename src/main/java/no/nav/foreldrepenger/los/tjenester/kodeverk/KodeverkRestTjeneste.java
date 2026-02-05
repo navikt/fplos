@@ -1,9 +1,12 @@
 package no.nav.foreldrepenger.los.tjenester.kodeverk;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -28,15 +31,9 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 @ApplicationScoped
 public class KodeverkRestTjeneste {
 
-    private static final Map<String, List<KodeverdiMedNavnDto>> KODEVERDIER = Map.ofEntries(
-        lagEnumEntry(AndreKriterierType.class),
-        lagEnumEntry(BehandlingType.class),
-        lagEnumEntry(BehandlingVenteStatus.class),
-        lagEnumEntry(FagsakStatus.class),
-        lagEnumEntry(FagsakYtelseType.class),
-        lagEnumEntry(KøSortering.class),
-        lagEnumEntry(OppgaveBehandlingStatus.class)
-    );
+    private static final Map<String, List<KodeverdiMedNavnDto>> KODEVERDIER = Map.ofEntries(lagEnumEntry(AndreKriterierType.class),
+        lagEnumEntry(BehandlingType.class), lagEnumEntry(BehandlingVenteStatus.class), lagEnumEntry(FagsakStatus.class),
+        lagEnumEntry(FagsakYtelseType.class), lagEnumEntry(KøSortering.class), lagEnumEntry(OppgaveBehandlingStatus.class));
 
     KodeverkRestTjeneste() {
         // for cdi
@@ -50,6 +47,16 @@ public class KodeverkRestTjeneste {
         return Response.ok().entity(KODEVERDIER).build();
     }
 
+    @GET
+    @Path("/kriterie-filter")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Henter filter for kriterietyper", tags = "Kodeverk")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
+    public Map<AndreKriterierType, KriterieFilterDto> hentKriterieFilter() {
+        return Arrays.stream(AndreKriterierType.values())
+            .collect(toMap(k -> k, k -> new KriterieFilterDto(k,
+                k.getValgbarForBehandlingTyper(), k.getValgbarForYtelseTyper(), k.isDefaultEkskludert())));
+    }
 
     private static Map.Entry<String, List<KodeverdiMedNavnDto>> lagEnumEntry(Class<? extends Kodeverdi> kodeverkClass) {
         if (!Enum.class.isAssignableFrom(kodeverkClass)) {
@@ -63,4 +70,9 @@ public class KodeverkRestTjeneste {
     }
 
 
+    public record KriterieFilterDto(AndreKriterierType andreKriterierType,
+                                    Set<BehandlingType> valgbarForBehandlingTyper,
+                                    Set<FagsakYtelseType> valgbarForYtelseTyper,
+                                    boolean defaultEkskludert) {
+    }
 }

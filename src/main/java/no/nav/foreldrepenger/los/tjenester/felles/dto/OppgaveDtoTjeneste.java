@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import no.nav.foreldrepenger.los.reservasjon.OppgaveBehandlingStatusWrapper;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,17 +19,26 @@ import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.persontjeneste.IkkeTilgangPåPersonException;
 import no.nav.foreldrepenger.los.persontjeneste.PersonTjeneste;
+import no.nav.foreldrepenger.los.reservasjon.OppgaveBehandlingStatusWrapper;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.server.abac.TilgangFilterKlient;
+import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
+import no.nav.foreldrepenger.los.statistikk.kø.InnslagType;
+import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.vedtak.sikkerhet.kontekst.KontekstHolder;
 import no.nav.vedtak.sikkerhet.kontekst.RequestKontekst;
+import no.nav.vedtak.util.LRUCache;
 
 @ApplicationScoped
 public class OppgaveDtoTjeneste {
 
     public static final int ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER = 3;
-    public static final int ANTALL_OPPGAVER_UTVALG = 19;
+    public static final int ANTALL_OPPGAVER_UTVALG = 17;
+    private static final int MIN_FOR_RANDOMISERING = 25;
+
+    private static final LRUCache<Long, Boolean> RANDOMISER_FILTER = new LRUCache<>(250, TimeUnit.MILLISECONDS.convert(2L, TimeUnit.HOURS));
+
 
     private static final Logger LOG = LoggerFactory.getLogger(OppgaveDtoTjeneste.class);
 
@@ -39,6 +48,7 @@ public class OppgaveDtoTjeneste {
     private ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
     private TilgangFilterKlient filterKlient;
+    private StatistikkRepository statistikkRepository;
 
     @Inject
     public OppgaveDtoTjeneste(OppgaveTjeneste oppgaveTjeneste,
@@ -46,13 +56,15 @@ public class OppgaveDtoTjeneste {
                               PersonTjeneste personTjeneste,
                               ReservasjonStatusDtoTjeneste reservasjonStatusDtoTjeneste,
                               OppgaveKøTjeneste oppgaveKøTjeneste,
-                              TilgangFilterKlient filterKlient) {
+                              TilgangFilterKlient filterKlient,
+                              StatistikkRepository statistikkRepository) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.personTjeneste = personTjeneste;
         this.reservasjonStatusDtoTjeneste = reservasjonStatusDtoTjeneste;
         this.oppgaveKøTjeneste = oppgaveKøTjeneste;
         this.filterKlient = filterKlient;
+        this.statistikkRepository = statistikkRepository;
     }
 
     OppgaveDtoTjeneste() {
@@ -70,7 +82,8 @@ public class OppgaveDtoTjeneste {
 
     public List<OppgaveDto> getOppgaverTilBehandling(Long sakslisteId) {
         var nesteOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_UTVALG);
-        var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, nesteOppgaver.size() == ANTALL_OPPGAVER_UTVALG);
+        var skalRandomisere = nesteOppgaver.size() == ANTALL_OPPGAVER_UTVALG && skalRandomisere(sakslisteId);
+        var oppgaveDtos = map(nesteOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, skalRandomisere);
         //Noen oppgave filteres bort i mappingen pga at saksbehandler ikke har tilgang til behandlingen
         if (oppgaveDtos.size() == Math.min(ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, nesteOppgaver.size())) {
             return oppgaveDtos;
@@ -78,6 +91,20 @@ public class OppgaveDtoTjeneste {
         LOG.info("{} behandlinger filtrert bort for saksliste {}", nesteOppgaver.size() - oppgaveDtos.size(), sakslisteId);
         var flereOppgaver = oppgaveKøTjeneste.hentOppgaver(sakslisteId, ANTALL_OPPGAVER_UTVALG * 4);
         return map(flereOppgaver, ANTALL_OPPGAVER_SOM_VISES_TIL_SAKSBEHANDLER, false);
+    }
+
+    private boolean skalRandomisere(Long sakslisteId) {
+        var randomiser = RANDOMISER_FILTER.get(sakslisteId);
+        if (randomiser != null) {
+            return randomiser;
+        } else {
+            var antallOppgaver = statistikkRepository.hentSisteStatistikkOppgaveFilter(sakslisteId, Set.of(InnslagType.REGELMESSIG))
+                .map(StatistikkOppgaveFilter::getAntallAktive).orElse(0);
+            randomiser = antallOppgaver >= MIN_FOR_RANDOMISERING * 4 &&
+                oppgaveKøTjeneste.hentAntallSaksbehandlere(sakslisteId) >= MIN_FOR_RANDOMISERING;
+            RANDOMISER_FILTER.put(sakslisteId, randomiser);
+            return randomiser;
+        }
     }
 
     public List<OppgaveDto> getSaksbehandlersReserverteAktiveOppgaver() {

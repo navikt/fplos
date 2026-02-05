@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import static org.mockito.Mockito.mock;
 
+import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,7 +39,7 @@ class OppgaveDtoTjenesteTest {
         this.reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, reservasjonRepository, new BehandlingTjeneste(oppgaveRepository));
         this.oppgaveTjeneste = new OppgaveTjeneste(oppgaveRepository, reservasjonTjeneste);
         this.oppgaveDtoTjeneste = new OppgaveDtoTjeneste(oppgaveTjeneste, reservasjonTjeneste, personTjeneste, reservasjonStatusDtoTjeneste, mock(
-            OppgaveKøTjeneste.class), tilgangFilterklient);
+            OppgaveKøTjeneste.class), tilgangFilterklient, new StatistikkRepository(entityManager));
     }
 
     /*
