@@ -48,6 +48,7 @@ public class KodeverkRestTjeneste {
     }
 
     @GET
+    @Path("/kriterie-filter")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Henter filter for kriterietyper", tags = "Kodeverk")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
