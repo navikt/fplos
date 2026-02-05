@@ -42,10 +42,10 @@ class OrganisasjonRepositoryTest {
 
     @Test
     void skalSletteSaksbehandlereUtenKnytninger() {
-        var saksbehandlerUtenKnytning = new Saksbehandler("ikke-knyttet", UUID.randomUUID());
+        var saksbehandlerUtenKnytning = new Saksbehandler("ikke-knyttet", UUID.randomUUID(), "Navn Navnesen", "1234");
         entityManager.persist(saksbehandlerUtenKnytning);
 
-        var saksbehandlerMedKnytning = new Saksbehandler("knyttet", UUID.randomUUID());
+        var saksbehandlerMedKnytning = new Saksbehandler("knyttet", UUID.randomUUID(), "Navn2 Navnesen", "1234");
         saksbehandlerMedKnytning.leggTilAvdeling(avdelingDrammen(entityManager));
         entityManager.persist(saksbehandlerMedKnytning);
         entityManager.flush();

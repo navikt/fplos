@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.JpaExtension;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
@@ -52,8 +51,8 @@ class SaksbehandlerDtoTjenesteTest {
         var saksbehandler2Ident = "9876543";
         var saksbehandler3Ident = "1234";
 
-        var saksbehandler1 = new Saksbehandler(saksbehandler1Ident, UUID.randomUUID());
-        var saksbehandler2 = new Saksbehandler(saksbehandler2Ident, UUID.randomUUID());
+        var saksbehandler1 = new Saksbehandler(saksbehandler1Ident, UUID.randomUUID(), "Navn Navnesen", "1234");
+        var saksbehandler2 = new Saksbehandler(saksbehandler2Ident, UUID.randomUUID(), "Navn2 Navnesen", "1234");
         entityManager.persist(saksbehandler1);
         entityManager.persist(saksbehandler2);
         entityManager.flush();

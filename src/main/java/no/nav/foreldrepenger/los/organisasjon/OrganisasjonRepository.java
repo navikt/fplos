@@ -45,6 +45,10 @@ public class OrganisasjonRepository {
         return hentUniktResultat(hentSaksbehandlerQuery(saksbehandlerIdent));
     }
 
+    public List<Saksbehandler> hentAlleSaksbehandlere() {
+        return entityManager.createQuery("from saksbehandler", Saksbehandler.class).getResultList();
+    }
+
     public void refresh(Avdeling avdeling) {
         entityManager.refresh(avdeling);
     }
