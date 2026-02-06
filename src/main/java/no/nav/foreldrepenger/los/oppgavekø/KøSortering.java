@@ -14,9 +14,9 @@ public enum KøSortering implements Kodeverdi {
     FØRSTE_STØNADSDAG_SYNKENDE("FORSTONAD_SYNK", "Dato for første stønadsdag synkende"),
     BELØP("BELOP", "Feilutbetalt beløp", FeltType.HELTALL, FeltKategori.TILBAKEKREVING),
     FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", FeltType.DATO, FeltKategori.TILBAKEKREVING),
-    OPPGAVE_OPPRETTET("OPPGAVE_OPPRETTET", "Dato oppgaven ble opprettet", FeltType.DATO, FeltKategori.OPPGAVE_OPPRETTET);
+    OPPGAVE_OPPRETTET("OPPGAVE_OPPRETTET", "Dato oppgaven ble opprettet", FeltType.DATO_UTEN_FILTER, FeltKategori.OPPGAVE_OPPRETTET);
 
-    public enum FeltType { HELTALL, DATO }
+    public enum FeltType { HELTALL, DATO, DATO_UTEN_FILTER }
 
     public enum FeltKategori { UNIVERSAL, OPPGAVE_OPPRETTET, TILBAKEKREVING }
 
