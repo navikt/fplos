@@ -21,9 +21,6 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 @ApplicationScoped
 public class OppgaveKøRepository {
 
-
-
-
     private static final String SELECT_FROM_OPPGAVE = "from Oppgave o ";
     private static final String SELECT_COUNT_FROM_OPPGAVE = "SELECT count(1) from Oppgave o ";
 
@@ -39,6 +36,7 @@ public class OppgaveKøRepository {
     private static final String ORDER_BY_FØRSTE_STØNADSDAG_DESC = "ORDER BY o.førsteStønadsdag DESC NULLS LAST";
     private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingStart ASC";
     private static final String ORDER_BY_FEILUTBETALINGBELOP_DESC = "ORDER BY o.feilutbetalingBelop DESC";
+    private static final String ORDER_BY_OPPGAVE_OPPRETTET_ASC = "ORDER BY o.opprettet_tid ASC";
 
     private static final Map<KøSortering, Boolean> SORTERING_ER_DATE_FELT = Map.of(
         KøSortering.BEHANDLINGSFRIST, false,
@@ -46,7 +44,8 @@ public class OppgaveKøRepository {
         KøSortering.FØRSTE_STØNADSDAG, true,
         KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, true,
         KøSortering.FEILUTBETALINGSTART, false,
-        KøSortering.BELØP, false
+        KøSortering.BELØP, false,
+        KøSortering.OPPGAVE_OPPRETTET, false
     );
 
     private EntityManager entityManager;
@@ -163,6 +162,7 @@ public class OppgaveKøRepository {
             case FØRSTE_STØNADSDAG_SYNKENDE -> ORDER_BY_FØRSTE_STØNADSDAG_DESC;
             case BELØP -> ORDER_BY_FEILUTBETALINGBELOP_DESC;
             case FEILUTBETALINGSTART -> ORDER_BY_FEILUTBETALINGSTART_ASC;
+            case OPPGAVE_OPPRETTET -> ORDER_BY_OPPGAVE_OPPRETTET_ASC;
         };
     }
 
@@ -237,8 +237,8 @@ public class OppgaveKøRepository {
                              Map<KøSortering, Boolean> datemap, String behandlingOpprettetSQL) {
         var sortering = oppgavespørring.getSortering();
 
-        if (KøSortering.BELØP.equals(sortering)) {
-            // håndteres i beløpFilter-metoden
+        if (KøSortering.BELØP.equals(sortering) || KøSortering.OPPGAVE_OPPRETTET.equals(sortering)) {
+            // KøSortering.BELØP håndteres i beløpFilter-metoden, KøSortering.OPPRETT_BEHANDLING brukes til beslutterkøer uten filter
             return "";
         }
 
@@ -247,7 +247,7 @@ public class OppgaveKøRepository {
             case OPPRETT_BEHANDLING -> behandlingOpprettetSQL;
             case FØRSTE_STØNADSDAG, FØRSTE_STØNADSDAG_SYNKENDE -> FØRSTE_STØNADSDAG_FELT_SQL;
             case FEILUTBETALINGSTART -> FEILUTBETALINGSTART_FELT_SQL;
-            case BELØP -> throw new IllegalArgumentException("Utviklerfeil: beløpsfilter håndteres i annen metode");
+            case BELØP, OPPGAVE_OPPRETTET -> throw new IllegalArgumentException("Utviklerfeil: beløpsfilter håndteres i annen metode");
         };
 
         var gjelderKunDatoFelt = datemap.getOrDefault(sortering, Boolean.FALSE);
