@@ -86,15 +86,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     }
 
     @POST
-    @Path("/slett")
-    @Operation(description = "Fjern saksliste", tags = AVDELINGSLEDER_SAKSLISTER)
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public void slettSaksliste(@NotNull @Parameter(description = "id til sakslisten som skal slettes") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
-        avdelingslederTjeneste.slettOppgaveFiltrering(sakslisteOgAvdelingDto.getSakslisteId().getVerdi());
-    }
-
-    @POST
-    @Path("/endre-eksisterende")
+    @Path("/endre")
     @Operation(description = "Lagre sakslistens navn", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreNavn(@NotNull @Valid SakslisteLagreDto sakslisteLagre) {
@@ -103,6 +95,16 @@ public class AvdelingslederSakslisteRestTjeneste {
     }
 
     @POST
+    @Path("/slett")
+    @Operation(description = "Fjern saksliste", tags = AVDELINGSLEDER_SAKSLISTER)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public void slettSaksliste(@NotNull @Parameter(description = "id til sakslisten som skal slettes") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
+        avdelingslederTjeneste.slettOppgaveFiltrering(sakslisteOgAvdelingDto.getSakslisteId().getVerdi());
+    }
+
+
+    @Deprecated
+    @POST
     @Path("/navn")
     @Operation(description = "Lagre sakslistens navn", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
@@ -110,6 +112,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         avdelingslederTjeneste.giListeNyttNavn(sakslisteNavn.getSakslisteId(), sakslisteNavn.getNavn());
     }
 
+    @Deprecated
     @POST
     @Path("/behandlingstype")
     @Operation(description = "Lagre sakslistens behandlingstype", tags = AVDELINGSLEDER_SAKSLISTER)
@@ -120,6 +123,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteBehandlingstype.getSakslisteId());
     }
 
+    @Deprecated
     @POST
     @Path("/ytelsetyper")
     @Operation(description = "Lagre behandlingTyper", tags = AVDELINGSLEDER_SAKSLISTER)
@@ -129,7 +133,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         oppdaterStatistikkForOppgavefilterEtterEndring(dto.getSakslisteId());
     }
 
-
+    @Deprecated
     @POST
     @Path("/andre-kriterier")
     @Operation(description = "Lagre sakslistens 'Andre kriterier'", tags = AVDELINGSLEDER_SAKSLISTER)
@@ -140,6 +144,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteAndreKriterierDto.getSakslisteId());
     }
 
+    @Deprecated
     @POST
     @Path("/sortering")
     @Operation(description = "Sett sakslistens sortering", tags = AVDELINGSLEDER_SAKSLISTER)
@@ -149,6 +154,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteSortering.getSakslisteId());
     }
 
+    @Deprecated
     @POST
     @Path("/sortering-tidsintervall-dato")
     @Operation(description = "Sett sakslistens sorteringintervall ved start og slutt datoer", tags = AVDELINGSLEDER_SAKSLISTER)
@@ -159,6 +165,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteSorteringIntervallDato.getSakslisteId());
     }
 
+    @Deprecated
     @POST
     @Path("/sortering-numerisk-intervall")
     @Operation(description = "Sett sakslistens sorteringsintervall", tags = AVDELINGSLEDER_SAKSLISTER)
@@ -169,6 +176,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         oppdaterStatistikkForOppgavefilterEtterEndring(intervall.getSakslisteId());
     }
 
+    @Deprecated
     @POST
     @Path("/sortering-tidsintervall-type")
     @Operation(description = "Sett sakslistens sorteringsintervall i dager", tags = AVDELINGSLEDER_SAKSLISTER)
