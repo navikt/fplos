@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -27,6 +30,7 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Periodefilter;
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
@@ -39,7 +43,7 @@ public class OppgaveFiltrering extends BaseEntitet {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq")
     private Long id;
 
-    @Column(name = "navn", updatable = false)
+    @Column(name = "navn")
     private String navn;
 
     @Column(name = "sortering", updatable = false, nullable = false)
@@ -136,6 +140,58 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     public Long getTil() {
         return til;
+    }
+
+    public void setNavn(String navn) {
+        this.navn = navn;
+    }
+
+    public void setSortering(KøSortering sortering) {
+        this.sortering = sortering;
+    }
+
+    public void setFiltreringBehandlingTyper(Set<BehandlingType> behandlingTyper) {
+        this.filtreringBehandlingTyper.clear();
+        behandlingTyper.stream()
+            .map(type -> new FiltreringBehandlingType(this, type))
+            .forEach(f -> this.filtreringBehandlingTyper.add(f));
+    }
+
+    public void setFiltreringYtelseTyper(Set<FagsakYtelseType> fagsakYtelseTyper) {
+        this.filtreringYtelseTyper.clear();
+        fagsakYtelseTyper.stream()
+            .map(type -> new FiltreringYtelseType(this, type))
+            .forEach(f -> this.filtreringYtelseTyper.add(f));
+    }
+
+    public void setAndreKriterierTyper(Set<AndreKriterierType> inkluder, Set<AndreKriterierType> ekskluder) {
+        this.andreKriterierTyper.clear();
+        inkluder.stream()
+            .map(type -> new FiltreringAndreKriterierType(this, type, true))
+            .forEach(a -> this.andreKriterierTyper.add(a));
+        ekskluder.stream()
+            .map(type -> new FiltreringAndreKriterierType(this, type, false))
+            .forEach(a -> this.andreKriterierTyper.add(a));
+    }
+
+    public void setPeriodefilter(Periodefilter periodefilter) {
+        this.periodefilter = periodefilter;
+    }
+
+    public void setFomDato(LocalDate fomDato) {
+        this.fomDato = fomDato;
+    }
+
+    public void setTomDato(LocalDate tomDato) {
+        this.tomDato = tomDato;
+    }
+
+    public void setFra(Long fra) {
+        this.fra = fra;
+    }
+
+    public void setTil(Long til) {
+        this.til = til;
     }
 
     public static OppgaveFiltrering nyTomOppgaveFiltrering(Avdeling avdeling) {
@@ -237,5 +293,4 @@ public class OppgaveFiltrering extends BaseEntitet {
         }
 
     }
-
 }

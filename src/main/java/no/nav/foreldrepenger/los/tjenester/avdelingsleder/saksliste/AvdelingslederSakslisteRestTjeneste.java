@@ -29,6 +29,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.Nøkkeltal
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteAndreKriterierDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteBehandlingstypeDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteFagsakYtelseTyperDto;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteNavnDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteOgAvdelingDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteSaksbehandlerDto;
@@ -93,6 +94,15 @@ public class AvdelingslederSakslisteRestTjeneste {
     }
 
     @POST
+    @Path("/endre-eksisterende")
+    @Operation(description = "Lagre sakslistens navn", tags = AVDELINGSLEDER_SAKSLISTER)
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public void lagreNavn(@NotNull @Valid SakslisteLagreDto sakslisteLagre) {
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(sakslisteLagre);
+        oppdaterStatistikkForOppgavefilterEtterEndring(sakslisteLagre.sakslisteId());
+    }
+
+    @POST
     @Path("/navn")
     @Operation(description = "Lagre sakslistens navn", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
@@ -112,7 +122,7 @@ public class AvdelingslederSakslisteRestTjeneste {
 
     @POST
     @Path("/ytelsetyper")
-    @Operation(description = "Lagre behandlingstyper", tags = AVDELINGSLEDER_SAKSLISTER)
+    @Operation(description = "Lagre behandlingTyper", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void lagreFagsakYtelseTyper(@NotNull @Parameter(description = "Ytelsestyper") @Valid SakslisteFagsakYtelseTyperDto dto) {
         avdelingslederTjeneste.endreFagsakYtelseType(dto.getSakslisteId(), dto.getFagsakYtelseType(), dto.isChecked());
