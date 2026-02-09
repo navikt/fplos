@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,6 +144,21 @@ public class AvdelingslederTjeneste {
     private OppgaveFiltrering hentFiltrering(Long oppgavefiltreringId) {
         return oppgaveRepository.hentOppgaveFilterSett(oppgavefiltreringId)
             .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(oppgavefiltreringId));
+    }
+
+    public void endreEksistrendeOppgaveFilter(SakslisteLagreDto sakslisteLagre) {
+        var oppgavefilter = oppgaveRepository.hentOppgaveFilterSett(sakslisteLagre.sakslisteId()).orElseThrow();
+        oppgavefilter.setNavn(sakslisteLagre.navn());
+        oppgavefilter.setSortering(sakslisteLagre.sortering().sorteringType());
+        oppgavefilter.setFomDato(sakslisteLagre.sortering().fomDato());
+        oppgavefilter.setTomDato(sakslisteLagre.sortering().tomDato());
+        oppgavefilter.setFra(sakslisteLagre.sortering().fra());
+        oppgavefilter.setTil(sakslisteLagre.sortering().til());
+        oppgavefilter.setPeriodefilter(sakslisteLagre.sortering().periodefilter());
+        oppgavefilter.setFiltreringBehandlingTyper(sakslisteLagre.behandlingTyper());
+        oppgavefilter.setFiltreringYtelseTyper(sakslisteLagre.fagsakYtelseTyper());
+        oppgavefilter.setAndreKriterierTyper(sakslisteLagre.andreKriterie().inkluder(), sakslisteLagre.andreKriterie().ekskluder());
+        oppgaveRepository.lagre(oppgavefilter);
     }
 
 }
