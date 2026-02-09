@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -30,7 +27,6 @@ import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Periodefilter;
-import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
@@ -46,7 +42,7 @@ public class OppgaveFiltrering extends BaseEntitet {
     @Column(name = "navn")
     private String navn;
 
-    @Column(name = "sortering", updatable = false, nullable = false)
+    @Column(name = "sortering", nullable = false)
     @Enumerated(EnumType.STRING)
     private KøSortering sortering;
 
