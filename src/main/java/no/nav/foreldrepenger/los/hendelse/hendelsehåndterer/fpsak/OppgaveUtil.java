@@ -1,39 +1,13 @@
 package no.nav.foreldrepenger.los.hendelse.hendelsehåndterer.fpsak;
 
-import java.util.Optional;
-
-import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
-import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
-import no.nav.foreldrepenger.los.domene.typer.aktør.AktørId;
-import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.vedtak.hendelser.behandling.Behandlingstype;
 import no.nav.vedtak.hendelser.behandling.Ytelse;
-import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 public class OppgaveUtil {
 
     private OppgaveUtil() {
-    }
-
-    public static Oppgave oppgave(BehandlingId behandlingId, LosBehandlingDto behandlingFpsak) {
-        return Oppgave.builder()
-            .medSystem(Fagsystem.FPSAK)
-            .medSaksnummer(new Saksnummer(behandlingFpsak.saksnummer()))
-            .medAktørId(new AktørId(behandlingFpsak.aktørId().getAktørId()))
-            .medBehandlendeEnhet(behandlingFpsak.behandlendeEnhetId())
-            .medBehandlingType(mapBehandlingstype(behandlingFpsak.behandlingstype()))
-            .medFagsakYtelseType(mapYtelse(behandlingFpsak.ytelse()))
-            .medAktiv(true)
-            .medBehandlingOpprettet(behandlingFpsak.opprettetTidspunkt())
-            .medUtfortFraAdmin(false)
-            .medBehandlingId(behandlingId)
-            .medFørsteStønadsdag(
-                Optional.ofNullable(behandlingFpsak.foreldrepengerDto()).map(LosBehandlingDto.LosForeldrepengerDto::førsteUttakDato).orElse(null))
-            .medBehandlingsfrist(behandlingFpsak.behandlingsfrist() != null ? behandlingFpsak.behandlingsfrist().atStartOfDay() : null)
-            .build();
     }
 
     public static BehandlingType mapBehandlingstype(Behandlingstype behandlingstype) {

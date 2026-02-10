@@ -40,7 +40,7 @@ class OppgaveGrunnlagUtleder {
         return new OppgaveGrunnlag(dto.behandlingUuid(), new Saksnummer(dto.saksnummer()), map(dto.ytelse()), new AktørId(dto.aktørId().getAktørId()),
             mapBehandlingType(dto), dto.opprettetTidspunkt(), dto.behandlendeEnhetId(), dto.behandlingsfrist(), dto.ansvarligSaksbehandlerIdent(),
             aksjonspunkter, behandlingsårsaker, dto.faresignaler(), dto.refusjonskrav(), saksegenskaper,
-            dto.foreldrepengerDto() == null ? null : dto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper, mapStatus(dto));
+            dto.foreldrepengerDto() == null ? null : dto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper, mapStatus(dto), null, null);
     }
 
     private static BehandlingType mapBehandlingType(LosBehandlingDto dto) {
@@ -128,7 +128,7 @@ class OppgaveGrunnlagUtleder {
             behandlingsårsaker, behandlingDto.faresignaler(), behandlingDto.refusjonskrav(),
             mapFagsakEgenskaper(losFagsakEgenskaperDto.saksegenskaper()),
             behandlingDto.foreldrepengerDto() == null ? null : behandlingDto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper,
-            mapStatus(behandlingDto));
+            mapStatus(behandlingDto), behandlingDto.tilbakeDto().førsteFeilutbetalingDato().atStartOfDay(), behandlingDto.tilbakeDto().feilutbetaltBeløp());
     }
 
     private static OppgaveGrunnlag.AksjonspunktType mapFraFpTilbake(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {

@@ -367,7 +367,7 @@ class KriterieUtlederTest {
         var oppgaveGrunnlag = new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(),
             BehandlingType.FØRSTEGANGSSØKNAD, LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), "Z999999",
             List.of(aksjonspunkt1, aksjonspunkt2), List.of(), false, false, List.of(Saksegenskap.DØD), LocalDate.now().plusMonths(1),
-            List.of(), BehandlingStatus.OPPRETTET);
+            List.of(), BehandlingStatus.OPPRETTET,  null, null);
 
         var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, Set.of());
 
@@ -388,26 +388,26 @@ class KriterieUtlederTest {
     private OppgaveGrunnlag lagOppgaveGrunnlagMedAksjonspunkt(Aksjonspunkt aksjonspunkt) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(aksjonspunkt), List.of(), false, false, List.of(),
-            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedAksjonspunktOgSaksegenskap(Aksjonspunkt aksjonspunkt,
                                                                             Saksegenskap saksegenskap) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(aksjonspunkt), List.of(), false, false, List.of(saksegenskap),
-            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedSaksegenskap(Saksegenskap saksegenskap) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(), List.of(), false, false, List.of(saksegenskap),
-            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedBehandlingsegenskap(Behandlingsegenskap behandlingsegenskap) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(), List.of(), false, false, List.of(),
-            LocalDate.now().plusMonths(1), List.of(behandlingsegenskap), BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(behandlingsegenskap), BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedTilbakebetaling(BehandlingType behandlingType,
@@ -415,32 +415,32 @@ class KriterieUtlederTest {
                                                                  boolean refusjonskrav) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), behandlingType,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(), List.of(), false, refusjonskrav, List.of(),
-            LocalDate.now().plusMonths(1), behandlingsegenskaper, BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), behandlingsegenskaper, BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedRefusjonskrav(boolean refusjonskrav) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(), List.of(), false, refusjonskrav, List.of(),
-            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedRefusjonskravOgBehandlingsegenskap(boolean refusjonskrav,
                                                                                     Behandlingsegenskap behandlingsegenskap) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(), List.of(), false, refusjonskrav, List.of(),
-            LocalDate.now().plusMonths(1), List.of(behandlingsegenskap), BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(behandlingsegenskap), BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedFaresignaler(boolean faresignaler) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(), List.of(), faresignaler, false, List.of(),
-            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedBehandlingsårsak(Behandlingsårsak behandlingsårsak) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), ENHET_ID, LocalDate.now().plusDays(10), null, List.of(), List.of(behandlingsårsak), false, false, List.of(),
-            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(), BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private OppgaveGrunnlag lagOppgaveGrunnlagMedBehandlingstype(FagsakYtelseType ytelse,
@@ -448,7 +448,7 @@ class KriterieUtlederTest {
                                                                  List<Behandlingsårsak> behandlingsårsaker) {
         return new OppgaveGrunnlag(UUID.randomUUID(), SAKSNUMMER, ytelse, AktørId.dummy(), behandlingType, LocalDateTime.now(), ENHET_ID,
             LocalDate.now().plusDays(10), null, List.of(), behandlingsårsaker, false, false, List.of(), LocalDate.now().plusMonths(1), List.of(),
-            BehandlingStatus.OPPRETTET);
+            BehandlingStatus.OPPRETTET,  null, null);
     }
 }
 
