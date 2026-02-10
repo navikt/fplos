@@ -58,11 +58,8 @@ public class BehandlingKøRepository {
             .append(OppgaveKøRepository.filtrerBehandlingType(oppgavespørring, parameters))
             .append(OppgaveKøRepository.filtrerYtelseType(oppgavespørring, parameters))
             .append(andreKriterierSubquery(oppgavespørring, parameters))
-            .append(OppgaveKøRepository.beløpFilter(oppgavespørring, parameters));
-
-        if (!oppgavespørring.getSortering().getFeltkategori().equals(KøSortering.FeltKategori.OPPGAVE_OPPRETTET)) {
-            qlStringBuilder.append(OppgaveKøRepository.datoFilter(oppgavespørring, parameters, SORTERING_ER_DATE_FELT, BEHANDLINGOPPRETTET_FELT_SQL));
-        }
+            .append(OppgaveKøRepository.beløpFilter(oppgavespørring, parameters))
+            .append(OppgaveKøRepository.datoFilter(oppgavespørring, parameters, SORTERING_ER_DATE_FELT, BEHANDLINGOPPRETTET_FELT_SQL));
 
         var query = entityManager.createQuery(qlStringBuilder.toString(), Long.class);
         parameters.forEach(query::setParameter);
