@@ -223,14 +223,14 @@ class ReservasjonUtlederTest {
         var uuid = UUID.randomUUID();
         return new OppgaveGrunnlag(uuid, new Saksnummer("123456"), FagsakYtelseType.FORELDREPENGER, AktørId.dummy(), BehandlingType.FØRSTEGANGSSØKNAD,
             LocalDateTime.now(), enhet, LocalDate.now().plusDays(10), ansvarligSaksbehandler, List.of(), List.of(), false, false, List.of(),
-            LocalDate.now().plusMonths(1), List.of(), OppgaveGrunnlag.BehandlingStatus.OPPRETTET);
+            LocalDate.now().plusMonths(1), List.of(), OppgaveGrunnlag.BehandlingStatus.OPPRETTET, null, null);
     }
 
     private static OppgaveGrunnlag lagOppgaveGrunnlagMedManuellRevurdering(String ansvarligSaksbehandler) {
         return new OppgaveGrunnlag(UUID.randomUUID(), new Saksnummer("123456"), FagsakYtelseType.FORELDREPENGER, AktørId.dummy(),
             BehandlingType.REVURDERING, LocalDateTime.now(), ENHET, LocalDate.now().plusDays(10), ansvarligSaksbehandler, List.of(),
             List.of(OppgaveGrunnlag.Behandlingsårsak.MANUELL), false, false, List.of(), LocalDate.now().plusMonths(1), List.of(),
-            OppgaveGrunnlag.BehandlingStatus.OPPRETTET);
+            OppgaveGrunnlag.BehandlingStatus.OPPRETTET,  null, null);
     }
 
     private static Behandling lagBehandling(BehandlingTilstand tilstand) {

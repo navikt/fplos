@@ -80,7 +80,7 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "OPPGAVE_AVSLUTTET")
     protected LocalDateTime oppgaveAvsluttet;
 
-    @Convert(converter = BooleanToStringConverter.class)
+    @Convert(converter = BooleanToStringConverter.class) //TODO trenger ikke denne
     @Column(name = "UTFORT_FRA_ADMIN")
     protected Boolean utfortFraAdmin = Boolean.FALSE;
 
@@ -260,8 +260,8 @@ public class Oppgave extends BaseEntitet {
             return this;
         }
 
-        public Builder medFeilutbetalingBelop(BigDecimal feilutbetalingBelop) {
-            tempOppgave.feilutbetalingBelop = feilutbetalingBelop;
+        public Builder medFeilutbetalingBeløp(BigDecimal feilutbetalingBeløp) {
+            tempOppgave.feilutbetalingBelop = feilutbetalingBeløp;
             return this;
         }
 

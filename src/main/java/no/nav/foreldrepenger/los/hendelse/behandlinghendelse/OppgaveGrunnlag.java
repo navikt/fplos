@@ -1,5 +1,6 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,11 +12,25 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.vedtak.hendelser.behandling.Aksjonspunktstatus;
 
-record OppgaveGrunnlag(UUID behandlingUuid, Saksnummer saksnummer, FagsakYtelseType ytelse, AktørId aktørId, BehandlingType behandlingstype,
-                       LocalDateTime opprettetTidspunkt, String behandlendeEnhetId, LocalDate behandlingsfrist, String ansvarligSaksbehandlerIdent,
-                       List<Aksjonspunkt> aksjonspunkt, List<Behandlingsårsak> behandlingsårsaker, boolean faresignaler, boolean refusjonskrav,
-                       List<Saksegenskap> saksegenskaper, LocalDate førsteUttaksdatoForeldrepenger, //null hvis ES og SVP
-                       List<Behandlingsegenskap> behandlingsegenskaper, BehandlingStatus behandlingStatus) {
+record OppgaveGrunnlag(UUID behandlingUuid,
+                       Saksnummer saksnummer,
+                       FagsakYtelseType ytelse,
+                       AktørId aktørId,
+                       BehandlingType behandlingstype,
+                       LocalDateTime opprettetTidspunkt,
+                       String behandlendeEnhetId,
+                       LocalDate behandlingsfrist,
+                       String ansvarligSaksbehandlerIdent,
+                       List<Aksjonspunkt> aksjonspunkt,
+                       List<Behandlingsårsak> behandlingsårsaker,
+                       boolean faresignaler,
+                       boolean refusjonskrav,
+                       List<Saksegenskap> saksegenskaper,
+                       LocalDate førsteUttaksdatoForeldrepenger, //null hvis ES og SVP
+                       List<Behandlingsegenskap> behandlingsegenskaper,
+                       BehandlingStatus behandlingStatus,
+                       LocalDateTime feilutbetalingStart,
+                       BigDecimal feilutbetalingBeløp) {
 
     enum Saksegenskap {
         EØS_BOSATT_NORGE,

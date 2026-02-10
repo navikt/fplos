@@ -315,11 +315,11 @@ class OppgaveRepositoryTest {
         var oppgave1 = tilbakekrevingOppgaveBuilder()
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(2L))
             .medBehandlingId(behandlingId1)
-            .medFeilutbetalingBelop(BigDecimal.valueOf(100L))
+            .medFeilutbetalingBeløp(BigDecimal.valueOf(100L))
             .build();
         var oppgave2 = tilbakekrevingOppgaveBuilder().medBehandlingId(behandlingId2)
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(1L))
-            .medFeilutbetalingBelop(BigDecimal.valueOf(200L))
+            .medFeilutbetalingBeløp(BigDecimal.valueOf(200L))
             .build();
         oppgaveRepository.lagre(oppgave1);
         oppgaveRepository.lagre(oppgave2);
@@ -343,12 +343,12 @@ class OppgaveRepositoryTest {
         // fanger opp disse (fom/tom på feltet vil ekskludere bla).
         var oppgaveUtenStartDato = tilbakekrevingOppgaveBuilder().medBehandlingOpprettet(LocalDateTime.now().minusDays(2L))
             .medBehandlingId(behandlingId1)
-            .medFeilutbetalingBelop(BigDecimal.valueOf(0L))
+            .medFeilutbetalingBeløp(BigDecimal.valueOf(0L))
             .medFeilutbetalingStart(null)
             .build();
         var oppgaveMedStartDato = tilbakekrevingOppgaveBuilder().medBehandlingId(behandlingId2)
             .medBehandlingOpprettet(LocalDateTime.now().minusDays(1L))
-            .medFeilutbetalingBelop(BigDecimal.valueOf(10L))
+            .medFeilutbetalingBeløp(BigDecimal.valueOf(10L))
             .medFeilutbetalingStart(LocalDateTime.now())
             .build();
         oppgaveRepository.lagre(oppgaveUtenStartDato);
