@@ -122,13 +122,14 @@ class OppgaveGrunnlagUtleder {
             case "OVER_FIRE_RETTSGEBYR" -> OppgaveGrunnlag.Behandlingsegenskap.TILBAKEKREVING_OVER_FIRE_RETTSGEBYR;
             default -> throw new IllegalStateException("Unexpected value: " + egenskap);
         }).toList();
+        var førsteFeilutbetalingDato = behandlingDto.tilbakeDto().førsteFeilutbetalingDato();
         return new OppgaveGrunnlag(behandlingDto.behandlingUuid(), new Saksnummer(behandlingDto.saksnummer()), map(behandlingDto.ytelse()),
             new AktørId(behandlingDto.aktørId().getAktørId()), mapBehandlingType(behandlingDto), behandlingDto.opprettetTidspunkt(),
             behandlingDto.behandlendeEnhetId(), behandlingDto.behandlingsfrist(), behandlingDto.ansvarligSaksbehandlerIdent(), aksjonspunkter,
             behandlingsårsaker, behandlingDto.faresignaler(), behandlingDto.refusjonskrav(),
             mapFagsakEgenskaper(losFagsakEgenskaperDto.saksegenskaper()),
             behandlingDto.foreldrepengerDto() == null ? null : behandlingDto.foreldrepengerDto().førsteUttakDato(), behandlingsegenskaper,
-            mapStatus(behandlingDto), behandlingDto.tilbakeDto().førsteFeilutbetalingDato().atStartOfDay(), behandlingDto.tilbakeDto().feilutbetaltBeløp());
+            mapStatus(behandlingDto), førsteFeilutbetalingDato == null ? null : førsteFeilutbetalingDato.atStartOfDay(), behandlingDto.tilbakeDto().feilutbetaltBeløp());
     }
 
     private static OppgaveGrunnlag.AksjonspunktType mapFraFpTilbake(LosBehandlingDto.LosAksjonspunktDto aksjonspunktDto) {
