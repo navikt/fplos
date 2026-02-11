@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.oppgavekø;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -191,7 +192,15 @@ public class OppgaveFiltrering extends BaseEntitet {
     }
 
     public static OppgaveFiltrering nyTomOppgaveFiltrering(Avdeling avdeling) {
-        return new Builder().medAvdeling(avdeling).medNavn("Ny liste").medSortering(KøSortering.BEHANDLINGSFRIST).build();
+        var nyListe = new Builder().medAvdeling(avdeling)
+            .medNavn("Ny liste")
+            .medSortering(KøSortering.BEHANDLINGSFRIST)
+            .build();
+        EnumSet.allOf(AndreKriterierType.class)
+            .stream()
+            .filter(AndreKriterierType::isDefaultEkskludert)
+            .forEach(kriterieType -> nyListe.leggTilFilter(new FiltreringAndreKriterierType(nyListe, kriterieType, false)));
+        return nyListe;
     }
 
     public List<Saksbehandler> getSaksbehandlere() {

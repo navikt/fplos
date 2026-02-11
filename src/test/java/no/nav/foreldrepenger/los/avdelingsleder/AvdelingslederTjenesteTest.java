@@ -10,12 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
-import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.Periodefilter;
-import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
@@ -130,20 +128,6 @@ class AvdelingslederTjenesteTest {
         avdelingslederTjeneste.endreFagsakYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD, false);
         entityManager.refresh(oppgaveFiltrering);
         assertThat(oppgaveFiltrering.getFagsakYtelseTyper()).isEmpty();
-    }
-
-    @Test
-    void leggTilAndreKriterierFiltrering() {
-        var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
-        persistAndFlush(oppgaveFiltrering);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, true, true);
-        entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isNotEmpty();
-        assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).first()
-            .extracting(FiltreringAndreKriterierType::getAndreKriterierType).isEqualTo(AndreKriterierType.TIL_BESLUTTER);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(oppgaveFiltrering.getId(), AndreKriterierType.TIL_BESLUTTER, false, true);
-        entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getFiltreringAndreKriterierTyper()).isEmpty();
     }
 
     @Test

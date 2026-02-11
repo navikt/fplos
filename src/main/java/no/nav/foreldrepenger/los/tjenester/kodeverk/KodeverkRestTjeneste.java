@@ -55,7 +55,7 @@ public class KodeverkRestTjeneste {
     public Map<AndreKriterierType, KriterieFilterDto> hentKriterieFilter() {
         return Arrays.stream(AndreKriterierType.values())
             .collect(toMap(k -> k, k -> new KriterieFilterDto(k,
-                k.getValgbarForBehandlingTyper(), k.getValgbarForYtelseTyper(), k.isDefaultEkskludert())));
+                k.getValgbarForBehandlingTyper(), k.getValgbarForYtelseTyper())));
     }
 
     private static Map.Entry<String, List<KodeverdiMedNavnDto>> lagEnumEntry(Class<? extends Kodeverdi> kodeverkClass) {
@@ -72,7 +72,6 @@ public class KodeverkRestTjeneste {
 
     public record KriterieFilterDto(AndreKriterierType andreKriterierType,
                                     Set<BehandlingType> valgbarForBehandlingTyper,
-                                    Set<FagsakYtelseType> valgbarForYtelseTyper,
-                                    boolean defaultEkskludert) {
+                                    Set<FagsakYtelseType> valgbarForYtelseTyper) {
     }
 }
