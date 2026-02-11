@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.oppgave;
 import static java.util.function.Predicate.not;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ public class Oppgavespørring {
     private final Long filtrerFra;
     private final Long filtrerTil;
     private final Filtreringstype filtreringstype;
+    private final LocalDateTime opprettetEtter;
+    private final LocalDateTime avsluttetEtter;
     private Long maxAntallOppgaver;
 
     public Oppgavespørring(OppgaveFiltrering oppgaveFiltrering, Filtreringstype filtreringstype) {
@@ -38,9 +41,7 @@ public class Oppgavespørring {
             oppgaveFiltrering.getTomDato(),
             oppgaveFiltrering.getFra(),
             oppgaveFiltrering.getTil(),
-            filtreringstype
-        );
-
+            filtreringstype, null, null);
     }
 
     public Oppgavespørring(String enhetsnummer,
@@ -54,7 +55,9 @@ public class Oppgavespørring {
                            LocalDate filtrerTomDato,
                            Long filtrerFra,
                            Long filtrerTil,
-                           Filtreringstype filtreringstype) {
+                           Filtreringstype filtreringstype,
+                           LocalDateTime opprettetEtter,
+                           LocalDateTime avsluttetEtter) {
         this.sortering = sortering;
         this.enhetsnummer = enhetsnummer;
         this.behandlingTyper = behandlingTyper;
@@ -67,6 +70,8 @@ public class Oppgavespørring {
         this.filtrerFra = filtrerFra;
         this.filtrerTil = filtrerTil;
         this.filtreringstype = filtreringstype;
+        this.opprettetEtter = opprettetEtter;
+        this.avsluttetEtter = avsluttetEtter;
     }
 
     public void setMaksAntall(int maksAntall) {
@@ -125,7 +130,15 @@ public class Oppgavespørring {
         return Optional.ofNullable(maxAntallOppgaver);
     }
 
-    private static List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
+    public Optional<LocalDateTime> getOpprettetEtter() {
+        return Optional.ofNullable(opprettetEtter);
+    }
+
+    public Optional<LocalDateTime> getAvsluttetEtter() {
+        return Optional.ofNullable(avsluttetEtter);
+    }
+
+    public static List<AndreKriterierType> ekskluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
             .stream()
             .filter(not(FiltreringAndreKriterierType::isInkluder))
@@ -133,12 +146,16 @@ public class Oppgavespørring {
             .toList();
     }
 
-    private static List<AndreKriterierType> inkluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
+    public static List<AndreKriterierType> inkluderAndreKriterierTyperFra(OppgaveFiltrering oppgaveFiltrering) {
         return oppgaveFiltrering.getFiltreringAndreKriterierTyper()
             .stream()
             .filter(FiltreringAndreKriterierType::isInkluder)
             .map(FiltreringAndreKriterierType::getAndreKriterierType)
             .toList();
+    }
+
+    public boolean skalBareTelleAktive() {
+        return getOpprettetEtter().isEmpty() && getAvsluttetEtter().isEmpty();
     }
 
     @Override
