@@ -20,7 +20,6 @@
     <entity class="no.nav.foreldrepenger.los.oppgave.BehandlingEgenskap"/>
     <entity class="no.nav.foreldrepenger.los.reservasjon.Reservasjon"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering"/>
-    <entity class="no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringBehandlingType"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringYtelseType"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType"/>

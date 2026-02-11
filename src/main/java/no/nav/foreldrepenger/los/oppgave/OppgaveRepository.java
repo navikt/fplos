@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.oppgave;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
@@ -22,7 +21,6 @@ import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltreringOppdaterer;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 @ApplicationScoped
@@ -77,11 +75,6 @@ public class OppgaveRepository {
         return oppgaveFiltrering.getId();
     }
 
-    public void oppdaterNavn(Long sakslisteId, String navn) {
-        entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, sakslisteId).endreNavn(navn));
-        entityManager.flush();
-    }
-
     public void slettListe(Long listeId) {
         var filtersett = entityManager.find(OppgaveFiltrering.class, listeId);
         entityManager.remove(filtersett);
@@ -103,47 +96,6 @@ public class OppgaveRepository {
             .setParameter("oppgaveId", oppgaveIder)
             .getSingleResult();
         return oppgaveIder.size() == fortsattTilgjengelige.intValue();
-    }
-
-    public void settSortering(Long sakslisteId, String sortering) {
-        entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, sakslisteId)
-            .endreSortering(sortering)
-            .endrePeriodefilter(Periodefilter.FAST_PERIODE)
-            .endreFomDato(null)
-            .endreTomDato(null)
-            .endreFraVerdi(null)
-            .endreTilVerdi(null));
-        entityManager.flush();
-    }
-
-    public void settSorteringTidsintervallDato(Long oppgaveFiltreringId, LocalDate fomDato, LocalDate tomDato) {
-        entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-            .endrePeriodefilter(Periodefilter.FAST_PERIODE)
-            .endreFraVerdi(null)
-            .endreTilVerdi(null)
-            .endreFomDato(fomDato)
-            .endreTomDato(tomDato));
-        entityManager.flush();
-    }
-
-    public void settSorteringNumeriskIntervall(Long oppgaveFiltreringId, Long fra, Long til, Periodefilter periodefilter) {
-        entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-            .endrePeriodefilter(periodefilter)
-            .endreFomDato(null)
-            .endreTomDato(null)
-            .endreFraVerdi(fra)
-            .endreTilVerdi(til));
-        entityManager.flush();
-    }
-
-    public void settSorteringTidsintervallValg(Long oppgaveFiltreringId, Periodefilter periodefilter) {
-        entityManager.persist(entityManager.find(OppgaveFiltreringOppdaterer.class, oppgaveFiltreringId)
-            .endrePeriodefilter(periodefilter)
-            .endreFomDato(null)
-            .endreTomDato(null)
-            .endreFraVerdi(null)
-            .endreTilVerdi(null));
-        entityManager.flush();
     }
 
     public Oppgave hentOppgave(Long oppgaveId) {

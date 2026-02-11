@@ -2,6 +2,8 @@ package no.nav.foreldrepenger.los.avdelingsleder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Set;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,14 +12,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.DBTestUtil;
 import no.nav.foreldrepenger.los.JpaExtension;
+import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
 import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.Periodefilter;
+import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
 
 @ExtendWith(JpaExtension.class)
 class AvdelingslederTjenesteTest {
@@ -52,19 +57,13 @@ class AvdelingslederTjenesteTest {
                          .orElseThrow();
     }
 
-    @Test
-    void testSettNyttNavnPåListe() {
-        var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
-        persistAndFlush(oppgaveFiltrering);
-        var NYTT_NAVN = "Nytt navn";
-        avdelingslederTjeneste.giListeNyttNavn(oppgaveFiltrering.getId(), NYTT_NAVN);
-        entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getNavn()).isEqualTo(NYTT_NAVN);
-    }
 
     @Test
     void testSlettListe() throws IllegalArgumentException {
-        var liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
+        var liste = new OppgaveFiltrering();
+        liste.setNavn("Test");
+        liste.setAvdeling(avdelingDrammen());
+        liste.setSortering(KøSortering.BEHANDLINGSFRIST);
         persistAndFlush(liste);
         avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
         entityManager.flush();
@@ -72,62 +71,45 @@ class AvdelingslederTjenesteTest {
     }
 
     @Test
-    void testSettSorteringPåListe() {
-        var liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
+    void test_samlet() {
+        var liste = new OppgaveFiltrering();
+        liste.setNavn("Test");
+        liste.setAvdeling(avdelingDrammen());
+        liste.setSortering(KøSortering.BEHANDLINGSFRIST);
         persistAndFlush(liste);
-        avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.FØRSTE_STØNADSDAG);
-        entityManager.refresh(liste);
-        assertThat(liste.getSortering()).isEqualTo(KøSortering.FØRSTE_STØNADSDAG);
-    }
 
-    @Test
-    void settStandardSorteringNårTilbakebetalingfilterIkkeAktivt() {
-        var liste = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
-        liste.leggTilFilter(BehandlingType.TILBAKEBETALING);
-        persistAndFlush(liste);
-        avdelingslederTjeneste.settSortering(liste.getId(), KøSortering.BELØP);
-        avdelingslederTjeneste.settSorteringNumeriskIntervall(liste.getId(), 100L, 200L, Periodefilter.RELATIV_PERIODE_DAGER);
-        entityManager.refresh(liste);
-        assertThat(liste)
-            .matches(d -> d.getFra().equals(100L))
-            .matches(d -> d.getTil().equals(200L))
-            .matches(d -> d.getPeriodefilter() == Periodefilter.RELATIV_PERIODE_DAGER)
-            .matches(d -> d.getSortering() == KøSortering.BELØP);
 
-        // sett standard sortering når det ikke lenger er filter på behandlingtype tilbakebetaling
-        avdelingslederTjeneste.endreFiltreringBehandlingType(liste.getId(), BehandlingType.TILBAKEBETALING, false);
-        entityManager.refresh(liste);
-        assertThat(liste)
-            .matches(d -> d.getFra() == null)
-            .matches(d -> d.getTil() == null)
-            .matches(d -> d.getPeriodefilter() == Periodefilter.FAST_PERIODE)
-            .matches(d -> d.getSortering() == KøSortering.BEHANDLINGSFRIST);
-    }
+        // Act
+        var saksliste = new SakslisteLagreDto(
+            liste.getAvdeling().getAvdelingEnhet(),
+            liste.getId(),
+            liste.getNavn(),
+            new SakslisteLagreDto.SorteringDto(KøSortering.BELØP, Periodefilter.FAST_PERIODE, 100L, 200L, null, null),
+            Set.of(BehandlingType.TILBAKEBETALING),
+            Set.of(FagsakYtelseType.ENGANGSTØNAD, FagsakYtelseType.FORELDREPENGER),
+            new SakslisteLagreDto.AndreKriterieDto(Set.of(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD), Set.of(AndreKriterierType.TERMINBEKREFTELSE))
+        );
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(saksliste);
 
-    @Test
-    void leggTilBehandlingtypeFiltrering() {
-        var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
-        persistAndFlush(oppgaveFiltrering);
-        avdelingslederTjeneste.endreFiltreringBehandlingType(oppgaveFiltrering.getId(), BehandlingType.FØRSTEGANGSSØKNAD, true);
-        entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getFiltreringBehandlingTyper()).isNotEmpty();
-        assertThat(oppgaveFiltrering.getFiltreringBehandlingTyper().get(0).getBehandlingType()).isEqualTo(BehandlingType.FØRSTEGANGSSØKNAD);
-        avdelingslederTjeneste.endreFiltreringBehandlingType(oppgaveFiltrering.getId(), BehandlingType.FØRSTEGANGSSØKNAD, false);
-        entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getFiltreringBehandlingTyper()).isEmpty();
-    }
-
-    @Test
-    void leggTilYtelsetypeFiltrering() {
-        var oppgaveFiltrering = OppgaveFiltrering.nyTomOppgaveFiltrering(avdelingDrammen());
-        persistAndFlush(oppgaveFiltrering);
-        avdelingslederTjeneste.endreFagsakYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD, true);
-        entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getFagsakYtelseTyper()).isNotEmpty();
-        assertThat(oppgaveFiltrering.getFagsakYtelseTyper()).first().isEqualTo(FagsakYtelseType.ENGANGSTØNAD);
-        avdelingslederTjeneste.endreFagsakYtelseType(oppgaveFiltrering.getId(), FagsakYtelseType.ENGANGSTØNAD, false);
-        entityManager.refresh(oppgaveFiltrering);
-        assertThat(oppgaveFiltrering.getFagsakYtelseTyper()).isEmpty();
+        // Assert
+        var oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(saksliste.sakslisteId());
+        assertThat(oppgaveFiltrering).isPresent();
+        assertThat(oppgaveFiltrering.get().getNavn()).isEqualTo(saksliste.navn());
+        assertThat(oppgaveFiltrering.get().getSortering()).isEqualTo(saksliste.sortering().sorteringType());
+        assertThat(oppgaveFiltrering.get().getPeriodefilter()).isEqualTo(saksliste.sortering().periodefilter());
+        assertThat(oppgaveFiltrering.get().getFra()).isEqualTo(saksliste.sortering().fra());
+        assertThat(oppgaveFiltrering.get().getTil()).isEqualTo(saksliste.sortering().til());
+        assertThat(oppgaveFiltrering.get().getBehandlingTyper()).containsExactlyInAnyOrderElementsOf(saksliste.behandlingTyper());
+        assertThat(oppgaveFiltrering.get().getFagsakYtelseTyper()).containsExactlyInAnyOrderElementsOf(saksliste.fagsakYtelseTyper());
+        assertThat(oppgaveFiltrering.get().getFiltreringAndreKriterierTyper()).hasSize(saksliste.andreKriterie().inkluder().size() + saksliste.andreKriterie().ekskluder().size());
+        assertThat(oppgaveFiltrering.get().getFiltreringAndreKriterierTyper())
+            .filteredOn(FiltreringAndreKriterierType::isInkluder)
+            .extracting(FiltreringAndreKriterierType::getAndreKriterierType)
+            .containsExactlyInAnyOrderElementsOf(saksliste.andreKriterie().inkluder());
+        assertThat(oppgaveFiltrering.get().getFiltreringAndreKriterierTyper())
+            .filteredOn(filtreringAndreKriterierType -> !filtreringAndreKriterierType.isInkluder())
+            .extracting(FiltreringAndreKriterierType::getAndreKriterierType)
+            .containsExactlyInAnyOrderElementsOf(saksliste.andreKriterie().ekskluder());
     }
 
     @Test

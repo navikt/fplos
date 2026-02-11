@@ -240,16 +240,14 @@ class OppgaveRepositoryTest {
     @Test
     void hentAlleLister() {
         var avdeling = avdelingDrammen(entityManager);
-        var førsteOppgaveFiltrering = OppgaveFiltrering.builder()
-            .medNavn("OPPRETTET")
-            .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdeling)
-            .build();
-        var andreOppgaveFiltrering = OppgaveFiltrering.builder()
-            .medNavn("BEHANDLINGSFRIST")
-            .medSortering(BEHANDLINGSFRIST)
-            .medAvdeling(avdeling)
-            .build();
+        var førsteOppgaveFiltrering = new OppgaveFiltrering();
+        førsteOppgaveFiltrering.setNavn("OPPRETTET");
+        førsteOppgaveFiltrering.setSortering(KøSortering.OPPRETT_BEHANDLING);
+        førsteOppgaveFiltrering.setAvdeling(avdeling);
+        var andreOppgaveFiltrering = new OppgaveFiltrering();
+        andreOppgaveFiltrering.setNavn("BEHANDLINGSFRIST");
+        andreOppgaveFiltrering.setSortering(BEHANDLINGSFRIST);
+        andreOppgaveFiltrering.setAvdeling(avdeling);
 
         entityManager.persist(førsteOppgaveFiltrering);
         entityManager.persist(andreOppgaveFiltrering);

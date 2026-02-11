@@ -58,11 +58,10 @@ class SlettDeaktiverteAvdelingerTaskTest {
         var avdeling = avdelingDrammen(entityManager);
 
         var avdelingEnhetsnummer = avdeling.getAvdelingEnhet();
-        var køDefinisjon = OppgaveFiltrering.builder()
-            .medNavn("OPPRETTET")
-            .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdeling)
-            .build();
+        var køDefinisjon = new OppgaveFiltrering();
+        køDefinisjon.setNavn("OPPRETTET");
+        køDefinisjon.setSortering(KøSortering.OPPRETT_BEHANDLING);
+        køDefinisjon.setAvdeling(avdeling);
 
         avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling("saksbeh", avdelingEnhetsnummer);
         var saksbehandlere = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetsnummer);

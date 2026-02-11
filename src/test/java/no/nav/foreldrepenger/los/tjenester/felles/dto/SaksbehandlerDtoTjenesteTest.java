@@ -92,11 +92,10 @@ class SaksbehandlerDtoTjenesteTest {
             .findFirst()
             .orElseThrow();
         for (var i = 0; i < antallLister; i++) {
-            var oppgaveFiltrering = OppgaveFiltrering.builder()
-                .medNavn("Test " + i)
-                .medSortering(KøSortering.BEHANDLINGSFRIST)
-                .medAvdeling(avdelingDrammen)
-                .build();
+            var oppgaveFiltrering = new OppgaveFiltrering();
+            oppgaveFiltrering.setNavn("Test " + i);
+            oppgaveFiltrering.setSortering(KøSortering.BEHANDLINGSFRIST);
+            oppgaveFiltrering.setAvdeling(avdelingDrammen);
             entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
         }

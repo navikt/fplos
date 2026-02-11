@@ -1,5 +1,8 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
@@ -18,15 +21,12 @@ import no.nav.vedtak.sikkerhet.abac.AbacDataAttributter;
 import no.nav.vedtak.sikkerhet.abac.AbacDto;
 import no.nav.vedtak.util.InputValideringRegex;
 
-import java.time.LocalDate;
-import java.util.Set;
-
 public record SakslisteLagreDto(@NotNull @Pattern(regexp = InputValideringRegex.FRITEKST) String avdelingEnhet,
                                 @NotNull @Digits(integer = 18, fraction = 0) Long sakslisteId,
                                 @NotNull @Pattern(regexp = InputValideringRegex.FRITEKST) String navn,
                                 @NotNull @Valid SorteringDto sortering,
-                                Set<@ValidKodeverk @NotNull BehandlingType> behandlingTyper,
-                                Set<@ValidKodeverk @NotNull FagsakYtelseType> fagsakYtelseTyper,
+                                @Size(max = 20) Set<@ValidKodeverk @NotNull BehandlingType> behandlingTyper,
+                                @Size(max = 20) Set<@ValidKodeverk @NotNull FagsakYtelseType> fagsakYtelseTyper,
                                 @Valid @NotNull AndreKriterieDto andreKriterie) implements AbacDto {
 
     @Override

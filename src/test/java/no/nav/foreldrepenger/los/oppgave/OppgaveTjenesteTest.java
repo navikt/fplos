@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.fail;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
 
 
 @ExtendWith(JpaExtension.class)
@@ -64,11 +66,11 @@ class OppgaveTjenesteTest {
 
 
     private Long leggeInnEtSettMedOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder()
-            .medNavn("OPPRETTET")
-            .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen(entityManager))
-            .build();
+        var oppgaveFiltrering = new OppgaveFiltrering();
+        oppgaveFiltrering.setNavn("OPPRETTET");
+        oppgaveFiltrering.setSortering(KøSortering.OPPRETT_BEHANDLING);
+        oppgaveFiltrering.setAvdeling(avdelingDrammen(entityManager));
+
         oppgaveRepository.lagre(oppgaveFiltrering);
         oppgaveRepository.lagre(førstegangOppgave);
         oppgaveRepository.lagre(klageOppgave);
@@ -80,8 +82,23 @@ class OppgaveTjenesteTest {
 
     @Test
     void testEnFiltreringpåBehandlingstype() {
+        // Arrange
         var listeId = leggeInnEtSettMedOppgaver();
-        avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
+        var liste = oppgaveRepository.hentOppgaveFilterSett(listeId).orElseThrow();
+        var saksliste = new SakslisteLagreDto(
+            liste.getAvdeling().getAvdelingEnhet(),
+            liste.getId(),
+            liste.getNavn(),
+            new SakslisteLagreDto.SorteringDto(liste.getSortering(), Periodefilter.FAST_PERIODE, null, null, null, null),
+            Set.of(BehandlingType.FØRSTEGANGSSØKNAD),
+            Set.of(),
+            new SakslisteLagreDto.AndreKriterieDto(Set.of(), Set.of())
+        );
+
+        // Act
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(saksliste);
+
+        // Assert
         var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId, 100);
         assertThat(oppgaver).hasSize(1);
     }
@@ -93,11 +110,10 @@ class OppgaveTjenesteTest {
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(8, 9, 8);
         var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 0);
 
-        var opprettet = OppgaveFiltrering.builder()
-            .medNavn("OPPRETTET")
-            .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen(entityManager))
-            .build();
+        var opprettet = new OppgaveFiltrering();
+        opprettet.setNavn("OPPRETTET");
+        opprettet.setSortering(KøSortering.OPPRETT_BEHANDLING);
+        opprettet.setAvdeling(avdelingDrammen(entityManager));
         oppgaveRepository.lagre(opprettet);
 
         var oppgaves = oppgaveKøTjeneste.hentOppgaver(opprettet.getId(), 100);
@@ -111,7 +127,11 @@ class OppgaveTjenesteTest {
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 10);
         var fjerdeOppgave = opprettOgLargeOppgaveTilSortering(10, 0, 9);
 
-        var frist = OppgaveFiltrering.builder().medNavn("FRIST").medSortering(KøSortering.BEHANDLINGSFRIST).medAvdeling(avdelingDrammen(entityManager)).build();
+        var frist = new OppgaveFiltrering();
+        frist.setNavn("FRIST");
+        frist.setSortering(KøSortering.BEHANDLINGSFRIST);
+        frist.setAvdeling(avdelingDrammen(entityManager));
+
         oppgaveRepository.lagre(frist);
 
         var oppgaves = oppgaveKøTjeneste.hentOppgaver(frist.getId(), 100);
@@ -125,11 +145,10 @@ class OppgaveTjenesteTest {
         var tredjeOppgave = opprettOgLargeOppgaveTilSortering(9, 8, 8);
         var andreOppgave = opprettOgLargeOppgaveTilSortering(0, 10, 9);
 
-        var førsteStønadsdag = OppgaveFiltrering.builder()
-            .medNavn("STØNADSDAG")
-            .medSortering(KøSortering.FØRSTE_STØNADSDAG)
-            .medAvdeling(avdelingDrammen(entityManager))
-            .build();
+        var førsteStønadsdag = new OppgaveFiltrering();
+        førsteStønadsdag.setNavn("STØNADSDAG");
+        førsteStønadsdag.setSortering(KøSortering.FØRSTE_STØNADSDAG);
+        førsteStønadsdag.setAvdeling(avdelingDrammen(entityManager));
         oppgaveRepository.lagre(førsteStønadsdag);
 
         var oppgaves = oppgaveKøTjeneste.hentOppgaver(førsteStønadsdag.getId(), 100);

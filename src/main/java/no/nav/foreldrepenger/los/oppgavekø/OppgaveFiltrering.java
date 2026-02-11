@@ -95,10 +95,6 @@ public class OppgaveFiltrering extends BaseEntitet {
         return sortering;
     }
 
-    public List<FiltreringBehandlingType> getFiltreringBehandlingTyper() {
-        return filtreringBehandlingTyper.stream().toList();
-    }
-
     public List<BehandlingType> getBehandlingTyper() {
         return filtreringBehandlingTyper.stream().map(FiltreringBehandlingType::getBehandlingType).toList();
     }
@@ -123,6 +119,10 @@ public class OppgaveFiltrering extends BaseEntitet {
         return periodefilter;
     }
 
+    public List<Saksbehandler> getSaksbehandlere() {
+        return Collections.unmodifiableList(saksbehandlere);
+    }
+
     public LocalDate getFomDato() {
         return fomDato;
     }
@@ -141,6 +141,10 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     public void setNavn(String navn) {
         this.navn = navn;
+    }
+
+    public void setAvdeling(Avdeling avdeling) {
+        this.avdeling = avdeling;
     }
 
     public void setSortering(KøSortering sortering) {
@@ -191,22 +195,6 @@ public class OppgaveFiltrering extends BaseEntitet {
         this.til = til;
     }
 
-    public static OppgaveFiltrering nyTomOppgaveFiltrering(Avdeling avdeling) {
-        var nyListe = new Builder().medAvdeling(avdeling)
-            .medNavn("Ny liste")
-            .medSortering(KøSortering.BEHANDLINGSFRIST)
-            .build();
-        EnumSet.allOf(AndreKriterierType.class)
-            .stream()
-            .filter(AndreKriterierType::isDefaultEkskludert)
-            .forEach(kriterieType -> nyListe.leggTilFilter(new FiltreringAndreKriterierType(nyListe, kriterieType, false)));
-        return nyListe;
-    }
-
-    public List<Saksbehandler> getSaksbehandlere() {
-        return Collections.unmodifiableList(saksbehandlere);
-    }
-
     public void leggTilSaksbehandler(Saksbehandler saksbehandler) {
         if (!saksbehandlere.contains(saksbehandler)) {
             saksbehandlere.add(saksbehandler);
@@ -215,87 +203,5 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     public void fjernSaksbehandler(Saksbehandler saksbehandler) {
         this.saksbehandlere.remove(saksbehandler);
-    }
-
-    public void leggTilFilter(FiltreringAndreKriterierType filtreringAndreKriterierType) {
-        fjernFilter(filtreringAndreKriterierType.getAndreKriterierType());
-        this.andreKriterierTyper.add(filtreringAndreKriterierType);
-    }
-
-    public void leggTilFilter(FagsakYtelseType fagsakYtelseType) {
-        fjernFilter(fagsakYtelseType);
-        this.filtreringYtelseTyper.add(new FiltreringYtelseType(this, fagsakYtelseType));
-    }
-
-    public void leggTilFilter(BehandlingType behandlingType) {
-        fjernFilter(behandlingType);
-        this.filtreringBehandlingTyper.add(new FiltreringBehandlingType(this, behandlingType));
-    }
-
-    public void fjernFilter(AndreKriterierType andreKriterierType) {
-        this.andreKriterierTyper.removeIf(akt -> akt.getAndreKriterierType() == andreKriterierType);
-    }
-
-    public void fjernFilter(FagsakYtelseType fagsakYtelseType) {
-        this.filtreringYtelseTyper.removeIf(yt -> yt.getFagsakYtelseType() == fagsakYtelseType);
-    }
-
-    public void fjernFilter(BehandlingType behandlingType) {
-        this.filtreringBehandlingTyper.removeIf(fbt -> fbt.getBehandlingType() == behandlingType);
-    }
-
-    public static OppgaveFiltrering.Builder builder() {
-        return new OppgaveFiltrering.Builder();
-    }
-
-    public static class Builder {
-
-        private OppgaveFiltrering tempOppgaveFiltrering;
-
-        private Builder() {
-            tempOppgaveFiltrering = new OppgaveFiltrering();
-        }
-
-        public Builder medNavn(String navn) {
-            tempOppgaveFiltrering.navn = navn;
-            return this;
-        }
-
-        public Builder medSortering(KøSortering køSortering) {
-            tempOppgaveFiltrering.sortering = køSortering;
-            return this;
-        }
-
-        public Builder medAvdeling(Avdeling avdeling) {
-            tempOppgaveFiltrering.avdeling = avdeling;
-            return this;
-        }
-
-        public Builder medFomDato(LocalDate fomDato) {
-            tempOppgaveFiltrering.fomDato = fomDato;
-            return this;
-        }
-
-        public Builder medTomDato(LocalDate tomDato) {
-            tempOppgaveFiltrering.tomDato = tomDato;
-            return this;
-        }
-
-        public Builder medFraVerdi(Long fra) {
-            tempOppgaveFiltrering.fra = fra;
-            return this;
-        }
-
-        public Builder medTilVerdi(Long til) {
-            tempOppgaveFiltrering.til = til;
-            return this;
-        }
-
-        public OppgaveFiltrering build() {
-            var oppgaveFiltrering = tempOppgaveFiltrering;
-            tempOppgaveFiltrering = new OppgaveFiltrering();
-            return oppgaveFiltrering;
-        }
-
     }
 }
