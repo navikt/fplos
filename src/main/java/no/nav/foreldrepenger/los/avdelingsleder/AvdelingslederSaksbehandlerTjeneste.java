@@ -12,6 +12,7 @@ import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.organisasjon.SaksbehandlerGruppe;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 import no.nav.vedtak.exception.TekniskException;
 
 @ApplicationScoped
@@ -77,6 +78,16 @@ public class AvdelingslederSaksbehandlerTjeneste {
         organisasjonRepository.persistFlush(saksbehandler);
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
             .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(ident));
+    }
+
+    public Saksbehandler oppdaterSaksbehandler(String ident) {
+        var saksbehandler = organisasjonRepository.hentSaksbehandler(ident);
+        var ansattProfil = ansattTjeneste.refreshBrukerProfil(ident);
+        saksbehandler.setSaksbehandlerUuid(ansattProfil.map(BrukerProfil::uid).orElse(null));
+        saksbehandler.setNavn(ansattProfil.map(BrukerProfil::navn).orElse(null));
+        saksbehandler.setAnsattVedEnhet(ansattProfil.map(BrukerProfil::ansattAvdeling).orElse(null));
+        organisasjonRepository.persistFlush(saksbehandler);
+        return saksbehandler;
     }
 
     public List<SaksbehandlerGruppe> hentAvdelingensSaksbehandlereOgGrupper(String avdelingEnhet) {
