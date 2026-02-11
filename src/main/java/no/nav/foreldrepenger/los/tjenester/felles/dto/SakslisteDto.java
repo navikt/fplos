@@ -22,7 +22,7 @@ public record SakslisteDto(@NotNull Long sakslisteId,
                            @NotNull AndreKriterieDto andreKriterie,
                            @NotNull List<KøSorteringFeltDto> sorteringTyper,
                            @NotNull List<String> saksbehandlerIdenter,
-                           @NotNull StatistikkDto gjeldendeStatistikk) {
+                           StatistikkDto gjeldendeStatistikk) {
 
     public SakslisteDto(OppgaveFiltrering of, AktiveOgTilgjenglige aktiveOgTilgjenglige) {
         var statistikk = aktiveOgTilgjenglige != null ? new StatistikkDto(aktiveOgTilgjenglige.aktive(), aktiveOgTilgjenglige.tilgjengelige(), aktiveOgTilgjenglige.ventende()) : null;
