@@ -3,8 +3,10 @@ package no.nav.foreldrepenger.los.organisasjon;
 import static no.nav.vedtak.felles.jpa.HibernateVerktøy.hentEksaktResultat;
 import static no.nav.vedtak.felles.jpa.HibernateVerktøy.hentUniktResultat;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,27 @@ public class OrganisasjonRepository {
 
     public List<Saksbehandler> hentAlleSaksbehandlere() {
         return entityManager.createQuery("from saksbehandler", Saksbehandler.class).getResultList();
+    }
+
+    public int fjernSaksbehandlereSomHarSluttet() {
+        var slettes = entityManager.createQuery("from saksbehandler where navn is null", Saksbehandler.class).getResultList();
+        var antall = slettes.size();
+        var identer = slettes.stream().map(Saksbehandler::getSaksbehandlerIdent).collect(Collectors.toSet());
+        var sbIds = slettes.stream().map(Saksbehandler::getId).collect(Collectors.toSet());
+        deleteFromTabWhereColInIds("GRUPPE_TILKNYTNING", "saksbehandler_id", sbIds);
+        deleteFromTabWhereColInIds("FILTRERING_SAKSBEHANDLER", "saksbehandler_id", sbIds);
+        deleteFromTabWhereColInIds("AVDELING_SAKSBEHANDLER", "saksbehandler_id", sbIds);
+        var antallSlettet = deleteFromTabWhereColInIds("SAKSBEHANDLER", "id", sbIds);
+        entityManager.flush();
+        LOG.info("Oppdater saksbehandler: Fjernet {} saksbehandlere av {} som ikke lenger finnes {}", antallSlettet, antall, identer);
+        return antallSlettet;
+    }
+
+    private int deleteFromTabWhereColInIds(String table, String column, Collection<Long> deleteIds) {
+        var statment = String.format("DELETE FROM %s WHERE %s IN (:deleteIds)", table, column);
+        return entityManager.createNativeQuery(statment)
+            .setParameter("deleteIds", deleteIds)
+            .executeUpdate();
     }
 
     public void refresh(Avdeling avdeling) {
