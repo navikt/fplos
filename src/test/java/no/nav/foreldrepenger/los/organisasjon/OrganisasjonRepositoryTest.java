@@ -82,11 +82,10 @@ class OrganisasjonRepositoryTest {
         gruppe.getSaksbehandlere().addAll(Set.of(saksbehandlerUtenNavn, saksbehandlerMedNavn));
         entityManager.persist(gruppe);
 
-        var ofilter = OppgaveFiltrering.builder()
-            .medNavn("BEHANDLINGSFRIST")
-            .medSortering(BEHANDLINGSFRIST)
-            .medAvdeling(avdelingNasjonal)
-            .build();
+        var ofilter = new OppgaveFiltrering();
+        ofilter.setNavn("BEHANDLINGSFRIST");
+        ofilter.setSortering(BEHANDLINGSFRIST);
+        ofilter.setAvdeling(avdelingNasjonal);
         ofilter.leggTilSaksbehandler(saksbehandlerMedNavn);
         ofilter.leggTilSaksbehandler(saksbehandlerUtenNavn);
         entityManager.persist(ofilter);
