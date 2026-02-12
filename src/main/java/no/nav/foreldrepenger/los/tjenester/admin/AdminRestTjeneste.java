@@ -24,7 +24,6 @@ import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.DriftOpprettAvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.admin.dto.EnkelBehandlingIdDto;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
-import no.nav.vedtak.felles.prosesstask.api.ProsessTaskGruppe;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskStatus;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 import no.nav.vedtak.felles.prosesstask.api.TaskType;
@@ -164,20 +163,27 @@ public class AdminRestTjeneste {
     }
 
     @POST
-    @Path("/populer-saksbehandler-navn")
+    @Path("/oppdater-saksbehandler-navn")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Fjerne saksbehandlere fra grupper når saksbehandler mangler i avdeling", tags = "admin")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
     public Response populerSaksbehandlereNavn() {
-        var gruppe = new ProsessTaskGruppe();
-        organisasjonRepository.hentAlleSaksbehandlere().forEach(s -> {
-                var t = ProsessTaskData.forProsessTask(OppdaterSaksbehandlerTask.class);
-                t.setProperty(OppdaterSaksbehandlerTask.IDENT, s.getSaksbehandlerIdent());
-                gruppe.addNesteSekvensiell(t);
-            });
-        prosessTaskTjeneste.lagre(gruppe);
+        var t = ProsessTaskData.forProsessTask(OppdaterSaksbehandlerTask.class);
+        t.setProperty(OppdaterSaksbehandlerTask.NOREPEAT, OppdaterSaksbehandlerTask.NOREPEAT);
+        prosessTaskTjeneste.lagre(t);
         return Response.ok().build();
+    }
+
+    @POST
+    @Path("/slett-saksbehandler-sluttet")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Fjerne saksbehandlere som har sluttet", tags = "admin")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.DRIFT, sporingslogg = false)
+    public Response fjerneSaksbehandlereSluttet() {
+        var slettet = organisasjonRepository.fjernSaksbehandlereSomHarSluttet();
+        return Response.ok(slettet).build();
     }
 
 }

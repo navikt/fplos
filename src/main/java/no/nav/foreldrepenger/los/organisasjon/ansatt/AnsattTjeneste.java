@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.organisasjon.ansatt;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +16,6 @@ public class AnsattTjeneste {
 
     private static final LRUCache<String, BrukerProfil> ANSATT_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
     private static final LRUCache<UUID, BrukerProfil> ANSATT_UID_PROFIL = new LRUCache<>(1000, TimeUnit.MILLISECONDS.convert(24 * 7, TimeUnit.HOURS));
-    private static final Map<String, String> ENHETSNUMMER_AVDELINGSNAVN_MAP = new HashMap<>();
 
     private AnsattInfoKlient brukerKlient;
     private OrganisasjonRepository organisasjonRepository;
@@ -32,7 +29,6 @@ public class AnsattTjeneste {
     public AnsattTjeneste(OrganisasjonRepository organisasjonRepository, AnsattInfoKlient brukerKlient) {
         this.brukerKlient = brukerKlient;
         this.organisasjonRepository = organisasjonRepository;
-        organisasjonRepository.hentAktiveAvdelinger().forEach(a -> ENHETSNUMMER_AVDELINGSNAVN_MAP.put(a.getAvdelingEnhet(), a.getNavn()));
     }
 
     public Optional<BrukerProfil> hentBrukerProfilForLagretSaksbehandler(String saksbehandlerIdent) {
@@ -46,12 +42,15 @@ public class AnsattTjeneste {
 
     public Optional<BrukerProfil> hentBrukerProfil(Saksbehandler saksbehandler) {
         var profil = saksbehandler.getSaksbehandlerUuidHvisFinnes().flatMap(this::hentBrukerProfil)
-            .or(() -> hentBrukerProfil(saksbehandler.getSaksbehandlerIdent()));
-        if (profil.isPresent() && profil.get().uid() != null && !Objects.equals(profil.get().uid(), saksbehandler.getSaksbehandlerUuid())) {
-            saksbehandler.setSaksbehandlerUuid(profil.get().uid());
+            .or(() -> hentBrukerProfil(saksbehandler.getSaksbehandlerIdent()))
+            .orElse(null);
+        if (profil != null && profil.uid() != null && !Objects.equals(profil.uid(), saksbehandler.getSaksbehandlerUuid())) {
+            saksbehandler.setSaksbehandlerUuid(profil.uid());
+            saksbehandler.setNavn(profil.navn());
+            saksbehandler.setAnsattVedEnhet(profil.ansattAvdeling());
             organisasjonRepository.persistFlush(saksbehandler);
         }
-        return profil;
+        return Optional.ofNullable(profil);
     }
 
     // TODO:  Her bør vi egentlig tenke om NOM er ikke riktigere å bruke - bør være raskere å slå opp navn og epost.
@@ -66,6 +65,12 @@ public class AnsattTjeneste {
         return brukerProfil;
     }
 
+    public Optional<BrukerProfil> refreshBrukerProfil(String ident) {
+        var trimmed = ident.trim().toUpperCase();
+        return brukerKlient.refreshAnsattInfoForIdent(trimmed);
+    }
+
+
     private Optional<BrukerProfil> hentBrukerProfil(UUID uid) {
         // For det spennende tilfelle at NAVident evt skulle bytte oid (slutter, reansatt?)
         try {
@@ -78,11 +83,6 @@ public class AnsattTjeneste {
         } catch (Exception e) {
             return Optional.empty();
         }
-    }
-
-    private static String avdeling(String avdelingsNummer) {
-        var avdelingsNavn = ENHETSNUMMER_AVDELINGSNAVN_MAP.get(avdelingsNummer);
-        return avdelingsNavn != null ? avdelingsNavn : avdelingsNummer;
     }
 
 }

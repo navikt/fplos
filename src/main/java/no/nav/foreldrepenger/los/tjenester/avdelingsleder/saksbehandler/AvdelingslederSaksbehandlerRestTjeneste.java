@@ -79,6 +79,14 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     }
 
     @POST
+    @Path("/oppdater")
+    @Operation(description = "Oppdater navn og ansattenhet for saksbehandler", tags = "AvdelingslederSaksbehandlere")
+    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public void oppdaterSaksbehandler(@NotNull @Parameter(description = "Brukeridentifikasjon og avdelingsid") @Valid SaksbehandlerOgAvdelingDto saksbehandlerOgAvdeling) {
+        avdelingslederSaksbehandlerTjeneste.oppdaterSaksbehandler(saksbehandlerOgAvdeling.getBrukerIdent().getVerdi());
+    }
+
+    @POST
     @Path("/slett")
     @Operation(description = "Fjern saksbehandler", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
