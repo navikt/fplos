@@ -7,7 +7,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,8 +68,21 @@ class OppgaveKøTjenesteTest {
     @Test
     void testToFiltreringerpåBehandlingstype() {
         var listeId = leggeInnEtSettMedOppgaver();
-        avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
-        avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.KLAGE, true);
+        var liste = oppgaveRepository.hentOppgaveFilterSett(listeId).orElseThrow();
+        var saksliste = new SakslisteLagreDto(
+            liste.getAvdeling().getAvdelingEnhet(),
+            liste.getId(),
+            liste.getNavn(),
+            new SakslisteLagreDto.SorteringDto(liste.getSortering(), Periodefilter.FAST_PERIODE, null, null, null, null),
+            Set.of(BehandlingType.FØRSTEGANGSSØKNAD, BehandlingType.KLAGE),
+            Set.of(),
+            new SakslisteLagreDto.AndreKriterieDto(Set.of(), Set.of())
+        );
+
+        // Act
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(saksliste);
+
+        // Assert
         var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId, 100);
         assertThat(oppgaver).hasSize(2);
     }
@@ -73,8 +90,21 @@ class OppgaveKøTjenesteTest {
     @Test
     void testFiltreringerpåAndreKriteriertype() {
         var listeId = leggeInnEtSettMedAndreKriterierOppgaver();
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.PAPIRSØKNAD, true, true);
+        var liste = oppgaveRepository.hentOppgaveFilterSett(listeId).orElseThrow();
+        var saksliste = new SakslisteLagreDto(
+            liste.getAvdeling().getAvdelingEnhet(),
+            liste.getId(),
+            liste.getNavn(),
+            new SakslisteLagreDto.SorteringDto(liste.getSortering(), Periodefilter.FAST_PERIODE, null, null, null, null),
+            Set.of(),
+            Set.of(),
+            new SakslisteLagreDto.AndreKriterieDto(Set.of(AndreKriterierType.TIL_BESLUTTER, AndreKriterierType.PAPIRSØKNAD), Set.of())
+        );
+
+        // Act
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(saksliste);
+
+        // Assert
         var oppgaver = oppgaveKøTjeneste.hentOppgaver(listeId, 100);
         assertThat(oppgaver).hasSize(1);
     }
@@ -119,11 +149,11 @@ class OppgaveKøTjenesteTest {
 
 
     private Long leggeInnEtSettMedAndreKriterierOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder()
-            .medNavn("OPPRETTET")
-            .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen(entityManager))
-            .build();
+        var oppgaveFiltrering = new OppgaveFiltrering();
+        oppgaveFiltrering.setNavn("OPPRETTET");
+        oppgaveFiltrering.setSortering(KøSortering.OPPRETT_BEHANDLING);
+        oppgaveFiltrering.setAvdeling(avdelingDrammen(entityManager));
+
         oppgaveRepository.lagre(oppgaveFiltrering);
         leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.TIL_BESLUTTER);
         leggtilOppgaveMedEkstraEgenskaper(førstegangOppgave, AndreKriterierType.PAPIRSØKNAD);
@@ -147,11 +177,11 @@ class OppgaveKøTjenesteTest {
     private List<OppgaveFiltrering> leggInnEtSettMedLister(int antallLister) {
         List<OppgaveFiltrering> filtre = new ArrayList<>();
         for (var i = 0; i < antallLister; i++) {
-            var oppgaveFiltrering = OppgaveFiltrering.builder()
-                .medNavn("Test " + i)
-                .medSortering(KøSortering.BEHANDLINGSFRIST)
-                .medAvdeling(avdelingDrammen(entityManager))
-                .build();
+            var oppgaveFiltrering = new OppgaveFiltrering();
+            oppgaveFiltrering.setNavn("Test " + i);
+            oppgaveFiltrering.setSortering(KøSortering.BEHANDLINGSFRIST);
+            oppgaveFiltrering.setAvdeling(avdelingDrammen(entityManager));
+
             entityManager.persist(oppgaveFiltrering);
             filtre.add(oppgaveFiltrering);
         }
@@ -161,11 +191,11 @@ class OppgaveKøTjenesteTest {
 
 
     private Long leggeInnEtSettMedOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder()
-            .medNavn("OPPRETTET")
-            .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen(entityManager))
-            .build();
+        var oppgaveFiltrering = new OppgaveFiltrering();
+        oppgaveFiltrering.setNavn("OPPRETTET");
+        oppgaveFiltrering.setSortering(KøSortering.OPPRETT_BEHANDLING);
+        oppgaveFiltrering.setAvdeling(avdelingDrammen(entityManager));
+
         oppgaveRepository.lagre(oppgaveFiltrering);
         oppgaveRepository.lagre(førstegangOppgave);
         oppgaveRepository.lagre(klageOppgave);

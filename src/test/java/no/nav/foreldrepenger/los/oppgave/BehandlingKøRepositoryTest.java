@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,8 +79,21 @@ class BehandlingKøRepositoryTest {
     @Test
     void testToFiltreringerpåBehandlingstype() {
         var listeId = leggeInnEtSettMedOppgaver();
-        avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.FØRSTEGANGSSØKNAD, true);
-        avdelingslederTjeneste.endreFiltreringBehandlingType(listeId, BehandlingType.KLAGE, true);
+        var liste = oppgaveRepository.hentOppgaveFilterSett(listeId).orElseThrow();
+        var saksliste = new SakslisteLagreDto(
+            liste.getAvdeling().getAvdelingEnhet(),
+            liste.getId(),
+            liste.getNavn(),
+            new SakslisteLagreDto.SorteringDto(liste.getSortering(), Periodefilter.FAST_PERIODE, null, null, null, null),
+            Set.of(BehandlingType.FØRSTEGANGSSØKNAD, BehandlingType.KLAGE),
+            Set.of(),
+            new SakslisteLagreDto.AndreKriterieDto(Set.of(), Set.of())
+        );
+
+        // Act
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(saksliste);
+
+        // Assert
         var oppgaver = hentAntallOppgaver(listeId);
         assertThat(oppgaver).isEqualTo(2);
     }
@@ -89,10 +104,32 @@ class BehandlingKøRepositoryTest {
         leggtilOppgaveMedEkstraEgenskaper(førstegangBehandlingVent, AndreKriterierType.TIL_BESLUTTER);
         leggtilOppgaveMedEkstraEgenskaper(klageOppgave, AndreKriterierType.TIL_BESLUTTER);
         leggtilOppgaveMedEkstraEgenskaper(klageOppgave, AndreKriterierType.NÆRING);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.TIL_BESLUTTER, true, true);
+
+        var liste = oppgaveRepository.hentOppgaveFilterSett(listeId).orElseThrow();
+        var saksliste = new SakslisteLagreDto(
+            liste.getAvdeling().getAvdelingEnhet(),
+            liste.getId(),
+            liste.getNavn(),
+            new SakslisteLagreDto.SorteringDto(liste.getSortering(), Periodefilter.FAST_PERIODE, null, null, null, null),
+            Set.of(),
+            Set.of(),
+            new SakslisteLagreDto.AndreKriterieDto(Set.of(AndreKriterierType.TIL_BESLUTTER), Set.of())
+        );
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(saksliste);
         var oppgaver = hentAntallOppgaver(listeId);
         assertThat(oppgaver).isEqualTo(2);
-        avdelingslederTjeneste.endreFiltreringAndreKriterierType(listeId, AndreKriterierType.NÆRING, true, false);
+
+
+        var sakslisteNæringEksludert = new SakslisteLagreDto(
+            liste.getAvdeling().getAvdelingEnhet(),
+            liste.getId(),
+            liste.getNavn(),
+            new SakslisteLagreDto.SorteringDto(liste.getSortering(), Periodefilter.FAST_PERIODE, null, null, null, null),
+            Set.of(),
+            Set.of(),
+            new SakslisteLagreDto.AndreKriterieDto(Set.of(AndreKriterierType.TIL_BESLUTTER), Set.of(AndreKriterierType.NÆRING))
+        );
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(sakslisteNæringEksludert);
         oppgaver = hentAntallOppgaver(listeId);
         assertThat(oppgaver).isEqualTo(1);
     }
@@ -100,7 +137,17 @@ class BehandlingKøRepositoryTest {
     @Test
     void testUtenFiltreringpåYtelseTypeype() {
         var listeId = leggeInnEtSettMedOppgaver();
-        avdelingslederTjeneste.endreFagsakYtelseType(listeId, FagsakYtelseType.ENGANGSTØNAD, true);
+        var liste = oppgaveRepository.hentOppgaveFilterSett(listeId).orElseThrow();
+        var saksliste = new SakslisteLagreDto(
+            liste.getAvdeling().getAvdelingEnhet(),
+            liste.getId(),
+            liste.getNavn(),
+            new SakslisteLagreDto.SorteringDto(liste.getSortering(), Periodefilter.FAST_PERIODE, null, null, null, null),
+            Set.of(),
+            Set.of(FagsakYtelseType.ENGANGSTØNAD),
+            new SakslisteLagreDto.AndreKriterieDto(Set.of(AndreKriterierType.TIL_BESLUTTER), Set.of())
+        );
+        avdelingslederTjeneste.endreEksistrendeOppgaveFilter(saksliste);
         var oppgaver = hentAntallOppgaver(listeId);
         assertThat(oppgaver).isZero();
     }
@@ -128,11 +175,10 @@ class BehandlingKøRepositoryTest {
 
 
     private Long leggeInnEtSettMedOppgaver() {
-        var oppgaveFiltrering = OppgaveFiltrering.builder()
-            .medNavn("OPPRETTET")
-            .medSortering(KøSortering.OPPRETT_BEHANDLING)
-            .medAvdeling(avdelingDrammen(entityManager))
-            .build();
+        var oppgaveFiltrering = new OppgaveFiltrering();
+        oppgaveFiltrering.setNavn("OPPRETTET");
+        oppgaveFiltrering.setSortering(KøSortering.OPPRETT_BEHANDLING);
+        oppgaveFiltrering.setAvdeling(avdelingDrammen(entityManager));
         oppgaveRepository.lagre(oppgaveFiltrering);
         oppgaveRepository.lagre(førstegangBehandlingAksjonspunkt);
         oppgaveRepository.lagre(førstegangBehandlingVent);
