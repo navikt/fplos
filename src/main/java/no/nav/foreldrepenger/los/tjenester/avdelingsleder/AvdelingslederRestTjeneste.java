@@ -48,8 +48,8 @@ public class AvdelingslederRestTjeneste {
         // erstattes av init-fetch når frontend er over på ny app
         return avdelingslederTjeneste.hentAvdelinger()
             .stream()
-            .map(avdeling -> new AvdelingDto(avdeling.getId(), avdeling.getAvdelingEnhet(), avdeling.getNavn(), avdeling.getKreverKode6()))
-            .sorted(Comparator.comparing(AvdelingDto::getKreverKode6).thenComparing(a -> Long.valueOf(a.getAvdelingEnhet())))
+            .map(avdeling -> new AvdelingDto(avdeling.getAvdelingEnhet(), avdeling.getNavn(), avdeling.getKreverKode6()))
+            .sorted(Comparator.comparing(AvdelingDto::kreverKode6).thenComparing(a -> Long.valueOf(a.avdelingEnhet())))
             .toList();
     }
 
@@ -63,8 +63,8 @@ public class AvdelingslederRestTjeneste {
         var avdelinger = avdelingslederTjeneste.hentAvdelinger()
             .stream()
             .filter(avd -> !avd.getKreverKode6() || harStrengtFortroligTilgang)
-            .map(avdeling -> new AvdelingDto(avdeling.getId(), avdeling.getAvdelingEnhet(), avdeling.getNavn(), avdeling.getKreverKode6()))
-            .sorted(Comparator.comparing(AvdelingDto::getKreverKode6).thenComparing(a -> Long.valueOf(a.getAvdelingEnhet())))
+            .map(avdeling -> new AvdelingDto(avdeling.getAvdelingEnhet(), avdeling.getNavn(), avdeling.getKreverKode6()))
+            .sorted(Comparator.comparing(AvdelingDto::kreverKode6).thenComparing(a -> Long.valueOf(a.avdelingEnhet())))
             .toList();
         return new InitLinksDto(ansattInfoKlient.innloggetBruker(), avdelinger);
     }

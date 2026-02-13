@@ -5,19 +5,19 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.oppgave.Oppgave;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 @ApplicationScoped
 public class ReservasjonStatusDtoTjeneste {
 
     private static final String SYSTEMBRUKER = "SRVFPLOS";
-    private AnsattTjeneste ansattTjeneste;
+    private OrganisasjonRepository organisasjonRepository;
 
     @Inject
-    public ReservasjonStatusDtoTjeneste(AnsattTjeneste ansattTjeneste) {
-        this.ansattTjeneste = ansattTjeneste;
+    public ReservasjonStatusDtoTjeneste(OrganisasjonRepository organisasjonRepository) {
+        this.organisasjonRepository = organisasjonRepository;
     }
 
     ReservasjonStatusDtoTjeneste() {
@@ -41,8 +41,8 @@ public class ReservasjonStatusDtoTjeneste {
 
     private String hentNavn(String ident) {
         return Optional.ofNullable(ident)
-            .flatMap(ansattTjeneste::hentBrukerProfilForLagretSaksbehandler)
-            .map(BrukerProfil::navn).orElse("Ukjent");
+            .flatMap(organisasjonRepository::hentSaksbehandlerHvisEksisterer)
+            .map(Saksbehandler::getNavn).orElse("Ukjent");
     }
 
     private ReservasjonStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {

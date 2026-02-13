@@ -2,32 +2,13 @@ package no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto;
 
 import java.util.Objects;
 
-public class AvdelingDto {
-    private final Long id;
-    private final String avdelingEnhet;
-    private final String navn;
-    private final boolean kreverKode6;
+import jakarta.validation.constraints.NotNull;
 
-    public AvdelingDto(Long id, String avdelingEnhet, String navn, Boolean kreverKode6) {
-        this.id = Objects.requireNonNull(id, "id");
-        this.avdelingEnhet = Objects.requireNonNull(avdelingEnhet, "avdelingEnhet");
-        this.navn = Objects.requireNonNull(navn, "navn");
-        this.kreverKode6 = Objects.requireNonNull(kreverKode6, "kreverKode6");
-    }
+public record AvdelingDto(@NotNull String avdelingEnhet, @NotNull String navn, @NotNull Boolean kreverKode6) {
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getNavn() {
-        return navn;
-    }
-
-    public String getAvdelingEnhet() {
-        return avdelingEnhet;
-    }
-
-    public boolean getKreverKode6() {
-        return kreverKode6;
+    public AvdelingDto {
+        Objects.requireNonNull(avdelingEnhet, "avdelingEnhet");
+        Objects.requireNonNull(navn, "navn");
+        Objects.requireNonNull(kreverKode6, "kreverKode6");
     }
 }

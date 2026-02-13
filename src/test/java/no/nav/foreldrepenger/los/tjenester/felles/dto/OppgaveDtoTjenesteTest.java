@@ -2,8 +2,6 @@ package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
 import static org.mockito.Mockito.mock;
 
-import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -13,11 +11,12 @@ import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingTjeneste;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.persontjeneste.PersonTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonRepository;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.server.abac.TilgangFilterKlient;
+import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
 
 @ExtendWith(JpaExtension.class)
 class OppgaveDtoTjenesteTest {
@@ -32,8 +31,7 @@ class OppgaveDtoTjenesteTest {
 
     @BeforeEach
     void setUp(EntityManager entityManager) {
-        var ansattTjeneste = mock(AnsattTjeneste.class);
-        var reservasjonStatusDtoTjeneste = new ReservasjonStatusDtoTjeneste(ansattTjeneste);
+        var reservasjonStatusDtoTjeneste = new ReservasjonStatusDtoTjeneste(new OrganisasjonRepository(entityManager));
         var reservasjonRepository = new ReservasjonRepository(entityManager);
         this.oppgaveRepository = new OppgaveRepository(entityManager);
         this.reservasjonTjeneste = new ReservasjonTjeneste(oppgaveRepository, reservasjonRepository, new BehandlingTjeneste(oppgaveRepository));

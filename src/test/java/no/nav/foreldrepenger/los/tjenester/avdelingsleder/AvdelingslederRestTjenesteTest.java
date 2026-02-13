@@ -51,13 +51,13 @@ class AvdelingslederRestTjenesteTest {
         var result = avdelingslederRestTjeneste.hentInitielleRessurser();
         assertThat(result.avdelinger())
             .anyMatch(
-            a -> a.getKreverKode6() && a.getAvdelingEnhet().equals("1234") && a.getNavn().equals("Strengt fortrolig avdeling"))
-            .anyMatch(a -> !a.getKreverKode6() && a.getAvdelingEnhet().equals("4321"));
+            a -> a.kreverKode6() && a.avdelingEnhet().equals("1234") && a.navn().equals("Strengt fortrolig avdeling"))
+            .anyMatch(a -> !a.kreverKode6() && a.avdelingEnhet().equals("4321"));
 
         // her skal innlogget avdelingsleder ikke ha tilgang til strengt fortrolig avdeling
         when(ansattInfoKlient.medlemAvAnsattGruppe(AnsattGruppe.STRENGTFORTROLIG)).thenReturn(false);
         var resultIkkeTilgang = avdelingslederRestTjeneste.hentInitielleRessurser();
-        assertThat(resultIkkeTilgang.avdelinger()).noneMatch(AvdelingDto::getKreverKode6).anyMatch(a -> !a.getKreverKode6());
+        assertThat(resultIkkeTilgang.avdelinger()).noneMatch(AvdelingDto::kreverKode6).anyMatch(a -> !a.kreverKode6());
     }
 
 }
