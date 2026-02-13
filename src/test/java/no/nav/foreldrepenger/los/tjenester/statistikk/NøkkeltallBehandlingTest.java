@@ -1,24 +1,27 @@
 package no.nav.foreldrepenger.los.tjenester.statistikk;
 
-import jakarta.persistence.EntityManager;
-import no.nav.foreldrepenger.los.JpaExtension;
-import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
-import no.nav.foreldrepenger.los.oppgave.*;
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRepository;
+import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.BehandlingVenteStatus;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
-import static no.nav.foreldrepenger.los.organisasjon.Avdeling.AVDELING_DRAMMEN_ENHET;
-import static org.assertj.core.api.Assertions.assertThat;
+import jakarta.persistence.EntityManager;
+import no.nav.foreldrepenger.los.JpaExtension;
+import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
+import no.nav.foreldrepenger.los.oppgave.Behandling;
+import no.nav.foreldrepenger.los.oppgave.BehandlingTilstand;
+import no.nav.foreldrepenger.los.oppgave.BehandlingType;
+import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
+import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRepository;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.BehandlingVenteStatus;
 
 @ExtendWith(JpaExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -30,6 +33,7 @@ class NøkkeltallBehandlingTest {
 
     @BeforeEach
     void setUp(EntityManager entityManager) {
+        this.entityManager = entityManager;
         nøkkeltallRepository = new NøkkeltallRepository(entityManager);
         oppgaveRepository = new OppgaveRepository(entityManager);
     }
@@ -82,7 +86,8 @@ class NøkkeltallBehandlingTest {
             .medBehandlingType(type)
             .medVentefrist(frist)
             .build();
-        oppgaveRepository.lagreFlushBehandling(behandling);
+        oppgaveRepository.lagreBehandling(behandling);
+        entityManager.flush();
     }
 
 }

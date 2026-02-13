@@ -6,16 +6,14 @@ import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
 import no.nav.foreldrepenger.los.felles.util.BrukerIdent;
 import no.nav.foreldrepenger.los.oppgave.Filtreringstype;
+import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
 import no.nav.foreldrepenger.los.oppgave.Oppgavespørring;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
-
-import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.vedtak.exception.FunksjonellException;
 
 @ApplicationScoped
@@ -39,12 +37,16 @@ public class OppgaveKøTjeneste {
 
     public List<OppgaveFiltrering> hentAlleOppgaveFiltrering(String brukerIdent) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(brukerIdent)
-            .map(Saksbehandler::getOppgaveFiltreringer)
+            .map(oppgaveRepository::oppgaveFiltreringerForSaksbehandler)
             .orElse(Collections.emptyList());
     }
 
     public List<OppgaveFiltrering> hentOppgaveFiltreringerForPåloggetBruker() {
         return hentAlleOppgaveFiltrering(BrukerIdent.brukerIdent());
+    }
+
+    public List<Saksbehandler> hentSaksbehandlereForOppgaveFiltrering(OppgaveFiltrering oppgaveFiltrering) {
+        return oppgaveRepository.saksbehandlereForOppgaveFiltrering(oppgaveFiltrering);
     }
 
     public Integer hentAntallOppgaver(Long behandlingsKø, Filtreringstype filtreringstype) {
@@ -71,7 +73,7 @@ public class OppgaveKøTjeneste {
 
     public int hentAntallSaksbehandlere(Long sakslisteId) {
         return oppgaveRepository.hentOppgaveFilterSett(sakslisteId)
-            .map(OppgaveFiltrering::getSaksbehandlere)
+            .map(oppgaveRepository::saksbehandlereForOppgaveFiltrering)
             .map(Collection::size).orElse(0);
     }
 

@@ -65,7 +65,7 @@ class AvdelingslederTjenesteTest {
         liste.setAvdeling(avdelingDrammen());
         liste.setSortering(KøSortering.BEHANDLINGSFRIST);
         persistAndFlush(liste);
-        avdelingslederTjeneste.slettOppgaveFiltrering(liste.getId());
+        avdelingslederTjeneste.slettOppgaveFiltrering(liste);
         entityManager.flush();
         assertThat(oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetEnhet(Avdeling.AVDELING_DRAMMEN_ENHET)).isEmpty();
     }

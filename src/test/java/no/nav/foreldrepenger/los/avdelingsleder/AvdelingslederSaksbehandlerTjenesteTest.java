@@ -28,6 +28,8 @@ class AvdelingslederSaksbehandlerTjenesteTest {
     private static final String NY_SAKSBEHANDLER_IDENT = "zNySaksbehandler";
 
     private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
+    private OrganisasjonRepository organisasjonRepository;
+    private EntityManager em;
 
     @Mock
     private AnsattTjeneste ansattTjeneste;
@@ -35,9 +37,10 @@ class AvdelingslederSaksbehandlerTjenesteTest {
     @BeforeEach
     void setup(EntityManager entityManager) {
         var oppgaveRepository = new OppgaveRepository(entityManager);
-        var organisasjonRepository = new OrganisasjonRepository(entityManager);
+        organisasjonRepository = new OrganisasjonRepository(entityManager);
         when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867")));
         avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository, ansattTjeneste);
+        em = entityManager;
     }
 
     @Test
@@ -45,6 +48,7 @@ class AvdelingslederSaksbehandlerTjenesteTest {
         var saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers).isEmpty();
         avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
+        em.flush();
         saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers).isNotEmpty();
         assertThat(saksbehandlers.get(0).getId()).isNotNull();
@@ -56,18 +60,21 @@ class AvdelingslederSaksbehandlerTjenesteTest {
         var saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers).isEmpty();
         avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
+        em.flush();
         saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers.get(0).getSaksbehandlerIdent()).isEqualTo(NY_SAKSBEHANDLER_IDENT.toUpperCase());
-        assertThat(saksbehandlers.get(0).getAvdelinger()).hasSize(1);
+        assertThat(organisasjonRepository.avdelingerForSaksbehandler(saksbehandlers.get(0))).hasSize(1);
     }
 
     @Test
     void testSlettSaksbehandler() {
         avdelingslederSaksbehandlerTjeneste.leggSaksbehandlerTilAvdeling(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
+        em.flush();
         var saksbehandlers = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksbehandlers.get(0).getSaksbehandlerIdent()).isEqualTo(NY_SAKSBEHANDLER_IDENT.toUpperCase());
-        assertThat(saksbehandlers.get(0).getAvdelinger()).hasSize(1);
+        assertThat(organisasjonRepository.avdelingerForSaksbehandler(saksbehandlers.get(0))).hasSize(1);
         avdelingslederSaksbehandlerTjeneste.fjernSaksbehandlerFraAvdeling(NY_SAKSBEHANDLER_IDENT, AVDELING_DRAMMEN_ENHET);
+        em.flush();
         var saksb = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(AVDELING_DRAMMEN_ENHET);
         assertThat(saksb).isEmpty();
     }

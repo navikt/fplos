@@ -1,7 +1,5 @@
 package no.nav.foreldrepenger.los.tjenester.admin;
 
-import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +7,7 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.SaksbehandlerGruppe;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
@@ -60,7 +58,7 @@ public class SlettDeaktiverteAvdelingerTask implements ProsessTaskHandler {
         LOG.info("Sletter {} saksbehandlergrupper tilknyttet enhet {}", grupper.size(), enhetsnummer);
         grupper.forEach(g -> avdelingslederSaksbehandlerTjeneste.slettSaksbehandlerGruppe(g, enhetsnummer));
 
-        var køer = avdeling.getOppgaveFiltrering().stream().map(OppgaveFiltrering::getId).toList();
+        var køer = avdelingslederTjeneste.hentOppgaveFiltreringer(enhetsnummer);
         LOG.info("Sletter {} køer tilknyttet enhet {}", køer.size(), enhetsnummer);
         køer.forEach(avdelingslederTjeneste::slettOppgaveFiltrering);
 
