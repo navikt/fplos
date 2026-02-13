@@ -32,18 +32,18 @@ class StatistikkRepositoryTest {
     void skal_returner_en_rad_for_hver_id_hvor_tidspunktet_er_størst() {
         // Arrange
         var nå = LocalDateTime.now();
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(1)), nå.toLocalDate(), 1, 0, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(2)), nå.toLocalDate(), 2, 1, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(3)), nå.toLocalDate(), 3, 2, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(4)), nå.toLocalDate(), 4, 3, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(5)), nå.toLocalDate(), 5, 4, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(1)), nå.toLocalDate(), 1, 0, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(2)), nå.toLocalDate(), 2, 1, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(3)), nå.toLocalDate(), 3, 2, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(4)), nå.toLocalDate(), 4, 3, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(5)), nå.toLocalDate(), 5, 4, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(3L, toMs(nå.minusHours(1)), nå.toLocalDate(), 1, 4, 2, InnslagType.REGELMESSIG));
-        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(3L, toMs(nå.minusHours(5)), nå.toLocalDate(), 2, 2, 2, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(1)), nå.toLocalDate(), 1, 0, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(2)), nå.toLocalDate(), 2, 1, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(3)), nå.toLocalDate(), 3, 2, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(4)), nå.toLocalDate(), 4, 3, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(1L, toMs(nå.minusHours(5)), nå.toLocalDate(), 5, 4, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(1)), nå.toLocalDate(), 1, 0, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(2)), nå.toLocalDate(), 2, 1, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(3)), nå.toLocalDate(), 3, 2, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(4)), nå.toLocalDate(), 4, 3, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(2L, toMs(nå.minusHours(5)), nå.toLocalDate(), 5, 4, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(3L, toMs(nå.minusHours(1)), nå.toLocalDate(), 1, 4, 2, 3, 4, InnslagType.REGELMESSIG));
+        statistikkRepository.lagreStatistikkOppgaveFilter(new StatistikkOppgaveFilter(3L, toMs(nå.minusHours(5)), nå.toLocalDate(), 2, 2, 2, 3, 4, InnslagType.REGELMESSIG));
         entityManager.flush();
 
 

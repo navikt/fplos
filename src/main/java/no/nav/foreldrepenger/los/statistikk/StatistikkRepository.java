@@ -106,6 +106,7 @@ public class StatistikkRepository {
             """, StatistikkOppgaveFilter.class)
             .setParameter("oppgaveFilterId", oppgaveFilterId)
             .setParameter("innslagstyper", inkluderTyper)
+            .setMaxResults(1)
             .getResultStream()
             .findFirst();
     }

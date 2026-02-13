@@ -1,5 +1,9 @@
 package no.nav.foreldrepenger.los.statistikk.kø;
 
+import static no.nav.foreldrepenger.los.oppgave.Oppgavespørring.ekskluderAndreKriterierTyperFra;
+import static no.nav.foreldrepenger.los.oppgave.Oppgavespørring.inkluderAndreKriterierTyperFra;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -67,4 +71,32 @@ public class KøStatistikkTjeneste {
             .map(oppgaveFiltrering -> new Oppgavespørring(oppgaveFiltrering, filtreringstype))
             .orElseThrow(() -> new FunksjonellException("FP-164687", "Fant ikke oppgavekø med id " + behandlingsKø));
     }
+
+    public int hentAntallAvsluttetOppgaver(Long behandlingsKø, LocalDateTime avsluttetEtter) {
+        return hentAntallOppgaver(behandlingsKø, null, avsluttetEtter);
+    }
+
+    public int hentAntallOpprettetOppgaver(Long behandlingsKø, LocalDateTime opprettetEtter) {
+        return hentAntallOppgaver(behandlingsKø, opprettetEtter, null);
+    }
+
+    private int hentAntallOppgaver(Long behandlingsKø, LocalDateTime opprettetEtter, LocalDateTime avsluttetEtter) {
+        var spørring = oppgaveRepository.hentOppgaveFilterSett(behandlingsKø)
+            .map(oppgaveFiltrering -> new Oppgavespørring(
+                oppgaveFiltrering.getAvdeling().getAvdelingEnhet(),
+                oppgaveFiltrering.getSortering(),
+                oppgaveFiltrering.getBehandlingTyper(),
+                oppgaveFiltrering.getFagsakYtelseTyper(),
+                inkluderAndreKriterierTyperFra(oppgaveFiltrering),
+                ekskluderAndreKriterierTyperFra(oppgaveFiltrering),
+                oppgaveFiltrering.getPeriodefilter(),
+                oppgaveFiltrering.getFomDato(),
+                oppgaveFiltrering.getTomDato(),
+                oppgaveFiltrering.getFra(),
+                oppgaveFiltrering.getTil(),
+                Filtreringstype.ALLE, opprettetEtter, avsluttetEtter))
+            .orElseThrow(() -> new FunksjonellException("FP-164687", "Fant ikke oppgavekø med id " + behandlingsKø));
+        return oppgaveKøRepository.hentAntallOppgaver(spørring);
+    }
+
 }
