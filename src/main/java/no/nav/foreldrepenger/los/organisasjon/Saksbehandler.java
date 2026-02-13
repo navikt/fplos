@@ -28,6 +28,7 @@ public class Saksbehandler extends BaseEntitet {
     @Column(name = "SAKSBEHANDLER_IDENT")
     private String saksbehandlerIdent;
 
+    // TODO: Vurder å fjerne saksbehandlerUuid. Nå brukes den kun for innlogget saksbehandler. Endres ved bytte av avdeling
     @Column(name = "SAKSBEHANDLER_UUID")
     private UUID saksbehandlerUuid;
 
@@ -79,6 +80,10 @@ public class Saksbehandler extends BaseEntitet {
         return navn;
     }
 
+    public String getNavnEllerUkjent() {
+        return Optional.ofNullable(navn).orElse("Ukjent saksbehandler");
+    }
+
     public void setNavn(String navn) {
         this.navn = navn;
     }
@@ -86,6 +91,11 @@ public class Saksbehandler extends BaseEntitet {
     public String getAnsattVedEnhet() {
         return ansattVedEnhet;
     }
+
+    public String getAnsattVedEnhetEllerUkjent() {
+        return Optional.ofNullable(ansattVedEnhet).orElse("9999");
+    }
+
 
     public void setAnsattVedEnhet(String ansattVedEnhet) {
         this.ansattVedEnhet = ansattVedEnhet;
