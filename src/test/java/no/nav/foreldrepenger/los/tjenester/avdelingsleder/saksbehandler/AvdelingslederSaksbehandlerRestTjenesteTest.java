@@ -43,12 +43,12 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     private static final AvdelingEnhetDto avdelingDto = new AvdelingEnhetDto("4817");
     private static final SaksbehandlerBrukerIdentDto brukerIdentDto = new SaksbehandlerBrukerIdentDto("Z999999");
-    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto.getVerdi(), "Navnesen, Navn", "Nav Drammen");
-    private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
+    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto, "Navnesen, Navn", "Nav Drammen");
     @Mock
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     private AvdelingslederSaksbehandlerRestTjeneste restTjeneste;
+    private EntityManager em;
 
     @Mock
     private OppgaveRepository oppgaveRepository;
@@ -59,8 +59,10 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
     public void setUp(EntityManager entityManager) {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
         lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867")));
-        avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository, ansattTjeneste);
+        var avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository,
+            organisasjonRepository, ansattTjeneste);
         restTjeneste = new AvdelingslederSaksbehandlerRestTjeneste(avdelingslederSaksbehandlerTjeneste, saksbehandlerDtoTjeneste);
+        em = entityManager;
     }
 
     @Test
@@ -75,6 +77,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
     void kan_slette_gruppe() {
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.slettSaksbehandlerGruppe(new SaksbehandlerGruppeSletteRequestDto(gruppe.gruppeId(), avdelingDto));
+        em.flush();
         var etterSletting = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         assertThat(etterSletting.saksbehandlerGrupper()).isEmpty();
     }
@@ -85,7 +88,9 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
+        em.flush();
         restTjeneste.leggSaksbehandlerTilGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, (int) gruppe.gruppeId()));
+        em.flush();
         var hentetGrupper = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
 
         assertThat(hentetGrupper.saksbehandlerGrupper()).hasSize(1);
@@ -99,12 +104,14 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         setupMockForMappingAvSaksbehandlerDto();
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
+        em.flush();
         restTjeneste.leggSaksbehandlerTilGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, gruppe.gruppeId()));
+        em.flush();
         var hentetGrupper = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         assertThat(hentetGrupper.saksbehandlerGrupper().get(0).saksbehandlere()).hasSize(1);
 
         restTjeneste.fjernSaksbehandlerFraGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, gruppe.gruppeId()));
-
+        em.flush();
         var etterSletting = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         assertThat(etterSletting.saksbehandlerGrupper().get(0).saksbehandlere()).isEmpty();
     }
@@ -139,11 +146,15 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         setupMockForMappingAvSaksbehandlerDto();
         var førsteGruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
+        em.flush();
         restTjeneste.leggSaksbehandlerTilGruppe(new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, førsteGruppe.gruppeId()));
+        em.flush();
         var andreGruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         var saksbehandlerOgGruppeDto = new SaksbehandlerOgGruppeDto(brukerIdentDto, avdelingDto, andreGruppe.gruppeId());
         restTjeneste.leggSaksbehandlerTilGruppe(saksbehandlerOgGruppeDto);
+        em.flush();
         restTjeneste.fjernSaksbehandlerFraGruppe(saksbehandlerOgGruppeDto);
+        em.flush();
 
         var hentetGrupper = restTjeneste.hentSaksbehandlerGrupper(avdelingDto);
         var hentetGrupperListe = hentetGrupper.saksbehandlerGrupper();

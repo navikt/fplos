@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.avdelingsleder;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -36,34 +35,37 @@ public class AvdelingslederSaksbehandlerTjeneste {
     }
 
     public List<Saksbehandler> hentAvdelingensSaksbehandlere(String avdelingEnhet) {
-        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).map(Avdeling::getSaksbehandlere).orElse(Collections.emptyList());
+        return organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet)
+            .map(organisasjonRepository::saksbehandlereForAvdeling)
+            .orElse(Collections.emptyList());
     }
 
     public void leggSaksbehandlerTilAvdeling(String saksbehandlerIdent, String avdelingEnhet) {
         var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
             .orElseGet(() -> opprettSaksbehandler(saksbehandlerIdent));
         var avdeling = hentAvdeling(avdelingEnhet);
-        saksbehandler.leggTilAvdeling(avdeling);
         organisasjonRepository.persistFlush(saksbehandler);
-        organisasjonRepository.refresh(avdeling);
+        organisasjonRepository.tilknyttAvdelingSaksbehandler(avdeling, saksbehandler);
     }
 
     public void fjernSaksbehandlerFraAvdeling(String saksbehandlerIdent, String avdelingEnhet) {
         var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent)
             .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(saksbehandlerIdent));
-        saksbehandler.fjernAvdeling(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow());
-        organisasjonRepository.persistFlush(saksbehandler);
+        organisasjonRepository.fraknyttAvdelingSaksbehandler(organisasjonRepository.hentAvdelingFraEnhet(avdelingEnhet).orElseThrow(), saksbehandler);
 
-        var grupper =  organisasjonRepository.hentSaksbehandlerGrupper(avdelingEnhet);
-        grupper.stream()
-            .filter(g -> g.getSaksbehandlere().stream().anyMatch(s -> Objects.equals(saksbehandlerIdent, s.getSaksbehandlerIdent())))
-            .forEach(g -> organisasjonRepository.fjernSaksbehandlerFraGruppe(saksbehandlerIdent, g.getId(), avdelingEnhet));
+        var grupperForAvdeling =  organisasjonRepository.hentSaksbehandlerGrupper(avdelingEnhet);
+        var grupperForSaksbehandler = organisasjonRepository.grupperForSaksbehandler(saksbehandler);
+        grupperForSaksbehandler.stream()
+            .filter(grupperForAvdeling::contains)
+            .forEach(g -> organisasjonRepository.fraknyttGruppeSaksbehandler(g, saksbehandler));
 
         var avdeling = hentAvdeling(avdelingEnhet);
-        var oppgaveFiltreringList = avdeling.getOppgaveFiltrering();
-        for (var oppgaveFiltrering : oppgaveFiltreringList) {
-            oppgaveFiltrering.fjernSaksbehandler(saksbehandler);
-            oppgaveRepository.lagre(oppgaveFiltrering);
+        var oppgaveFiltreringList = oppgaveRepository.hentAlleOppgaveFilterSettTilknyttetEnhet(avdelingEnhet);
+        var skalFraknyttes = oppgaveRepository.oppgaveFiltreringerForSaksbehandler(saksbehandler).stream()
+            .filter(oppgaveFiltreringList::contains)
+            .toList();
+        for (var oppgaveFiltrering : skalFraknyttes) {
+            oppgaveRepository.fraknyttSaksbehandlerOppgaveFiltrering(saksbehandler, oppgaveFiltrering);
         }
         oppgaveRepository.refresh(avdeling);
     }
@@ -93,6 +95,10 @@ public class AvdelingslederSaksbehandlerTjeneste {
 
     public List<SaksbehandlerGruppe> hentAvdelingensSaksbehandlereOgGrupper(String avdelingEnhet) {
         return organisasjonRepository.hentSaksbehandlerGrupper(avdelingEnhet);
+    }
+
+    public List<Saksbehandler> hentSaksbehandlereForGrupper(SaksbehandlerGruppe gruppe) {
+        return organisasjonRepository.saksbehandlereForGruppe(gruppe);
     }
 
     public void leggSaksbehandlerTilGruppe(String saksbehandlerId, long gruppeId, String avdelingEnhet) {

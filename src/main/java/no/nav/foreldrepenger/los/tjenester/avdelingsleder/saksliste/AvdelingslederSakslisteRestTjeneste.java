@@ -70,8 +70,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
         return filtersett.stream()
-            .map(of -> new SakslisteDto(of,
-                saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(of.getId()),
+            .map(of -> new SakslisteDto(of, avdelingslederTjeneste.saksbehandlereForOppgaveListe(of),
                 Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
             .toList();
     }
@@ -97,7 +96,7 @@ public class AvdelingslederSakslisteRestTjeneste {
     @Operation(description = "Fjern saksliste", tags = AVDELINGSLEDER_SAKSLISTER)
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public void slettSaksliste(@NotNull @Parameter(description = "id til sakslisten som skal slettes") @Valid SakslisteOgAvdelingDto sakslisteOgAvdelingDto) {
-        avdelingslederTjeneste.slettOppgaveFiltrering(sakslisteOgAvdelingDto.sakslisteId().getVerdi());
+        avdelingslederTjeneste.hentOppgaveFiltering(sakslisteOgAvdelingDto.sakslisteId().getVerdi()).ifPresent(avdelingslederTjeneste::slettOppgaveFiltrering);
     }
 
     @POST

@@ -17,6 +17,7 @@ import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
 
 
@@ -59,9 +60,10 @@ public class AvdelingslederTjeneste {
         return oppgaveRepository.lagreFiltrering(nyOppgavefiltrering);
     }
 
-    public void slettOppgaveFiltrering(Long oppgavefiltreringId) {
-        LOG.info("Sletter oppgavefilter {}", oppgavefiltreringId);
-        oppgaveRepository.slettListe(oppgavefiltreringId);
+    public void slettOppgaveFiltrering(OppgaveFiltrering oppgaveFiltrering) {
+        LOG.info("Sletter oppgavefilter {}", oppgaveFiltrering.getId());
+        oppgaveRepository.fraknyttAlleSaksbehandlereFraOppgaveFiltrering(oppgaveFiltrering);
+        oppgaveRepository.slettListe(oppgaveFiltrering);
     }
 
     public void endreEksistrendeOppgaveFilter(SakslisteLagreDto sakslisteLagre) {
@@ -79,20 +81,20 @@ public class AvdelingslederTjeneste {
         oppgaveRepository.lagre(oppgavefilter);
     }
 
+    public List<Saksbehandler> saksbehandlereForOppgaveListe(OppgaveFiltrering oppgaveFiltrering) {
+        return oppgaveRepository.saksbehandlereForOppgaveFiltrering(oppgaveFiltrering);
+    }
+
     public void leggSaksbehandlerTilListe(Long oppgaveFiltreringId, String saksbehandlerIdent) {
         var saksbehandler = organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).orElseThrow();
-        oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltreringId).ifPresent(f -> {
-            f.leggTilSaksbehandler(saksbehandler);
-            oppgaveRepository.lagre(f);
-        });
+        oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltreringId)
+            .ifPresent(f -> oppgaveRepository.tilknyttSaksbehandlerOppgaveFiltrering(saksbehandler, f));
     }
 
     public void fjernSaksbehandlerFraListe(Long oppgaveFiltreringId, String saksbehandlerIdent) {
         var saksbehandler = organisasjonRepository.hentSaksbehandler(saksbehandlerIdent);
-        oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltreringId).ifPresent(f -> {
-            f.fjernSaksbehandler(saksbehandler);
-            oppgaveRepository.lagre(f);
-        });
+        oppgaveRepository.hentOppgaveFilterSett(oppgaveFiltreringId)
+            .ifPresent(f -> oppgaveRepository.fraknyttSaksbehandlerOppgaveFiltrering(saksbehandler, f));
     }
 
     public List<Avdeling> hentAvdelinger() {

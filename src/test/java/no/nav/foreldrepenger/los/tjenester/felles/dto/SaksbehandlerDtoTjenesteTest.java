@@ -60,7 +60,7 @@ class SaksbehandlerDtoTjenesteTest {
         var lagtInnLister = leggInnEtSettMedLister(1, entityManager);
 
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler1.getSaksbehandlerIdent());
-        entityManager.refresh(saksbehandler1);
+        entityManager.flush();
 
         assertThat(saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(saksbehandler3Ident)).isEmpty();
         assertThat(saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(saksbehandler2Ident)).isEmpty();

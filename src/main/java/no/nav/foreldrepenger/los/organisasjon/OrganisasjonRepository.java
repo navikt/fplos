@@ -3,7 +3,6 @@ package no.nav.foreldrepenger.los.organisasjon;
 import static no.nav.vedtak.felles.jpa.HibernateVerktøy.hentEksaktResultat;
 import static no.nav.vedtak.felles.jpa.HibernateVerktøy.hentUniktResultat;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,20 +55,13 @@ public class OrganisasjonRepository {
         var antall = slettes.size();
         var identer = slettes.stream().map(Saksbehandler::getSaksbehandlerIdent).collect(Collectors.toSet());
         var sbIds = slettes.stream().map(Saksbehandler::getId).collect(Collectors.toSet());
-        deleteFromTabWhereColInIds("GRUPPE_TILKNYTNING", "saksbehandler_id", sbIds);
-        deleteFromTabWhereColInIds("FILTRERING_SAKSBEHANDLER", "saksbehandler_id", sbIds);
-        deleteFromTabWhereColInIds("AVDELING_SAKSBEHANDLER", "saksbehandler_id", sbIds);
-        var antallSlettet = deleteFromTabWhereColInIds("SAKSBEHANDLER", "id", sbIds);
+        entityManager.createQuery("DELETE from GruppeTilknytningRelasjon where saksbehandler.id in :sb").setParameter("sb", sbIds).executeUpdate();
+        entityManager.createQuery("DELETE from FiltreringSaksbehandlerRelasjon where saksbehandler.id in :sb").setParameter("sb", sbIds).executeUpdate();
+        entityManager.createQuery("DELETE from AvdelingSaksbehandlerRelasjon where saksbehandler.id in :sb").setParameter("sb", sbIds).executeUpdate();
+        entityManager.createQuery("DELETE from saksbehandler where id in :sb").setParameter("sb", sbIds).executeUpdate();
         entityManager.flush();
-        LOG.info("Oppdater saksbehandler: Fjernet {} saksbehandlere av {} som ikke lenger finnes {}", antallSlettet, antall, identer);
-        return antallSlettet;
-    }
-
-    private int deleteFromTabWhereColInIds(String table, String column, Collection<Long> deleteIds) {
-        var statment = String.format("DELETE FROM %s WHERE %s IN (:deleteIds)", table, column);
-        return entityManager.createNativeQuery(statment)
-            .setParameter("deleteIds", deleteIds)
-            .executeUpdate();
+        LOG.info("Oppdater saksbehandler: Fjernet {} saksbehandlere som ikke lenger finnes {}", antall, identer);
+        return antall;
     }
 
     public void refresh(Avdeling avdeling) {
@@ -88,29 +80,29 @@ public class OrganisasjonRepository {
                 delete from saksbehandler s
                 where not exists (
                     select ofil
-                    from OppgaveFiltrering ofil
-                    where s member of ofil.saksbehandlere
+                    from FiltreringSaksbehandlerRelasjon ofil
+                    where s = ofil.saksbehandler
                 )
                 and not exists (
                     select avd
-                    from avdeling avd
-                    where s member of avd.saksbehandlere
+                    from AvdelingSaksbehandlerRelasjon avd
+                    where s = avd.saksbehandler
                 )
                 and not exists (
                    select gruppe
-                   from saksbehandlerGruppe gruppe
-                   where s member of gruppe.saksbehandlere
+                   from GruppeTilknytningRelasjon gruppe
+                   where s = gruppe.saksbehandler
                 )""")
             .executeUpdate();
         LOG.info("Slettet {} saksbehandlere uten knytninger til køer", slettedeRader);
     }
 
     public void slettLøseGruppeKnytninger() {
-        int slettedeRader = entityManager.createNativeQuery("""
-                delete from gruppe_tilknytning gt
-                where not exists (select *
-                                  from avdeling_saksbehandler avd join SAKSBEHANDLER_GRUPPE sg on sg.avdeling_id = avd.avdeling_id
-                                  where avd.saksbehandler_id = gt.saksbehandler_id)
+        int slettedeRader = entityManager.createQuery("""
+                delete from GruppeTilknytningRelasjon gt
+                where not exists (select gt.saksbehandler.id
+                                  from AvdelingSaksbehandlerRelasjon avd join saksbehandlerGruppe sg on sg.avdeling.id = avd.avdeling.id
+                                  where avd.saksbehandler.id = gt.saksbehandler.id)
                 """)
             .executeUpdate();
         LOG.info("Slettet {} løse gruppe-knytninger", slettedeRader);
@@ -149,11 +141,9 @@ public class OrganisasjonRepository {
     public void leggSaksbehandlerTilGruppe(String saksbehandlerId, long gruppeId, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
         sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
-        var saksbehandler = hentSaksbehandlerHvisEksisterer(saksbehandlerId).filter(sb -> sb.getAvdelinger().contains(gruppe.getAvdeling()));
-        saksbehandler.ifPresentOrElse(sb -> {
-            gruppe.getSaksbehandlere().add(sb);
-            entityManager.persist(gruppe);
-        }, () -> {
+        var saksbehandler = hentSaksbehandlerHvisEksisterer(saksbehandlerId)
+            .filter(sb -> avdelingerForSaksbehandler(sb).contains(gruppe.getAvdeling()));
+        saksbehandler.ifPresentOrElse(sb -> tilknyttGruppeSaksbehandler(gruppe, sb), () -> {
             throw fantIkkeSaksbehandlerException(saksbehandlerId, avdelingEnhet);
         });
     }
@@ -161,24 +151,21 @@ public class OrganisasjonRepository {
     public void fjernSaksbehandlerFraGruppe(String saksbehandlerIdent, long gruppeId, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
         sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
-        gruppe.getSaksbehandlere().removeIf(s -> s.getSaksbehandlerIdent().equalsIgnoreCase(saksbehandlerIdent));
-        entityManager.merge(gruppe);
+        hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).ifPresent(s -> fraknyttGruppeSaksbehandler(gruppe, s));
     }
 
     public void updateSaksbehandlerGruppeNavn(long gruppeId, String gruppeNavn, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
         sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
         gruppe.setGruppeNavn(gruppeNavn);
-        entityManager.merge(gruppe);
     }
 
     public void slettSaksbehandlerGruppe(long gruppeId, String avdelingEnhet) {
         var gruppe = entityManager.find(SaksbehandlerGruppe.class, gruppeId);
         sjekkGruppeEnhetTilknytning(gruppeId, avdelingEnhet, gruppe);
-        gruppe.getSaksbehandlere().clear();
-        entityManager.merge(gruppe);
+        saksbehandlereForGruppe(gruppe)
+            .forEach(s -> fraknyttGruppeSaksbehandler(gruppe, s));
         entityManager.remove(gruppe);
-        entityManager.flush();
     }
 
     public void opprettEllerReaktiverAvdeling(String avdelingEnhet, String avdelingNavn) {
@@ -199,13 +186,10 @@ public class OrganisasjonRepository {
     }
 
     public void slettAvdeling(Avdeling avdeling) {
-        var saksbehandlere = avdeling.getSaksbehandlere();
-        LOG.info("{} saksbehandlere har tilknytning til avdeling {}, fjerner tilknytning(er).", saksbehandlere.size(), avdeling.getAvdelingEnhet());
-        saksbehandlere.forEach(sb -> {
-            sb.fjernAvdeling(avdeling);
-            entityManager.persist(sb);
-        });
+        var knyttet = fraknyttAlleSaksbehandlereFraAvdeling(avdeling);
+        LOG.info("{} saksbehandlere har tilknytning til avdeling {}, fjerner tilknytning(er).", knyttet, avdeling.getAvdelingEnhet());
         entityManager.remove(avdeling);
+        entityManager.flush();
     }
 
     private static void sjekkGruppeEnhetTilknytning(long gruppeId, String avdelingEnhet, SaksbehandlerGruppe gruppe) {
@@ -222,5 +206,67 @@ public class OrganisasjonRepository {
         return new TomtResultatException("FP-164689",
             String.format("Fant ikke saksbehandler %s tilknyttet avdeling %s", saksbehandlerIdent, avdelingEnhet));
     }
+
+    public void tilknyttAvdelingSaksbehandler(Avdeling avdeling, Saksbehandler saksbehandler) {
+        var nøkkel = new AvdelingSaksbehandlerNøkkel(saksbehandler, avdeling);
+        if (entityManager.find(AvdelingSaksbehandlerRelasjon.class, nøkkel) == null) {
+            var knytning = new AvdelingSaksbehandlerRelasjon(nøkkel);
+            entityManager.persist(knytning);
+        }
+    }
+
+    public void fraknyttAvdelingSaksbehandler(Avdeling avdeling, Saksbehandler saksbehandler) {
+        entityManager.createQuery("DELETE from AvdelingSaksbehandlerRelasjon where saksbehandler = :saksbehandler and avdeling = :avdeling")
+            .setParameter("saksbehandler", saksbehandler)
+            .setParameter("avdeling", avdeling)
+            .executeUpdate();
+    }
+
+    public int fraknyttAlleSaksbehandlereFraAvdeling(Avdeling avdeling) {
+        var antall = entityManager.createQuery("DELETE from AvdelingSaksbehandlerRelasjon where avdeling = :avdeling")
+            .setParameter("avdeling", avdeling)
+            .executeUpdate();
+        return antall;
+    }
+
+    public List<Avdeling> avdelingerForSaksbehandler(Saksbehandler saksbehandler) {
+        return entityManager.createQuery("select avdeling from AvdelingSaksbehandlerRelasjon where saksbehandler = :saksbehandler", Avdeling.class)
+            .setParameter("saksbehandler", saksbehandler)
+            .getResultList();
+    }
+
+    public List<Saksbehandler> saksbehandlereForAvdeling(Avdeling avdeling) {
+        return entityManager.createQuery("select saksbehandler from AvdelingSaksbehandlerRelasjon where avdeling = :avdeling", Saksbehandler.class)
+            .setParameter("avdeling", avdeling)
+            .getResultList();
+    }
+
+    public void tilknyttGruppeSaksbehandler(SaksbehandlerGruppe gruppe, Saksbehandler saksbehandler) {
+        var nøkkel = new GruppeTilknytningNøkkel(saksbehandler, gruppe);
+        if (entityManager.find(GruppeTilknytningRelasjon.class, nøkkel) == null) {
+            var knytning = new GruppeTilknytningRelasjon(nøkkel);
+            entityManager.persist(knytning);
+        }
+    }
+
+    public void fraknyttGruppeSaksbehandler(SaksbehandlerGruppe gruppe, Saksbehandler saksbehandler) {
+        entityManager.createQuery("DELETE from GruppeTilknytningRelasjon where saksbehandler = :saksbehandler and gruppe = :gruppe")
+            .setParameter("saksbehandler", saksbehandler)
+            .setParameter("gruppe", gruppe)
+            .executeUpdate();
+    }
+
+    public List<SaksbehandlerGruppe> grupperForSaksbehandler(Saksbehandler saksbehandler) {
+        return entityManager.createQuery("select gruppe from GruppeTilknytningRelasjon where saksbehandler = :saksbehandler", SaksbehandlerGruppe.class)
+            .setParameter("saksbehandler", saksbehandler)
+            .getResultList();
+    }
+
+    public List<Saksbehandler> saksbehandlereForGruppe(SaksbehandlerGruppe gruppe) {
+        return entityManager.createQuery("select saksbehandler from GruppeTilknytningRelasjon where gruppe = :gruppe", Saksbehandler.class)
+            .setParameter("gruppe", gruppe)
+            .getResultList();
+    }
+
 
 }

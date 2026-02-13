@@ -1,8 +1,6 @@
 package no.nav.foreldrepenger.los.oppgavekø;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -28,7 +24,6 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.organisasjon.Avdeling;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 
 
 @Entity(name = "OppgaveFiltrering")
@@ -78,10 +73,6 @@ public class OppgaveFiltrering extends BaseEntitet {
     @Column(name = "TOM_DAGER")
     private Long til;
 
-    @ManyToMany
-    @JoinTable(name = "FILTRERING_SAKSBEHANDLER", joinColumns = {@JoinColumn(name = "OPPGAVE_FILTRERING_ID")}, inverseJoinColumns = {@JoinColumn(name = "SAKSBEHANDLER_ID")})
-    private List<Saksbehandler> saksbehandlere = new ArrayList<>();
-
     public Long getId() {
         return id;
     }
@@ -116,10 +107,6 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     public Periodefilter getPeriodefilter() {
         return periodefilter;
-    }
-
-    public List<Saksbehandler> getSaksbehandlere() {
-        return Collections.unmodifiableList(saksbehandlere);
     }
 
     public LocalDate getFomDato() {
@@ -194,13 +181,4 @@ public class OppgaveFiltrering extends BaseEntitet {
         this.til = til;
     }
 
-    public void leggTilSaksbehandler(Saksbehandler saksbehandler) {
-        if (!saksbehandlere.contains(saksbehandler)) {
-            saksbehandlere.add(saksbehandler);
-        }
-    }
-
-    public void fjernSaksbehandler(Saksbehandler saksbehandler) {
-        this.saksbehandlere.remove(saksbehandler);
-    }
 }
