@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.los.hendelse.behandlinghendelse;
 
+import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingTjeneste.mapAktiveAksjonspunkt;
 import static no.nav.foreldrepenger.los.hendelse.behandlinghendelse.OppgaveGrunnlag.AksjonspunktType;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -87,22 +89,52 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         var oppgaveGrunnlag = OppgaveGrunnlagUtleder.lagGrunnlag(dto, egenskaper);
         var kriterier = KriterieUtleder.utledKriterier(oppgaveGrunnlag, beskyttelseKriterier);
 
-        var skalLageOppgave = skalLageOppgave(oppgaveGrunnlag);
-        if (skalLageOppgave) {
-            LOG.info("Oppretter oppgave for behandling {}", oppgaveGrunnlag.behandlingUuid());
-            var oppgave = opprettOppgave(oppgaveGrunnlag, kilde, kriterier);
-            opprettReservasjon(oppgave, eksisterendeOppgave, eksisterendeBehandling, oppgaveGrunnlag);
+        if (skalEksistereOppgave(oppgaveGrunnlag)) {
+            var oppgave = lagOppgave(oppgaveGrunnlag, kilde, kriterier);
+            //Prøver å beholde oppgave for å unngå at statistikk teller tilbakehopp som en avluttet oppgave
+            if (skalBeholdeEksisterendeOppgave(eksisterendeOppgave, oppgave, eksisterendeBehandling, dto)) {
+                LOG.info("Eksisterende oppgave {} for behandling {} er lik den utledede oppgaven. Ingen ny oppgave nødvendig.",
+                    eksisterendeOppgave.orElseThrow().getId(), oppgave.getBehandlingId());
+            } else {
+                LOG.info("Oppretter oppgave for behandling {}", oppgaveGrunnlag.behandlingUuid());
+                oppgaveRepository.opprettOppgave(oppgave);
+                opprettReservasjon(oppgave, eksisterendeOppgave, eksisterendeBehandling, oppgaveGrunnlag);
+                eksisterendeOppgave.ifPresent(o -> avsluttOppgave(o, oppgaveGrunnlag.behandlingUuid()));
+            }
+        } else {
+            eksisterendeOppgave.ifPresent(o -> avsluttOppgave(o, oppgaveGrunnlag.behandlingUuid()));
         }
 
-        eksisterendeOppgave.ifPresent(o -> {
-            LOG.info("Avslutter eksisterende oppgave {} for behandling {}", o.getId(), oppgaveGrunnlag.behandlingUuid());
-            o.avsluttOppgave();
-            if (o.harAktivReservasjon()) {
-                avsluttReservasjon(o.getReservasjon());
-            }
-        });
-
         behandlingTjeneste.lagreBehandling(dto, kilde, eksisterendeBehandling, kriterier);
+    }
+
+    private static boolean skalBeholdeEksisterendeOppgave(Optional<Oppgave> eksisterendeOppgave,
+                                                          Oppgave oppgave,
+                                                          Optional<Behandling> eksisterendeBehandling,
+                                                          LosBehandlingDto dto) {
+        var likOppgave = eksisterendeOppgave.isPresent() && erLik(oppgave, eksisterendeOppgave.get());
+        var likeAktiveAksjonspunkt = Objects.equals(eksisterendeBehandling.map(Behandling::getAktiveAksjonspunkt).orElse(null),
+            mapAktiveAksjonspunkt(dto));
+        return likOppgave && likeAktiveAksjonspunkt;
+    }
+
+    private static boolean erLik(Oppgave oppgave1, Oppgave oppgave2) {
+        //Ikke komplett equals, men felter som kan endre seg fra en hendelse til en annen
+        return Objects.equals(oppgave1.getBehandlendeEnhet(), (oppgave2.getBehandlendeEnhet())) && Objects.equals(oppgave1.getBehandlingsfrist(),
+            oppgave2.getBehandlingsfrist()) && Objects.equals(oppgave1.getFørsteStønadsdag(), oppgave2.getFørsteStønadsdag()) && Objects.equals(
+            oppgave1.getFeilutbetalingBelop(), oppgave2.getFeilutbetalingBelop()) && Objects.equals(oppgave1.getFeilutbetalingStart(),
+            oppgave2.getFeilutbetalingStart()) && oppgave1.getOppgaveEgenskaper().size() == oppgave2.getOppgaveEgenskaper().size()
+            && oppgave1.getOppgaveEgenskaper()
+            .stream()
+            .allMatch(e1 -> oppgave2.getOppgaveEgenskaper().stream().anyMatch(e2 -> e2.getAndreKriterierType().equals(e1.getAndreKriterierType())));
+    }
+
+    private void avsluttOppgave(Oppgave o, UUID behandlingId) {
+        LOG.info("Avslutter eksisterende oppgave {} for behandling {}", o.getId(), behandlingId);
+        o.avsluttOppgave();
+        if (o.harAktivReservasjon()) {
+            avsluttReservasjon(o.getReservasjon());
+        }
     }
 
     private void avsluttReservasjon(Reservasjon reservasjon) {
@@ -110,8 +142,10 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         reservasjonRepository.lagre(reservasjon);
     }
 
-    private void opprettReservasjon(Oppgave oppgave, Optional<Oppgave> eksisterendeOppgave,
-                                    Optional<Behandling> eksisterendeBehandling, OppgaveGrunnlag oppgaveGrunnlag) {
+    private void opprettReservasjon(Oppgave oppgave,
+                                    Optional<Oppgave> eksisterendeOppgave,
+                                    Optional<Behandling> eksisterendeBehandling,
+                                    OppgaveGrunnlag oppgaveGrunnlag) {
         var reservasjon = ReservasjonUtleder.utledReservasjon(oppgave, eksisterendeOppgave, eksisterendeBehandling, oppgaveGrunnlag);
         reservasjon.ifPresent(r -> {
             LOG.info("Opprettet reservasjon for oppgave {}", oppgave.getId());
@@ -119,7 +153,7 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         });
     }
 
-    private Oppgave opprettOppgave(OppgaveGrunnlag oppgaveGrunnlag, Fagsystem kilde, Set<AndreKriterierType> kriterier) {
+    private Oppgave lagOppgave(OppgaveGrunnlag oppgaveGrunnlag, Fagsystem kilde, Set<AndreKriterierType> kriterier) {
         LOG.info("Utledet kriterier {} for oppgave til behandling {}", kriterier, oppgaveGrunnlag.behandlingUuid());
 
         var oppgaveEgenskaper = kriterier.stream()
@@ -128,7 +162,7 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
                 .build())
             .collect(Collectors.toSet());
 
-        var oppgave = Oppgave.builder()
+        return Oppgave.builder()
             .medSystem(kilde)
             .medSaksnummer(oppgaveGrunnlag.saksnummer())
             .medAktørId(oppgaveGrunnlag.aktørId())
@@ -144,17 +178,15 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
             .medFeilutbetalingBeløp(oppgaveGrunnlag.feilutbetalingBeløp())
             .medFeilutbetalingStart(oppgaveGrunnlag.feilutbetalingStart())
             .build();
-
-        oppgaveRepository.opprettOppgave(oppgave);
-        return oppgave;
     }
 
-    private static boolean skalLageOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
-        var erPåVent = oppgaveGrunnlag.aksjonspunkt().stream()
+    private static boolean skalEksistereOppgave(OppgaveGrunnlag oppgaveGrunnlag) {
+        var erPåVent = oppgaveGrunnlag.aksjonspunkt()
+            .stream()
             .filter(aksjonspunkt -> aksjonspunkt.status() == Aksjonspunktstatus.OPPRETTET)
             .anyMatch(a -> a.type() == AksjonspunktType.PÅ_VENT);
-        var underBehandlingStatus = Set.of(BehandlingStatus.OPPRETTET, BehandlingStatus.UTREDES,
-            BehandlingStatus.FATTER_VEDTAK).contains(oppgaveGrunnlag.behandlingStatus());
+        var underBehandlingStatus = Set.of(BehandlingStatus.OPPRETTET, BehandlingStatus.UTREDES, BehandlingStatus.FATTER_VEDTAK)
+            .contains(oppgaveGrunnlag.behandlingStatus());
         var harOpprettetAksjonspunkt = oppgaveGrunnlag.aksjonspunkt().stream().anyMatch(a -> a.status().equals(Aksjonspunktstatus.OPPRETTET));
         return !erPåVent && underBehandlingStatus && harOpprettetAksjonspunkt;
     }
@@ -165,9 +197,8 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
     }
 
     private LosFagsakEgenskaperDto hentFagsakEgenskaper(LosBehandlingDto dto, Fagsystem kilde) {
-        return kilde.equals(Fagsystem.FPSAK)
-            ? new LosFagsakEgenskaperDto(dto.saksegenskaper())
-            : fpsakKlient.hentLosFagsakEgenskaperDto(new Saksnummer(dto.saksnummer()));
+        return kilde.equals(Fagsystem.FPSAK) ? new LosFagsakEgenskaperDto(dto.saksegenskaper()) : fpsakKlient.hentLosFagsakEgenskaperDto(
+            new Saksnummer(dto.saksnummer()));
     }
 
 }

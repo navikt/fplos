@@ -109,7 +109,7 @@ public class BehandlingTjeneste {
         };
     }
 
-    private String mapAktiveAksjonspunkt(LosBehandlingDto dto) {
+    public static String mapAktiveAksjonspunkt(LosBehandlingDto dto) {
         return Optional.ofNullable(dto.aksjonspunkt()).orElseGet(List::of).stream()
             .filter(a -> Aksjonspunktstatus.OPPRETTET.equals(a.status()))
             .filter(a -> !Aksjonspunkttype.VENT.equals(a.type()))
