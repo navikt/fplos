@@ -36,6 +36,12 @@ public class StatistikkOppgaveFilter implements Serializable {
     @Column(name = "ANTALL_VENTENDE")
     private Integer antallVentende;
 
+    @Column(name = "ANTALL_OPPRETTET")
+    private Integer antallOpprettet;
+
+    @Column(name = "ANTALL_AVSLUTTET")
+    private Integer antallAvsluttet;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "INNSLAG_TYPE", updatable = false, nullable = false)
     private InnslagType innslagType;
@@ -44,8 +50,14 @@ public class StatistikkOppgaveFilter implements Serializable {
         // for hibernate
     }
 
-    public StatistikkOppgaveFilter(Long oppgaveFilterId, Long tidsstempel, LocalDate statistikkDato,
-                                   Integer antallAktive, Integer antallTilgjengelige, Integer antallVentende,
+    public StatistikkOppgaveFilter(Long oppgaveFilterId,
+                                   Long tidsstempel,
+                                   LocalDate statistikkDato,
+                                   Integer antallAktive,
+                                   Integer antallTilgjengelige,
+                                   Integer antallVentende,
+                                   Integer antallOpprettet,
+                                   Integer antallAvsluttet,
                                    InnslagType innslagType) {
         this.oppgaveFilterId = oppgaveFilterId;
         this.tidsstempel = tidsstempel;
@@ -54,6 +66,8 @@ public class StatistikkOppgaveFilter implements Serializable {
         this.antallTilgjengelige = antallTilgjengelige;
         this.antallVentende = antallVentende;
         this.innslagType = innslagType;
+        this.antallOpprettet = antallOpprettet;
+        this.antallAvsluttet = antallAvsluttet;
     }
 
     public Long getTidsstempel() {
@@ -84,13 +98,18 @@ public class StatistikkOppgaveFilter implements Serializable {
         return innslagType;
     }
 
+    public Integer getAntallOpprettet() {
+        return antallOpprettet;
+    }
+
+    public Integer getAntallAvsluttet() {
+        return antallAvsluttet;
+    }
+
     @Override
     public String toString() {
-        return "StatistikkPerKø{" +
-            "antallAktive=" + antallAktive +
-            ", antallTilgjengelige=" + antallTilgjengelige +
-            ", koeId=" + oppgaveFilterId +
-            ", statistikkDato=" + statistikkDato +
-            ", tidsstempel=" + tidsstempel + '}';
+        return "StatistikkOppgaveFilter{" + "oppgaveFilterId=" + oppgaveFilterId + ", tidsstempel=" + tidsstempel + ", statistikkDato="
+            + statistikkDato + ", antallAktive=" + antallAktive + ", antallTilgjengelige=" + antallTilgjengelige + ", antallVentende="
+            + antallVentende + ", antallOpprettet=" + antallOpprettet + ", antallAvsluttet=" + antallAvsluttet + ", innslagType=" + innslagType + '}';
     }
 }

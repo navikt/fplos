@@ -76,7 +76,9 @@ public class OppgaveKøRepository {
             null,
             null,
             null,
-            Filtreringstype.ALLE);
+            Filtreringstype.ALLE,
+            null,
+            null);
         return hentAntallOppgaver(oppgavespørring);
     }
 
@@ -99,9 +101,11 @@ public class OppgaveKøRepository {
         qlStringBuilder.append(andreKriterierSubquery(oppgavespørring, parameters));
         qlStringBuilder.append(reserverteSubquery(oppgavespørring, parameters));
         qlStringBuilder.append(filtrerBortEgneBeslutterOppgaver(oppgavespørring, parameters));
-        qlStringBuilder.append(" AND o.aktiv = true ");
+        qlStringBuilder.append(aktivFilter(oppgavespørring));
         qlStringBuilder.append(beløpFilter(oppgavespørring, parameters));
         qlStringBuilder.append(datoFilter(oppgavespørring, parameters, SORTERING_ER_DATE_FELT, BEHANDLINGOPPRETTET_FELT_SQL));
+        qlStringBuilder.append(opprettetEtterFilter(oppgavespørring, parameters));
+        qlStringBuilder.append(avsluttetEtterFilter(oppgavespørring, parameters));
 
         if (!kunCountQuery) {
             qlStringBuilder.append(orderBy(oppgavespørring));
@@ -112,6 +116,24 @@ public class OppgaveKøRepository {
         query.setHint(HibernateHints.HINT_READ_ONLY, "true");
         oppgavespørring.getMaxAntallOppgaver().ifPresent(max -> query.setMaxResults(max.intValue()));
         return query;
+    }
+
+    private String avsluttetEtterFilter(Oppgavespørring oppgavespørring, HashMap<String, Object> parameters) {
+        return oppgavespørring.getAvsluttetEtter().map(tidspunkt -> {
+            parameters.put("tidspunkt", tidspunkt);
+            return "AND o.oppgaveAvsluttet > :tidspunkt ";
+        }).orElse("");
+    }
+
+    private String opprettetEtterFilter(Oppgavespørring oppgavespørring, HashMap<String, Object> parameters) {
+        return oppgavespørring.getOpprettetEtter().map(tidspunkt -> {
+            parameters.put("tidspunkt", tidspunkt);
+            return "AND o.opprettetTidspunkt > :tidspunkt ";
+        }).orElse("");
+    }
+
+    private static String aktivFilter(Oppgavespørring oppgavespørring) {
+        return oppgavespørring.skalBareTelleAktive() ? " AND o.aktiv = true " : "";
     }
 
     static String beløpFilter(Oppgavespørring oppgavespørring, Map<String, Object> parameters) {
