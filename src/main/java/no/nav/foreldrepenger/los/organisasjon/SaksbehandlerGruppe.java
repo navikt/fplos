@@ -7,14 +7,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity(name = "saksbehandlerGruppe")
 @Table(name = "SAKSBEHANDLER_GRUPPE")
@@ -31,11 +26,7 @@ public class SaksbehandlerGruppe extends BaseEntitet {
     @JoinColumn(name = "AVDELING_ID", updatable = false)
     private Avdeling avdeling;
 
-    @ManyToMany
-    @JoinTable(name = "gruppe_tilknytning", joinColumns = @JoinColumn(name = "gruppe_id"), inverseJoinColumns = @JoinColumn(name = "saksbehandler_id"))
-    private Set<Saksbehandler> saksbehandlere = new HashSet<>();
-
-    SaksbehandlerGruppe() {
+    public SaksbehandlerGruppe() {
         // hibernate
     }
 
@@ -45,10 +36,6 @@ public class SaksbehandlerGruppe extends BaseEntitet {
 
     public Long getId() {
         return id;
-    }
-
-    public Set<Saksbehandler> getSaksbehandlere() {
-        return saksbehandlere;
     }
 
     public Avdeling getAvdeling() {

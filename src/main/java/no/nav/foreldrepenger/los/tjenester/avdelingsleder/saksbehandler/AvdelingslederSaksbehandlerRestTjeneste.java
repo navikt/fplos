@@ -106,7 +106,12 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
             .toList();
         // Litt dobbeltarbeid her i overgangsfase - vi henter saksbehandlere og mapper som før i tillegg til å gjøre samme med gruppene
         var saksbehandlereGruppe =  avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlereOgGrupper(avdelingEnhetDto.getAvdelingEnhet())
-            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(), g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList())).toList();
+            .stream()
+            .map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(),
+                avdelingslederSaksbehandlerTjeneste.hentSaksbehandlereForGrupper(g).stream()
+                    .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
+                    .toList()))
+            .toList();
         return new SaksbehandlereOgSaksbehandlerGrupper(avdelingensSaksbehandlere, saksbehandlereGruppe);
     }
 
