@@ -36,7 +36,7 @@ public class OppgaveKøRepository {
     private static final String ORDER_BY_FØRSTE_STØNADSDAG_DESC = "ORDER BY o.førsteStønadsdag DESC NULLS LAST";
     private static final String ORDER_BY_FEILUTBETALINGSTART_ASC = "ORDER BY o.feilutbetalingStart ASC";
     private static final String ORDER_BY_FEILUTBETALINGBELOP_DESC = "ORDER BY o.feilutbetalingBelop DESC";
-    private static final String ORDER_BY_OPPGAVE_OPPRETTET_ASC = "ORDER BY o.opprettet_tid ASC";
+    private static final String ORDER_BY_OPPGAVE_OPPRETTET_ASC = "ORDER BY o.opprettetTidspunkt ASC";
 
     private static final Map<KøSortering, Boolean> SORTERING_ER_DATE_FELT = Map.of(
         KøSortering.BEHANDLINGSFRIST, false,
