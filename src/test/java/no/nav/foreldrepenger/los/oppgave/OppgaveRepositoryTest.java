@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -282,8 +283,8 @@ class OppgaveRepositoryTest {
 
     @Test
     void filtrerPåOpprettetDatoTomDato() {
-        var aktuellOppgave = lagOppgave(LocalDate.now().minusDays(2));
-        var uaktuellOppgave = lagOppgave(LocalDate.now());
+        var aktuellOppgave = basicOppgaveBuilder(LocalDate.now().minusDays(2)).build();
+        var uaktuellOppgave = basicOppgaveBuilder(LocalDate.now()).build();
         oppgaveRepository.lagre(uaktuellOppgave);
         oppgaveRepository.lagre(aktuellOppgave);
         var filtrerTomDato = LocalDate.now().minusDays(1);
@@ -410,14 +411,104 @@ class OppgaveRepositoryTest {
         assertThat(oppgaveAntallAdelingsleder).isEqualTo(1);
     }
 
+    @Test
+    void lagre_behandling_finn_den() {
+        var behandling= Behandling.builder(Optional.empty())
+            .medKildeSystem(Fagsystem.FPSAK)
+            .dummyBehandling(AVDELING_DRAMMEN_ENHET, BehandlingTilstand.AKSJONSPUNKT)
+            .build();
+        oppgaveRepository.lagre(behandling);
+        var hentet = oppgaveRepository.finnBehandling(behandling.getId());
+        assertThat(hentet).isPresent();
+        assertThat(hentet.get().getId()).isEqualTo(behandling.getId());
+        assertThat(hentet.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.AKSJONSPUNKT);
+        var oppdatert = Behandling.builder(hentet)
+            .medBehandlingTilstand(BehandlingTilstand.VENT_MANUELL)
+            .build();
+        oppgaveRepository.lagre(oppdatert);
+        hentet = oppgaveRepository.finnBehandling(behandling.getId());
+        assertThat(hentet).isPresent();
+        assertThat(hentet.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.VENT_MANUELL);
+    }
+
+    @Test
+    void skalKunneSorterePåOppgaveOpprettetTidStigende() {
+        Function<LocalDateTime, Oppgave> lagBeslutterOppgave = (LocalDateTime behandlingsfrist) -> {
+            var oppgave = basicOppgaveBuilder().medBehandlingsfrist(behandlingsfrist).build();
+            oppgave.leggTilOppgaveEgenskap(
+                OppgaveEgenskap.builder().medAndreKriterierType(AndreKriterierType.TIL_BESLUTTER).medSisteSaksbehandlerForTotrinn("IDENT").build());
+            return oppgave;
+        };
+
+        var now = LocalDateTime.now();
+        var t1 = now.minusHours(3);
+        var t2   = now.minusHours(2);
+        var t3   = now.minusHours(1);
+
+        // setter omvendt tid på behandlingsfrist for å sørge for motsatt sortering med default sortering
+        var beslutterOppgaveEldste = lagBeslutterOppgave.apply(t3);
+        var beslutterOppgaveMellomste = lagBeslutterOppgave.apply(t2);
+        var beslutterOppgaveNyeste = lagBeslutterOppgave.apply(t1);
+
+        entityManager.persist(beslutterOppgaveEldste);
+        entityManager.persist(beslutterOppgaveMellomste);
+        entityManager.persist(beslutterOppgaveNyeste);
+        entityManager.flush();
+
+        // for enkel, pålitelig test må vi patche oppgave.opprettet_tid via nativequery
+        setOpprettetTid(beslutterOppgaveEldste, t1);
+        setOpprettetTid(beslutterOppgaveMellomste, t2);
+        setOpprettetTid(beslutterOppgaveNyeste, t3);
+        entityManager.flush();
+
+        var oppgaveOpprettetSorteringQuery = new Oppgavespørring(
+            AVDELING_DRAMMEN_ENHET,
+            KøSortering.OPPGAVE_OPPRETTET,
+            List.of(),
+            List.of(),
+            List.of(AndreKriterierType.TIL_BESLUTTER),
+            List.of(),
+            Periodefilter.FAST_PERIODE,
+            null, null, null, null,
+            Filtreringstype.ALLE,
+            null, null
+        );
+        var oppgaver = oppgaveKøRepository.hentOppgaver(oppgaveOpprettetSorteringQuery);
+        assertThat(oppgaver).hasSize(3);
+        assertThat(oppgaver).extracting(Oppgave::getId)
+            .containsExactly(
+                beslutterOppgaveEldste.getId(),
+                beslutterOppgaveMellomste.getId(),
+                beslutterOppgaveNyeste.getId()
+            );
+
+        // sjekker at default sortering gir motsatt rekkefølge
+        var defaultSorteringQuery = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.BEHANDLINGSFRIST, new ArrayList<>(),
+            new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Periodefilter.FAST_PERIODE, null, null, null, null,
+            Filtreringstype.ALLE, null, null);
+        var defaultSorteringOppgaver = oppgaveKøRepository.hentOppgaver(defaultSorteringQuery);
+        assertThat(defaultSorteringOppgaver).hasSize(3);
+        assertThat(defaultSorteringOppgaver).extracting(Oppgave::getId)
+            .containsExactly(
+                beslutterOppgaveNyeste.getId(),
+                beslutterOppgaveMellomste.getId(),
+                beslutterOppgaveEldste.getId()
+            );
+    }
+
+    private void setOpprettetTid(Oppgave oppgave, LocalDateTime ts) {
+        entityManager.createNativeQuery(
+                "update OPPGAVE set OPPRETTET_TID = :ts where id = :id"
+            )
+            .setParameter("ts", ts)
+            .setParameter("id", oppgave.getId())
+            .executeUpdate();
+    }
+
     private List<Oppgave> filterOppgaver(LocalDate filtrerFomDato, LocalDate filtrerTomDato) {
         var query = new Oppgavespørring(AVDELING_DRAMMEN_ENHET, KøSortering.FØRSTE_STØNADSDAG, List.of(), List.of(), List.of(), List.of(), Periodefilter.FAST_PERIODE,
             filtrerFomDato, filtrerTomDato, null, null, Filtreringstype.ALLE, null, null);
         return oppgaveKøRepository.hentOppgaver(query);
-    }
-
-    private Oppgave lagOppgave(LocalDate opprettetDato) {
-        return basicOppgaveBuilder(opprettetDato).build();
     }
 
     private Oppgave.Builder basicOppgaveBuilder() {
@@ -466,24 +557,5 @@ class OppgaveRepositoryTest {
         entityManager.flush();
     }
 
-    @Test
-    void lagre_behandling_finn_den() {
-        var behandling= Behandling.builder(Optional.empty())
-            .medKildeSystem(Fagsystem.FPSAK)
-            .dummyBehandling(AVDELING_DRAMMEN_ENHET, BehandlingTilstand.AKSJONSPUNKT)
-            .build();
-        oppgaveRepository.lagre(behandling);
-        var hentet = oppgaveRepository.finnBehandling(behandling.getId());
-        assertThat(hentet).isPresent();
-        assertThat(hentet.get().getId()).isEqualTo(behandling.getId());
-        assertThat(hentet.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.AKSJONSPUNKT);
-        var oppdatert = Behandling.builder(hentet)
-            .medBehandlingTilstand(BehandlingTilstand.VENT_MANUELL)
-            .build();
-        oppgaveRepository.lagre(oppdatert);
-        hentet = oppgaveRepository.finnBehandling(behandling.getId());
-        assertThat(hentet).isPresent();
-        assertThat(hentet.get().getBehandlingTilstand()).isEqualTo(BehandlingTilstand.VENT_MANUELL);
 
-    }
 }

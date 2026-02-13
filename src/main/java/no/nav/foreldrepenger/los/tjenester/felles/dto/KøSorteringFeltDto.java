@@ -6,12 +6,10 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 
-public record KøSorteringFeltDto(@NotNull KøSortering sorteringType,
-                                 @NotNull KøSortering.FeltType feltType,
-                                 @NotNull KøSortering.FeltKategori feltKategori) {
+public record KøSorteringFeltDto(@NotNull KøSortering sorteringType, @NotNull KøSortering.FeltType feltType) {
 
     private static final List<KøSorteringFeltDto> ALLE = Arrays.stream(KøSortering.values())
-        .map(ks -> new KøSorteringFeltDto(ks, ks.getFelttype(), ks.getFeltkategori()))
+        .map(ks -> new KøSorteringFeltDto(ks, ks.getFelttype()))
         .toList();
 
     public static List<KøSorteringFeltDto> alle() {

@@ -51,7 +51,6 @@ public class BehandlingKøRepository {
         parameters.put("ventTilstand", List.of(BehandlingTilstand.VENT_TIDLIG, BehandlingTilstand.VENT_KOMPLETT,
             BehandlingTilstand.VENT_REGISTERDATA, BehandlingTilstand.VENT_KØ, BehandlingTilstand.VENT_MANUELL));
 
-
         var qlStringBuilder = new StringBuilder()
             .append(SELECT_COUNT_FROM_BEHANDLING)
             .append(" WHERE o.behandlendeEnhet = :enhetsnummer ")
