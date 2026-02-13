@@ -43,9 +43,7 @@ public class OppgaveKøRepository {
         KøSortering.OPPRETT_BEHANDLING, false,
         KøSortering.FØRSTE_STØNADSDAG, true,
         KøSortering.FØRSTE_STØNADSDAG_SYNKENDE, true,
-        KøSortering.FEILUTBETALINGSTART, false,
-        KøSortering.BELØP, false,
-        KøSortering.OPPGAVE_OPPRETTET, false
+        KøSortering.FEILUTBETALINGSTART, false
     );
 
     private EntityManager entityManager;
