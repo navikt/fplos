@@ -17,8 +17,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
+import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
@@ -35,12 +35,13 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 public class AvdelingReservasjonerRestTjeneste {
 
     private ReservasjonTjeneste reservasjonTjeneste;
-    private AnsattTjeneste ansattTjeneste;
+    private OrganisasjonRepository organisasjonRepository;
 
     @Inject
-    public AvdelingReservasjonerRestTjeneste(ReservasjonTjeneste reservasjonTjeneste, AnsattTjeneste ansattTjeneste) {
+    public AvdelingReservasjonerRestTjeneste(ReservasjonTjeneste reservasjonTjeneste,
+                                             OrganisasjonRepository organisasjonRepository) {
         this.reservasjonTjeneste = reservasjonTjeneste;
-        this.ansattTjeneste = ansattTjeneste;
+        this.organisasjonRepository = organisasjonRepository;
     }
 
     public AvdelingReservasjonerRestTjeneste() {
@@ -71,8 +72,8 @@ public class AvdelingReservasjonerRestTjeneste {
 
     private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
         return reservasjoner.stream().map(reservasjon -> {
-            var reservertAvNavn = ansattTjeneste.hentBrukerProfilForLagretSaksbehandler(reservasjon.getReservertAv())
-                .map(BrukerProfil::navn)
+            var reservertAvNavn = organisasjonRepository.hentSaksbehandlerHvisEksisterer(reservasjon.getReservertAv())
+                .map(Saksbehandler::getNavn)
                 .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
             return new ReservasjonDto(reservasjon, reservertAvNavn, null);
         }).toList();
