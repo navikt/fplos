@@ -43,7 +43,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     private static final AvdelingEnhetDto avdelingDto = new AvdelingEnhetDto("4817");
     private static final SaksbehandlerBrukerIdentDto brukerIdentDto = new SaksbehandlerBrukerIdentDto("Z999999");
-    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto, "Navnesen, Navn", "Nav Drammen");
+    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto.getVerdi(), "Navnesen, Navn", "Nav Drammen");
     private AvdelingslederSaksbehandlerTjeneste avdelingslederSaksbehandlerTjeneste;
     @Mock
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
@@ -91,7 +91,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
         assertThat(hentetGrupper.saksbehandlerGrupper()).hasSize(1);
         var saksbehandlere = hentetGrupper.saksbehandlerGrupper().get(0).saksbehandlere();
         assertThat(saksbehandlere).hasSize(1);
-        assertThat(saksbehandlere.get(0).brukerIdent().getVerdi()).isEqualTo("Z999999");
+        assertThat(saksbehandlere.getFirst().brukerIdent()).isEqualTo("Z999999");
     }
 
     @Test

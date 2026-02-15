@@ -108,7 +108,7 @@ public class OppgaveRestTjeneste {
 
     @GET
     @Path("/antall")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Henter antall oppgaver knyttet til sakslisten", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public Integer hentAntallOppgaverForSaksliste(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
@@ -117,7 +117,7 @@ public class OppgaveRestTjeneste {
 
     @GET
     @Path("/oppgaver-for-fagsaker")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Henter antall oppgaver knyttet til fagsaker", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<OppgaveDto> hentOppgaverForFagsaker(@NotNull @Parameter(description = "Liste med saksnummer") @QueryParam("saksnummerListe") @Valid SaknummerIderDto saksnummerliste) {

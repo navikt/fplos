@@ -1,6 +1,9 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +20,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.SaksbehandlerOgAvdelingDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.SaksbehandlerOgGruppeDto;
@@ -52,6 +56,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
+    @Deprecated(forRemoval = true) // Erstatt med /alle
     @GET
     @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
@@ -60,6 +65,16 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
             .stream()
             .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
             .toList();
+    }
+
+    @GET
+    @Path("/alle")
+    @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederSaksbehandlere")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public Map<String, SaksbehandlerDto> hentAvdelingensSaksbehandlereMap(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
+        return avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet()).stream()
+            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
+            .collect(Collectors.toMap(SaksbehandlerDto::brukerIdent, Function.identity()));
     }
 
     @POST
@@ -106,7 +121,9 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
             .toList();
         // Litt dobbeltarbeid her i overgangsfase - vi henter saksbehandlere og mapper som før i tillegg til å gjøre samme med gruppene
         var saksbehandlereGruppe =  avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlereOgGrupper(avdelingEnhetDto.getAvdelingEnhet())
-            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(), g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList())).toList();
+            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(),
+                g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList(),
+                g.getSaksbehandlere().stream().map(Saksbehandler::getSaksbehandlerIdent).toList())).toList();
         return new SaksbehandlereOgSaksbehandlerGrupper(avdelingensSaksbehandlere, saksbehandlereGruppe);
     }
 
@@ -116,7 +133,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public SaksbehandlerGruppeDto opprettSaksbehandlerGruppe(@Valid AvdelingEnhetDto dto) {
         var sbg = avdelingslederSaksbehandlerTjeneste.opprettSaksbehandlerGruppe(dto.getAvdelingEnhet());
-        return new SaksbehandlerGruppeDto(sbg.getId(), sbg.getGruppeNavn(), List.of());
+        return new SaksbehandlerGruppeDto(sbg.getId(), sbg.getGruppeNavn(), List.of(), List.of());
     }
 
     @POST

@@ -1,10 +1,8 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.NotNull;
 
-public record SaksbehandlerDto(@NotNull SaksbehandlerBrukerIdentDto brukerIdent,
+public record SaksbehandlerDto(@NotNull String brukerIdent,
                                String navn,
                                String ansattAvdeling) {
 
@@ -13,8 +11,4 @@ public record SaksbehandlerDto(@NotNull SaksbehandlerBrukerIdentDto brukerIdent,
         return "SaksbehandlerDto{" + "brukerIdent=" + brukerIdent + '}';
     }
 
-    @JsonProperty("brukerIdent")
-    public String getBrukerIdent() {
-        return brukerIdent.getVerdi();
-    }
 }

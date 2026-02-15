@@ -77,7 +77,7 @@ class SaksbehandlerDtoTjenesteTest {
         assertThat(saksbehandlerDto)
             .isPresent()
             .hasValueSatisfying(dto -> {
-                assertThat(dto.getBrukerIdent()).isEqualTo(saksbehandler1Ident);
+                assertThat(dto.brukerIdent()).isEqualTo(saksbehandler1Ident);
                 assertThat(dto.navn()).isEqualTo("Navn Navnesen");
                 assertThat(dto.ansattAvdeling()).isEqualTo("Avdelingsnavnet");
             });

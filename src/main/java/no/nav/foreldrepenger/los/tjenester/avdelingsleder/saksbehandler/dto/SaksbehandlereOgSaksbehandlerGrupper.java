@@ -1,8 +1,10 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto;
 
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
-
 import java.util.List;
 
-public record SaksbehandlereOgSaksbehandlerGrupper(List<SaksbehandlerDto> saksbehandlere, List<SaksbehandlerGruppeDto> saksbehandlerGrupper) {
+import jakarta.validation.constraints.NotNull;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
+
+public record SaksbehandlereOgSaksbehandlerGrupper(@NotNull List<SaksbehandlerDto> saksbehandlere,
+                                                   @NotNull List<SaksbehandlerGruppeDto> saksbehandlerGrupper) {
 }

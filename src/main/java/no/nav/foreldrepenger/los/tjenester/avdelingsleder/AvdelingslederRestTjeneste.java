@@ -41,7 +41,7 @@ public class AvdelingslederRestTjeneste {
 
     @GET
     @Path("/avdelinger")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Henter alle avdelinger", tags = "AvdelingslederTopp")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.APPLIKASJON, sporingslogg = false)
     public List<AvdelingDto> hentAvdelinger() {
