@@ -3,9 +3,6 @@ package no.nav.foreldrepenger.los.tjenester.felles.dto;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
@@ -14,13 +11,10 @@ import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.ansatt.BrukerProfil;
 import no.nav.vedtak.exception.IntegrasjonException;
 
 @ApplicationScoped
 public class SaksbehandlerDtoTjeneste {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SaksbehandlerDtoTjeneste.class);
 
     private OrganisasjonRepository organisasjonRepository;
     private OppgaveKøTjeneste oppgaveKøTjeneste;
@@ -45,45 +39,33 @@ public class SaksbehandlerDtoTjeneste {
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
         var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
             .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
-        return filtrering.getSaksbehandlere().stream().map(this::saksbehandlerDto).flatMap(Optional::stream).toList();
+        return filtrering.getSaksbehandlere().stream().map(this::saksbehandlerDto).toList();
     }
 
     public Optional<SaksbehandlerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
             .filter(sb -> !oppgaveKøTjeneste.hentAlleOppgaveFiltrering(sb.getSaksbehandlerIdent()).isEmpty())
-            .flatMap(this::saksbehandlerDto);
+            .map(this::saksbehandlerDto);
     }
 
     public SaksbehandlerDto lagKjentOgUkjentSaksbehandler(Saksbehandler saksbehandler) {
         // saksbehandler kan eksistere i basen men være ukjent i azuread
-        var ident = saksbehandler.getSaksbehandlerIdent();
-        var saksbehandlerDto = saksbehandlerDto(saksbehandler);
-        return saksbehandlerDto.orElseGet(() -> SaksbehandlerDto.ukjentSaksbehandler(ident));
+        return saksbehandlerDto(saksbehandler);
     }
 
-    public Optional<SaksbehandlerDto> saksbehandlerDto(Saksbehandler saksbehandler) {
+    public SaksbehandlerDto saksbehandlerDto(Saksbehandler saksbehandler) {
         var identDto = new SaksbehandlerBrukerIdentDto(saksbehandler.getSaksbehandlerIdent());
-        return hentBrukerProfil(saksbehandler)
-            .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
+        return new SaksbehandlerDto(identDto, saksbehandler.getNavnEllerUkjent(), saksbehandler.getAnsattVedEnhetEllerUkjent());
     }
 
     // Denne skal hente Brukerprofil dersom saksbehandler ikke er lagret
     public Optional<SaksbehandlerDto> saksbehandlerDtoForNavIdent(String saksbehandlerIdent) {
         try {
             var identDto = new SaksbehandlerBrukerIdentDto(saksbehandlerIdent);
-            return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).flatMap(this::hentBrukerProfil)
-                .or(() -> ansattTjeneste.hentBrukerProfil(saksbehandlerIdent))
-                .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling()));
+            return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).map(this::saksbehandlerDto)
+                .or(() -> ansattTjeneste.hentBrukerProfil(saksbehandlerIdent)
+                    .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling())));
         } catch (IntegrasjonException e) {
-            return Optional.empty();
-        }
-
-    }
-    public Optional<BrukerProfil> hentBrukerProfil(Saksbehandler saksbehandler) {
-        try {
-            return ansattTjeneste.hentBrukerProfil(saksbehandler);
-        } catch (IntegrasjonException e) {
-            LOG.info("Henting av ansattnavn feilet, fortsetter med empty.", e);
             return Optional.empty();
         }
     }
