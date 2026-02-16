@@ -55,7 +55,6 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
         this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
-    @Deprecated(forRemoval = true) // Erstatt med /alle
     @GET
     @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederSaksbehandlere")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
@@ -64,16 +63,6 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
             .stream()
             .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
             .toList();
-    }
-
-    @GET
-    @Path("/alle")
-    @Operation(description = "Henter alle saksbehandlere", tags = "AvdelingslederSaksbehandlere")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public Map<String, SaksbehandlerDto> hentAvdelingensSaksbehandlereMap(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        return avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet()).stream()
-            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
-            .collect(Collectors.toMap(SaksbehandlerDto::brukerIdent, Function.identity()));
     }
 
     @POST
