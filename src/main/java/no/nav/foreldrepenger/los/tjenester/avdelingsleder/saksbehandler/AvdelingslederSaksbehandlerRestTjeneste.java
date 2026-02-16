@@ -1,9 +1,6 @@
 package no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
