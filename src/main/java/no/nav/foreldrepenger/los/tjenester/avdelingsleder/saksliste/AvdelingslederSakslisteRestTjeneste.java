@@ -28,6 +28,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.Nøkkeltal
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteOgAvdelingDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteSaksbehandlerDto;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SakslisteDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SakslisteIdDto;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -45,14 +46,17 @@ public class AvdelingslederSakslisteRestTjeneste {
     private AvdelingslederTjeneste avdelingslederTjeneste;
     private KøStatistikkTjeneste køStatistikkTjeneste;
     private StatistikkRepository statistikkRepository;
+    private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
     @Inject
     public AvdelingslederSakslisteRestTjeneste(AvdelingslederTjeneste avdelingslederTjeneste,
                                                KøStatistikkTjeneste køStatistikkTjeneste,
-                                               StatistikkRepository statistikkRepository) {
+                                               StatistikkRepository statistikkRepository,
+                                               SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.avdelingslederTjeneste = avdelingslederTjeneste;
         this.køStatistikkTjeneste = køStatistikkTjeneste;
         this.statistikkRepository = statistikkRepository;
+        this.saksbehandlerDtoTjeneste = saksbehandlerDtoTjeneste;
     }
 
     AvdelingslederSakslisteRestTjeneste() {
@@ -66,7 +70,9 @@ public class AvdelingslederSakslisteRestTjeneste {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
         return filtersett.stream()
-            .map(of -> new SakslisteDto(of, Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
+            .map(of -> new SakslisteDto(of,
+                saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(of.getId()),
+                Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
             .toList();
     }
 

@@ -1,10 +1,7 @@
 package no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -55,10 +52,13 @@ public class SaksbehandlerSakslisteRestTjeneste {
     public List<SakslisteDto> hentSakslister() {
         var filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
-        return filtre.stream().map(of -> new SakslisteDto(of, Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null))).toList();
+        return filtre.stream().map(of -> new SakslisteDto(of,
+                saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(of.getId()),
+                Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
+            .toList();
     }
 
-    @Deprecated(forRemoval = true) // Ersatt med /saksbehandlermap
+    @Deprecated(forRemoval = true) // Følger med i GET /saksbehandler/saksliste (metoden over)
     @GET
     @Path("/saksbehandlere")
     @Produces(MediaType.APPLICATION_JSON)
@@ -66,15 +66,5 @@ public class SaksbehandlerSakslisteRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<SaksbehandlerDto> hentSakslistensAktiveSaksbehandlere(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
         return saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(sakslisteId.getVerdi());
-    }
-
-    @GET
-    @Path("/saksbehandlermap")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Henter saksbehandlere tilknyttet en saksliste", tags = "Saksliste")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public Map<String, SaksbehandlerDto> hentSakslistensSaksbehandlere(@NotNull @QueryParam("sakslisteId") @Valid SakslisteIdDto sakslisteId) {
-        return saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(sakslisteId.getVerdi()).stream()
-            .collect(Collectors.toMap(SaksbehandlerDto::brukerIdent, Function.identity()));
     }
 }

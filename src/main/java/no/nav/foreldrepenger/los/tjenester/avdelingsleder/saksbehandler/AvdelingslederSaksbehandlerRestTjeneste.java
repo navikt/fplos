@@ -20,7 +20,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederSaksbehandlerTjeneste;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.SaksbehandlerOgAvdelingDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.SaksbehandlerOgGruppeDto;
@@ -115,16 +114,10 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @Operation(description = "Avdelingsliste saksbehandlere og grupper", tags = "AvdelingslederSaksbehandlergrupper")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public SaksbehandlereOgSaksbehandlerGrupper hentSaksbehandlerGrupper(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        var avdelingensSaksbehandlere = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
-            .stream()
-            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
-            .toList();
-        // Litt dobbeltarbeid her i overgangsfase - vi henter saksbehandlere og mapper som før i tillegg til å gjøre samme med gruppene
         var saksbehandlereGruppe =  avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlereOgGrupper(avdelingEnhetDto.getAvdelingEnhet())
             .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(),
-                g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList(),
-                g.getSaksbehandlere().stream().map(Saksbehandler::getSaksbehandlerIdent).toList())).toList();
-        return new SaksbehandlereOgSaksbehandlerGrupper(avdelingensSaksbehandlere, saksbehandlereGruppe);
+                g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList())).toList();
+        return new SaksbehandlereOgSaksbehandlerGrupper(saksbehandlereGruppe);
     }
 
     @POST
@@ -133,7 +126,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public SaksbehandlerGruppeDto opprettSaksbehandlerGruppe(@Valid AvdelingEnhetDto dto) {
         var sbg = avdelingslederSaksbehandlerTjeneste.opprettSaksbehandlerGruppe(dto.getAvdelingEnhet());
-        return new SaksbehandlerGruppeDto(sbg.getId(), sbg.getGruppeNavn(), List.of(), List.of());
+        return new SaksbehandlerGruppeDto(sbg.getId(), sbg.getGruppeNavn(), List.of());
     }
 
     @POST
