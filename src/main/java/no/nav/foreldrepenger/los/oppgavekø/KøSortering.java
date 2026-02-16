@@ -12,12 +12,11 @@ public enum KøSortering implements Kodeverdi {
     OPPRETT_BEHANDLING("OPPRBEH", "Dato for opprettelse av behandling"),
     FØRSTE_STØNADSDAG("FORSTONAD", "Dato for første stønadsdag"),
     FØRSTE_STØNADSDAG_SYNKENDE("FORSTONAD_SYNK", "Dato for første stønadsdag synkende"),
-    BELØP("BELOP", "Feilutbetalt beløp", FeltType.HELTALL, FeltKategori.TILBAKEKREVING),
-    FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", FeltType.DATO, FeltKategori.TILBAKEKREVING),;
+    BELØP("BELOP", "Feilutbetalt beløp", FeltType.HELTALL),
+    FEILUTBETALINGSTART("FEILUTBETALINGSTART", "Dato for første feilutbetaling", FeltType.DATO),
+    OPPGAVE_OPPRETTET("OPPGAVE_OPPRETTET", "Dato oppgaven ble opprettet", FeltType.DATO_UTEN_FILTER);
 
-    public enum FeltType { HELTALL, DATO }
-
-    public enum FeltKategori { UNIVERSAL, TILBAKEKREVING }
+    public enum FeltType { HELTALL, DATO, DATO_UTEN_FILTER }
 
     @JsonValue
     @EnumeratedValue
@@ -26,21 +25,17 @@ public enum KøSortering implements Kodeverdi {
     private final String navn;
     @JsonIgnore
     private final FeltType felttype;
-    @JsonIgnore
-    private final FeltKategori feltkategori;
 
     KøSortering(String kode, String navn) {
         this.kode = kode;
         this.navn = navn;
         this.felttype = FeltType.DATO;
-        this.feltkategori = FeltKategori.UNIVERSAL;
     }
 
-    KøSortering(String kode, String navn, FeltType felttype, FeltKategori feltkategori) {
+    KøSortering(String kode, String navn, FeltType felttype) {
         this.kode = kode;
         this.navn = navn;
         this.felttype = felttype;
-        this.feltkategori = feltkategori;
     }
 
     public String getNavn() {
@@ -54,10 +49,6 @@ public enum KøSortering implements Kodeverdi {
 
     public FeltType getFelttype() {
         return felttype;
-    }
-
-    public FeltKategori getFeltkategori() {
-        return feltkategori;
     }
 
 }
