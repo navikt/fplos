@@ -10,7 +10,6 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.statistikk.AktiveOgTilgjenglige;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
 
@@ -21,7 +20,6 @@ public record SakslisteDto(@NotNull Long sakslisteId,
                            @Size(max = 20) List<FagsakYtelseType> fagsakYtelseTyper,
                            @NotNull AndreKriterieDto andreKriterie,
                            @NotNull List<KøSorteringFeltDto> sorteringTyper,
-                           @NotNull List<String> saksbehandlerIdenter,
                            @NotNull List<SaksbehandlerDto> saksbehandlere,
                            StatistikkDto gjeldendeStatistikk) {
 
@@ -29,11 +27,7 @@ public record SakslisteDto(@NotNull Long sakslisteId,
         var statistikk = aktiveOgTilgjenglige != null ? new StatistikkDto(aktiveOgTilgjenglige.aktive(), aktiveOgTilgjenglige.tilgjengelige(), aktiveOgTilgjenglige.ventende()) : null;
         this(of.getId(), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
             AndreKriterieDto.fra(of.getFiltreringAndreKriterierTyper()),
-            KøSorteringFeltDto.alle(), saksbehandlerIdenter(of.getSaksbehandlere()), saksbehandlere, statistikk);
-    }
-
-    private static List<String> saksbehandlerIdenter(List<Saksbehandler> saksbehandlere) {
-        return saksbehandlere.stream().map(Saksbehandler::getSaksbehandlerIdent).toList();
+            KøSorteringFeltDto.alle(), saksbehandlere, statistikk);
     }
 
     public record StatistikkDto(int alleOppgaver, int tilgjengeligeOppgaver, int behandlingerPåVent) {

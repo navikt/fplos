@@ -47,7 +47,7 @@ public class ReservasjonStatusDtoTjeneste {
 
     private ReservasjonStatusDto systembrukerSpesialTilfelle(Reservasjon reservasjon) {
         // forskjønne visning av systembrukers navn i frontend
-        var flyttetReservasjonDto = new FlyttetReservasjonDto(reservasjon.getFlyttetTidspunkt(), "Fplos", "Fplos", "oppgavesystem",
+        var flyttetReservasjonDto = new FlyttetReservasjonDto(reservasjon.getFlyttetTidspunkt(), "Fplos", "oppgavesystem",
             reservasjon.getBegrunnelse());
         return ReservasjonStatusDto.reservert(reservasjon, hentNavn(reservasjon.getReservertAv()), flyttetReservasjonDto);
     }
