@@ -48,8 +48,7 @@ public class SaksbehandlerSakslisteRestTjeneste {
         var filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
         return filtre.stream().map(of -> new SakslisteDto(of,
-                saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(of.getId()),
-                Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
-            .toList();
+            oppgaveKøTjeneste.hentSaksbehandlereForOppgaveFiltrering(of).stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList(),
+            Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null))).toList();
     }
 }

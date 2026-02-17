@@ -1,8 +1,5 @@
 package no.nav.foreldrepenger.los.organisasjon;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,12 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 
 @Entity(name = "saksbehandler")
 @Table(name = "SAKSBEHANDLER")
@@ -37,13 +30,6 @@ public class Saksbehandler extends BaseEntitet {
 
     @Column(name = "ANSATT_ENHET")
     private String ansattVedEnhet;
-
-    @ManyToMany
-    @JoinTable(name = "AVDELING_SAKSBEHANDLER", joinColumns = {@JoinColumn(name = "SAKSBEHANDLER_ID")}, inverseJoinColumns = {@JoinColumn(name = "AVDELING_ID")})
-    private List<Avdeling> avdelinger = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "saksbehandlere")
-    private List<OppgaveFiltrering> oppgaveFiltreringer = new ArrayList<>();
 
     public Saksbehandler() {
         //CDI
@@ -101,19 +87,4 @@ public class Saksbehandler extends BaseEntitet {
         this.ansattVedEnhet = ansattVedEnhet;
     }
 
-    public List<Avdeling> getAvdelinger() {
-        return avdelinger;
-    }
-
-    public void leggTilAvdeling(Avdeling avdeling) {
-        avdelinger.add(avdeling);
-    }
-
-    public void fjernAvdeling(Avdeling avdeling) {
-        avdelinger.remove(avdeling);
-    }
-
-    public List<OppgaveFiltrering> getOppgaveFiltreringer() {
-        return Collections.unmodifiableList(oppgaveFiltreringer);
-    }
 }

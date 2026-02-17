@@ -101,8 +101,12 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public SaksbehandlereOgSaksbehandlerGrupper hentSaksbehandlerGrupper(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         var saksbehandlereGruppe =  avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlereOgGrupper(avdelingEnhetDto.getAvdelingEnhet())
-            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(),
-                g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList())).toList();
+            .stream()
+            .map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(),
+                avdelingslederSaksbehandlerTjeneste.hentSaksbehandlereForGrupper(g).stream()
+                    .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
+                    .toList()))
+            .toList();
         return new SaksbehandlereOgSaksbehandlerGrupper(saksbehandlereGruppe);
     }
 

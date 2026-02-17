@@ -39,7 +39,9 @@ public class SaksbehandlerDtoTjeneste {
     public List<SaksbehandlerDto> hentAktiveSaksbehandlereTilknyttetSaksliste(Long sakslisteId) {
         var filtrering = avdelingslederTjeneste.hentOppgaveFiltering(sakslisteId)
             .orElseThrow(() -> AvdelingslederTjenesteFeil.fantIkkeOppgavekø(sakslisteId));
-        return filtrering.getSaksbehandlere().stream().map(this::saksbehandlerDto).toList();
+        return avdelingslederTjeneste.saksbehandlereForOppgaveListe(filtrering).stream()
+            .map(this::saksbehandlerDto)
+            .toList();
     }
 
     public Optional<SaksbehandlerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {

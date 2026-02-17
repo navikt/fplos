@@ -20,7 +20,10 @@ import jakarta.persistence.EntityManager;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Saksnummer;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
+import no.nav.foreldrepenger.los.oppgavekø.FiltreringSaksbehandlerRelasjon;
+import no.nav.foreldrepenger.los.oppgavekø.FiltreringSaksbehandlerNøkkel;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
+import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 @ApplicationScoped
@@ -75,9 +78,8 @@ public class OppgaveRepository {
         return oppgaveFiltrering.getId();
     }
 
-    public void slettListe(Long listeId) {
-        var filtersett = entityManager.find(OppgaveFiltrering.class, listeId);
-        entityManager.remove(filtersett);
+    public void slettListe(OppgaveFiltrering oppgaveFiltrering) {
+        entityManager.remove(oppgaveFiltrering);
     }
 
     public boolean sjekkOmOppgaverFortsattErTilgjengelige(List<Long> oppgaveIder) {
@@ -158,11 +160,6 @@ public class OppgaveRepository {
         entityManager.persist(behandling);
     }
 
-    public void lagreFlushBehandling(Behandling behandling) {
-        entityManager.persist(behandling);
-        entityManager.flush();
-    }
-
     public List<BehandlingEgenskap> finnBehandlingEgenskaper(UUID behandlingId) {
         return entityManager.createQuery("FROM BehandlingEgenskap where behandlingId = :behandlingId", BehandlingEgenskap.class)
             .setParameter(BEHANDLING_ID_FELT_SQL, behandlingId)
@@ -196,6 +193,39 @@ public class OppgaveRepository {
         if (!andreKriterierType.isEmpty()) {
             entityManager.flush();
         }
+    }
+
+    public void tilknyttSaksbehandlerOppgaveFiltrering(Saksbehandler saksbehandler, OppgaveFiltrering oppgaveFiltrering) {
+        var nøkkel = new FiltreringSaksbehandlerNøkkel(saksbehandler, oppgaveFiltrering);
+        if (entityManager.find(FiltreringSaksbehandlerRelasjon.class, nøkkel) == null) {
+            var knytning = new FiltreringSaksbehandlerRelasjon(nøkkel);
+            entityManager.persist(knytning);
+        }
+    }
+
+    public void fraknyttSaksbehandlerOppgaveFiltrering(Saksbehandler saksbehandler, OppgaveFiltrering oppgaveFiltrering) {
+        entityManager.createQuery("DELETE from FiltreringSaksbehandlerRelasjon where saksbehandler = :saksbehandler and oppgaveFiltrering = :oppgaveFiltrering")
+            .setParameter("saksbehandler", saksbehandler)
+            .setParameter("oppgaveFiltrering", oppgaveFiltrering)
+            .executeUpdate();
+    }
+
+    public void fraknyttAlleSaksbehandlereFraOppgaveFiltrering(OppgaveFiltrering oppgaveFiltrering) {
+        entityManager.createQuery("DELETE from FiltreringSaksbehandlerRelasjon where oppgaveFiltrering = :oppgaveFiltrering")
+            .setParameter("oppgaveFiltrering", oppgaveFiltrering)
+            .executeUpdate();
+    }
+
+    public List<OppgaveFiltrering> oppgaveFiltreringerForSaksbehandler(Saksbehandler saksbehandler) {
+        return entityManager.createQuery("select oppgaveFiltrering from FiltreringSaksbehandlerRelasjon where saksbehandler = :saksbehandler", OppgaveFiltrering.class)
+            .setParameter("saksbehandler", saksbehandler)
+            .getResultList();
+    }
+
+    public List<Saksbehandler> saksbehandlereForOppgaveFiltrering(OppgaveFiltrering oppgaveFiltrering) {
+        return entityManager.createQuery("select saksbehandler from FiltreringSaksbehandlerRelasjon where oppgaveFiltrering = :oppgaveFiltrering", Saksbehandler.class)
+            .setParameter("oppgaveFiltrering", oppgaveFiltrering)
+            .getResultList();
     }
 
 }

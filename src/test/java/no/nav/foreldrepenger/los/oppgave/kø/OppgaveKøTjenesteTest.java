@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import no.nav.foreldrepenger.los.oppgave.Periodefilter;
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +24,13 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 import no.nav.foreldrepenger.los.oppgave.OppgaveKøRepository;
 import no.nav.foreldrepenger.los.oppgave.OppgaveRepository;
+import no.nav.foreldrepenger.los.oppgave.Periodefilter;
 import no.nav.foreldrepenger.los.oppgavekø.KøSortering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SakslisteLagreDto;
 
 @ExtendWith(JpaExtension.class)
 class OppgaveKøTjenesteTest {
@@ -125,7 +124,7 @@ class OppgaveKøTjenesteTest {
 
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(0).getId(), saksbehandler.getSaksbehandlerIdent());
         avdelingslederTjeneste.leggSaksbehandlerTilListe(lagtInnLister.get(2).getId(), saksbehandler.getSaksbehandlerIdent());
-        entityManager.refresh(saksbehandler);
+        entityManager.flush();
 
         var oppgaveFiltrerings = oppgaveKøTjeneste.hentAlleOppgaveFiltrering(saksbehandler.getSaksbehandlerIdent());
         assertThat(oppgaveFiltrerings).contains(lagtInnLister.get(0), lagtInnLister.get(2)).doesNotContain(lagtInnLister.get(1));
