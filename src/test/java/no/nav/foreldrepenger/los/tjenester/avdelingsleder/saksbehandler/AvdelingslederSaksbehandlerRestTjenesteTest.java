@@ -43,7 +43,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     private static final AvdelingEnhetDto avdelingDto = new AvdelingEnhetDto("4817");
     private static final SaksbehandlerBrukerIdentDto brukerIdentDto = new SaksbehandlerBrukerIdentDto("Z999999");
-    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto, "Navnesen, Navn", "Nav Drammen");
+    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto.getVerdi(), "Navnesen, Navn", "Nav Drammen");
     @Mock
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 

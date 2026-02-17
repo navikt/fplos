@@ -70,7 +70,8 @@ public class AvdelingslederSakslisteRestTjeneste {
         var filtersett = avdelingslederTjeneste.hentOppgaveFiltreringer(avdelingEnhet.getAvdelingEnhet());
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
         return filtersett.stream()
-            .map(of -> new SakslisteDto(of, avdelingslederTjeneste.saksbehandlereForOppgaveListe(of),
+            .map(of -> new SakslisteDto(of,
+                avdelingslederTjeneste.saksbehandlereForOppgaveListe(of).stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList(),
                 Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
             .toList();
     }
