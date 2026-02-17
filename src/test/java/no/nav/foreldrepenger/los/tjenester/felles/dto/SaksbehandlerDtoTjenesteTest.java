@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,8 +50,8 @@ class SaksbehandlerDtoTjenesteTest {
         var saksbehandler2Ident = "9876543";
         var saksbehandler3Ident = "1234";
 
-        var saksbehandler1 = new Saksbehandler(saksbehandler1Ident, UUID.randomUUID(), "Navn Navnesen", "1234");
-        var saksbehandler2 = new Saksbehandler(saksbehandler2Ident, UUID.randomUUID(), "Navn2 Navnesen", "1234");
+        var saksbehandler1 = new Saksbehandler(saksbehandler1Ident, "Navn Navnesen", "1234");
+        var saksbehandler2 = new Saksbehandler(saksbehandler2Ident, "Navn2 Navnesen", "1234");
         entityManager.persist(saksbehandler1);
         entityManager.persist(saksbehandler2);
         entityManager.flush();
@@ -71,7 +70,7 @@ class SaksbehandlerDtoTjenesteTest {
         var saksbehandler1Ident = "Z999999";
 
         when(ansattTjeneste.hentBrukerProfil(saksbehandler1Ident))
-            .thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), saksbehandler1Ident, "Navn Navnesen", "Avdelingsnavnet")));
+            .thenReturn(Optional.of(new BrukerProfil(saksbehandler1Ident, "Navn Navnesen", "Avdelingsnavnet")));
         var saksbehandlerDto = saksbehandlerDtoTjeneste.saksbehandlerDtoForNavIdent(saksbehandler1Ident);
 
         assertThat(saksbehandlerDto)

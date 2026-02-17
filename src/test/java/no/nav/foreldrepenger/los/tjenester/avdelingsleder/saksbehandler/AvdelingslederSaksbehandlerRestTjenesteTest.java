@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +57,7 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
     @BeforeEach
     public void setUp(EntityManager entityManager) {
         var organisasjonRepository = new OrganisasjonRepository(entityManager);
-        lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867")));
+        lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil("A000001", "Ansatt Navn", "4867")));
         var avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository,
             organisasjonRepository, ansattTjeneste);
         restTjeneste = new AvdelingslederSaksbehandlerRestTjeneste(avdelingslederSaksbehandlerTjeneste, saksbehandlerDtoTjeneste);

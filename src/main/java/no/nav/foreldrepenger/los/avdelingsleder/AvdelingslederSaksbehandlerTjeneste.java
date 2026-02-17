@@ -77,7 +77,7 @@ public class AvdelingslederSaksbehandlerTjeneste {
     private Saksbehandler opprettSaksbehandler(String ident) {
         var ansattProfil = ansattTjeneste.hentBrukerProfil(ident)
             .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(ident));
-        var saksbehandler = new Saksbehandler(ident.trim().toUpperCase(), ansattProfil.uid(), ansattProfil.navn(), ansattProfil.ansattAvdeling());
+        var saksbehandler = new Saksbehandler(ident.trim().toUpperCase(), ansattProfil.navn(), ansattProfil.ansattAvdeling());
         organisasjonRepository.persistFlush(saksbehandler);
         return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
             .orElseThrow(() -> AvdelingSaksbehandlerTjenesteFeil.finnerIkkeSaksbehandler(ident));
@@ -86,7 +86,6 @@ public class AvdelingslederSaksbehandlerTjeneste {
     public Saksbehandler oppdaterSaksbehandler(String ident) {
         var saksbehandler = organisasjonRepository.hentSaksbehandler(ident);
         var ansattProfil = ansattTjeneste.refreshBrukerProfil(ident);
-        saksbehandler.setSaksbehandlerUuid(ansattProfil.map(BrukerProfil::uid).orElse(null));
         saksbehandler.setNavn(ansattProfil.map(BrukerProfil::navn).orElse(null));
         saksbehandler.setAnsattVedEnhet(ansattProfil.map(BrukerProfil::ansattAvdeling).orElse(null));
         organisasjonRepository.persistFlush(saksbehandler);

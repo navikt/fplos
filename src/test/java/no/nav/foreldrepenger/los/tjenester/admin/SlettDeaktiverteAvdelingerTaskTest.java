@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,7 @@ class SlettDeaktiverteAvdelingerTaskTest {
         var oppgaveKøRepository = new OppgaveKøRepository(entityManager);
         oppgaveRepository = new OppgaveRepository(entityManager);
         var avdelingslederTjeneste = new AvdelingslederTjeneste(oppgaveRepository, organisasjonRepository);
-        lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil(UUID.randomUUID(), "A000001", "Ansatt Navn", "4867")));
+        lenient().when(ansattTjeneste.hentBrukerProfil(anyString())).thenReturn(Optional.of(new BrukerProfil("A000001", "Ansatt Navn", "4867")));
         this.avdelingslederSaksbehandlerTjeneste = new AvdelingslederSaksbehandlerTjeneste(oppgaveRepository, organisasjonRepository, ansattTjeneste);
         task = new SlettDeaktiverteAvdelingerTask(oppgaveKøRepository, organisasjonRepository, avdelingslederTjeneste,
             avdelingslederSaksbehandlerTjeneste);

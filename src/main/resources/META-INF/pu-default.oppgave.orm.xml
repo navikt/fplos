@@ -29,7 +29,6 @@
     <entity class="no.nav.foreldrepenger.los.organisasjon.SaksbehandlerGruppe" />
     <entity class="no.nav.foreldrepenger.los.statistikk.StatistikkEnhetYtelseBehandling" />
     <entity class="no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter" />
-    <entity class="no.nav.foreldrepenger.los.tjenester.admin.driftsmelding.Driftsmelding" />
     <entity class="no.nav.foreldrepenger.los.organisasjon.AvdelingSaksbehandlerRelasjon"/>
     <entity class="no.nav.foreldrepenger.los.organisasjon.GruppeTilknytningRelasjon"/>
     <entity class="no.nav.foreldrepenger.los.oppgavekø.FiltreringSaksbehandlerRelasjon"/>

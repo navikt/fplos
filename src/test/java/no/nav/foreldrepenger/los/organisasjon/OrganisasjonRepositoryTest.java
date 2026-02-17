@@ -5,8 +5,6 @@ import static no.nav.foreldrepenger.los.DBTestUtil.hentAlle;
 import static no.nav.foreldrepenger.los.oppgavekø.KøSortering.BEHANDLINGSFRIST;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,10 +45,10 @@ class OrganisasjonRepositoryTest {
 
     @Test
     void skalSletteSaksbehandlereUtenKnytninger() {
-        var saksbehandlerUtenKnytning = new Saksbehandler("ikke-knyttet", UUID.randomUUID(), "Navn Navnesen", "1234");
+        var saksbehandlerUtenKnytning = new Saksbehandler("ikke-knyttet", "Navn Navnesen", "1234");
         entityManager.persist(saksbehandlerUtenKnytning);
 
-        var saksbehandlerMedKnytning = new Saksbehandler("knyttet", UUID.randomUUID(), "Navn2 Navnesen", "1234");
+        var saksbehandlerMedKnytning = new Saksbehandler("knyttet", "Navn2 Navnesen", "1234");
         entityManager.persist(saksbehandlerMedKnytning);
         repository.tilknyttAvdelingSaksbehandler(avdelingDrammen(entityManager), saksbehandlerMedKnytning);
         entityManager.flush();
@@ -68,12 +66,12 @@ class OrganisasjonRepositoryTest {
         var avdeling = avdelingDrammen(entityManager);
         var avdelingNasjonal = hentAlle(entityManager, Avdeling.class).stream().filter(a -> "4867".equals(a.getAvdelingEnhet())).findAny().orElseThrow();
 
-        var saksbehandlerMedNavn = new Saksbehandler("MNAVN", UUID.randomUUID(), "Navn Navnesen", "1234");
+        var saksbehandlerMedNavn = new Saksbehandler("MNAVN", "Navn Navnesen", "1234");
         entityManager.persist(saksbehandlerMedNavn);
         repository.tilknyttAvdelingSaksbehandler(avdeling, saksbehandlerMedNavn);
         repository.tilknyttAvdelingSaksbehandler(avdelingNasjonal, saksbehandlerMedNavn);
 
-        var saksbehandlerUtenNavn = new Saksbehandler("UNAVN", null, null, null);
+        var saksbehandlerUtenNavn = new Saksbehandler("UNAVN", null, null);
         entityManager.persist(saksbehandlerUtenNavn);
         repository.tilknyttAvdelingSaksbehandler(avdeling, saksbehandlerUtenNavn);
         repository.tilknyttAvdelingSaksbehandler(avdelingNasjonal, saksbehandlerUtenNavn);
@@ -114,11 +112,11 @@ class OrganisasjonRepositoryTest {
     void skalFjerneLøseGruppeTilknytninger() {
         var avdelingNasjonal = hentAlle(entityManager, Avdeling.class).stream().filter(a -> "4867".equals(a.getAvdelingEnhet())).findAny().orElseThrow();
 
-        var saksbehandler1 = new Saksbehandler("NAVN1", UUID.randomUUID(), "Navn Navnes1", "1234");
+        var saksbehandler1 = new Saksbehandler("NAVN1", "Navn Navnes1", "1234");
         entityManager.persist(saksbehandler1);
         repository.tilknyttAvdelingSaksbehandler(avdelingNasjonal, saksbehandler1);
 
-        var saksbehandler2 = new Saksbehandler("NAVN2", UUID.randomUUID(), "Navn Navnes2", "1234");
+        var saksbehandler2 = new Saksbehandler("NAVN2", "Navn Navnes2", "1234");
         entityManager.persist(saksbehandler2);
         repository.tilknyttAvdelingSaksbehandler(avdelingNasjonal, saksbehandler2);
 

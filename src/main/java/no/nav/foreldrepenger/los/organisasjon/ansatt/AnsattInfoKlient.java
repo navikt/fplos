@@ -32,17 +32,17 @@ public class AnsattInfoKlient extends AbstractAnsattInfoKlient {
 
     public Optional<BrukerProfil> brukerProfil(String ident) {
         var profil = super.hentAnsattInfoForIdent(ident);
-        return Optional.ofNullable(profil).map(p -> new BrukerProfil(p.ansattOid(), p.ansattIdent(), p.navn(), p.ansattVedEnhetId()));
+        return Optional.ofNullable(profil).map(p -> new BrukerProfil(p.ansattIdent(), p.navn(), p.ansattVedEnhetId()));
     }
 
     public Optional<BrukerProfil> brukerProfil(UUID saksbehandler) {
         var profil = super.hentAnsattInfoForOid(saksbehandler);
-        return Optional.ofNullable(profil).map(p -> new BrukerProfil(p.ansattOid(), p.ansattIdent(), p.navn(), p.ansattVedEnhetId()));
+        return Optional.ofNullable(profil).map(p -> new BrukerProfil(p.ansattIdent(), p.navn(), p.ansattVedEnhetId()));
     }
 
     public Optional<BrukerProfil> refreshAnsattInfoForIdent(String ident) {
         var request = RestRequest.newPOSTJson(new AnsattInfoDto.IdentRequest(ident), refreshAnsattIdentUri, restConfig);
         return restClient.sendReturnOptional(request, AnsattInfoDto.Respons.class)
-            .map(p -> new BrukerProfil(p.ansattOid(), p.ansattIdent(), p.navn(), p.ansattVedEnhetId()));
+            .map(p -> new BrukerProfil(p.ansattIdent(), p.navn(), p.ansattVedEnhetId()));
     }
 }

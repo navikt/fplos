@@ -22,7 +22,6 @@ import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.tjenester.admin.AdminRestTjeneste;
-import no.nav.foreldrepenger.los.tjenester.admin.DriftsmeldingerAdminRestTjeneste;
 import no.nav.vedtak.exception.TekniskException;
 import no.nav.vedtak.felles.prosesstask.rest.ProsessTaskRestTjeneste;
 
@@ -72,7 +71,7 @@ public class ForvaltningApiConfig extends Application {
     }
 
     private static Collection<Class<?>> getAllClasses() {
-        return Set.of(DriftsmeldingerAdminRestTjeneste.class, AdminRestTjeneste.class, ProsessTaskRestTjeneste.class);
+        return Set.of(AdminRestTjeneste.class, ProsessTaskRestTjeneste.class);
     }
 
     @Override
