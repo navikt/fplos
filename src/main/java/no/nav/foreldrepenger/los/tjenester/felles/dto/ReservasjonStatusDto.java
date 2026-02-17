@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
 public record ReservasjonStatusDto(boolean erReservert, LocalDateTime reservertTilTidspunkt, Boolean erReservertAvInnloggetBruker,
-                                   String reservertAvIdent, String reservertAvUid, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjon) {
+                                   String reservertAvIdent, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjon) {
 
     static ReservasjonStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
         var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
@@ -24,16 +24,16 @@ public record ReservasjonStatusDto(boolean erReservert, LocalDateTime reservertT
     }
 
     private ReservasjonStatusDto(boolean erReservert, ReservasjonDto reservasjonDto, FlyttetReservasjonDto flyttetReservasjonDto) {
-        this(erReservert, reservasjonDto.reservertTilTidspunkt(), isErReservertAvInnloggetBruker(reservasjonDto.reservertAvUid()),
-            reservasjonDto.reservertAvIdent(), reservasjonDto.reservertAvUid(), reservasjonDto.reservertAvNavn(), utledFlyttetReservasjonDto(reservasjonDto, flyttetReservasjonDto));
+        this(erReservert, reservasjonDto.reservertTilTidspunkt(), isErReservertAvInnloggetBruker(reservasjonDto.reservertAvIdent()),
+            reservasjonDto.reservertAvIdent(), reservasjonDto.reservertAvNavn(), utledFlyttetReservasjonDto(reservasjonDto, flyttetReservasjonDto));
     }
 
     private ReservasjonStatusDto(boolean erReservert) {
-        this(erReservert, null, null, null, null, null, null);
+        this(erReservert, null, null, null, null, null);
     }
 
-    private static boolean isErReservertAvInnloggetBruker(String reservertAvUid) {
-        return reservertAvUid != null && reservertAvUid.equalsIgnoreCase(brukerIdent());
+    private static boolean isErReservertAvInnloggetBruker(String reservertAvIdent) {
+        return reservertAvIdent != null && reservertAvIdent.equalsIgnoreCase(brukerIdent());
     }
 
     private static FlyttetReservasjonDto utledFlyttetReservasjonDto(ReservasjonDto reservasjonDto, FlyttetReservasjonDto flyttetReservasjonDto) {
@@ -41,7 +41,7 @@ public record ReservasjonStatusDto(boolean erReservert, LocalDateTime reservertT
             return null;
         }
         return flyttetReservasjonDto != null ? flyttetReservasjonDto : new FlyttetReservasjonDto(reservasjonDto.flyttetTidspunkt(),
-            reservasjonDto.flyttetAv(), reservasjonDto.flyttetAv(), reservasjonDto.flyttetAvNavn(), reservasjonDto.begrunnelse());
+            reservasjonDto.flyttetAvIdent(), reservasjonDto.flyttetAvNavn(), reservasjonDto.begrunnelse());
     }
 
 }
