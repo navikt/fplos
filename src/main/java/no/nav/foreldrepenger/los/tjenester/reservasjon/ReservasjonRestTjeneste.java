@@ -3,9 +3,6 @@ package no.nav.foreldrepenger.los.tjenester.reservasjon;
 
 import java.util.List;
 
-import no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoMedStatus;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +22,10 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import no.nav.foreldrepenger.los.oppgave.OppgaveTjeneste;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
+import no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDto;
+import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoMedStatus;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.ReservasjonStatusDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
@@ -128,7 +127,7 @@ public class ReservasjonRestTjeneste {
 
     @GET
     @Path("/reserverte-oppgaver")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Reserverte oppgaver tilknyttet saksbehandler", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<OppgaveDto> getReserverteOppgaver() {
@@ -162,7 +161,7 @@ public class ReservasjonRestTjeneste {
 
     @GET
     @Path("/tidligere-reserverte")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Behandlede", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<OppgaveDtoMedStatus> sisteReserverte(@Parameter(description = "vise kun aktive") @QueryParam("kunAktive") @Valid Boolean kunAktive) {

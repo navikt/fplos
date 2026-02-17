@@ -100,14 +100,10 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     @Operation(description = "Avdelingsliste saksbehandlere og grupper", tags = "AvdelingslederSaksbehandlergrupper")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public SaksbehandlereOgSaksbehandlerGrupper hentSaksbehandlerGrupper(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
-        var avdelingensSaksbehandlere = avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
-            .stream()
-            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
-            .toList();
-        // Litt dobbeltarbeid her i overgangsfase - vi henter saksbehandlere og mapper som før i tillegg til å gjøre samme med gruppene
         var saksbehandlereGruppe =  avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlereOgGrupper(avdelingEnhetDto.getAvdelingEnhet())
-            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(), g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList())).toList();
-        return new SaksbehandlereOgSaksbehandlerGrupper(avdelingensSaksbehandlere, saksbehandlereGruppe);
+            .stream().map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(),
+                g.getSaksbehandlere().stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList())).toList();
+        return new SaksbehandlereOgSaksbehandlerGrupper(saksbehandlereGruppe);
     }
 
     @POST

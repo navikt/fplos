@@ -6,14 +6,8 @@ import java.time.LocalDateTime;
 
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
-public class ReservasjonStatusDto {
-
-    private final boolean erReservert;
-    private LocalDateTime reservertTilTidspunkt;
-    private Boolean erReservertAvInnloggetBruker;
-    private String reservertAvUid;
-    private String reservertAvNavn;
-    private FlyttetReservasjonDto flyttetReservasjon;
+public record ReservasjonStatusDto(boolean erReservert, LocalDateTime reservertTilTidspunkt, Boolean erReservertAvInnloggetBruker,
+                                   String reservertAvIdent, String reservertAvUid, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjon) {
 
     static ReservasjonStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
         var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
@@ -21,7 +15,7 @@ public class ReservasjonStatusDto {
     }
 
     static ReservasjonStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjonDto) {
-        var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, flyttetReservasjonDto.getNavn());
+        var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, flyttetReservasjonDto.navn());
         return new ReservasjonStatusDto(true, reservasjonDto, flyttetReservasjonDto);
     }
 
@@ -30,58 +24,24 @@ public class ReservasjonStatusDto {
     }
 
     private ReservasjonStatusDto(boolean erReservert, ReservasjonDto reservasjonDto, FlyttetReservasjonDto flyttetReservasjonDto) {
-        this.erReservert = erReservert;
-        this.reservertTilTidspunkt = reservasjonDto.reservertTilTidspunkt();
-        this.reservertAvUid = reservasjonDto.reservertAvUid();
-        this.reservertAvNavn = reservasjonDto.reservertAvNavn();
-        this.erReservertAvInnloggetBruker = isErReservertAvInnloggetBruker(reservertAvUid);
-
-        if (reservasjonDto.begrunnelse() != null || reservasjonDto.flyttetTidspunkt() != null) {
-            if (flyttetReservasjonDto != null) {
-                flyttetReservasjon = flyttetReservasjonDto;
-            } else {
-                flyttetReservasjon = new FlyttetReservasjonDto(reservasjonDto.flyttetTidspunkt(), reservasjonDto.flyttetAv(),
-                    reservasjonDto.flyttetAvNavn(), reservasjonDto.begrunnelse());
-            }
-        }
+        this(erReservert, reservasjonDto.reservertTilTidspunkt(), isErReservertAvInnloggetBruker(reservasjonDto.reservertAvUid()),
+            reservasjonDto.reservertAvIdent(), reservasjonDto.reservertAvUid(), reservasjonDto.reservertAvNavn(), utledFlyttetReservasjonDto(reservasjonDto, flyttetReservasjonDto));
     }
 
     private ReservasjonStatusDto(boolean erReservert) {
-        this.erReservert = erReservert;
-    }
-
-    public boolean isErReservert() {
-        return erReservert;
-    }
-
-    public LocalDateTime getReservertTilTidspunkt() {
-        return reservertTilTidspunkt;
-    }
-
-    public Boolean getErReservertAvInnloggetBruker() {
-        return erReservertAvInnloggetBruker;
-    }
-
-    public String getReservertAvUid() {
-        return reservertAvUid;
-    }
-
-    public String getReservertAvNavn() {
-        return reservertAvNavn;
+        this(erReservert, null, null, null, null, null, null);
     }
 
     private static boolean isErReservertAvInnloggetBruker(String reservertAvUid) {
         return reservertAvUid != null && reservertAvUid.equalsIgnoreCase(brukerIdent());
     }
 
-    public FlyttetReservasjonDto getFlyttetReservasjon() {
-        return flyttetReservasjon;
+    private static FlyttetReservasjonDto utledFlyttetReservasjonDto(ReservasjonDto reservasjonDto, FlyttetReservasjonDto flyttetReservasjonDto) {
+        if (reservasjonDto.begrunnelse() == null && reservasjonDto.flyttetTidspunkt() == null) {
+            return null;
+        }
+        return flyttetReservasjonDto != null ? flyttetReservasjonDto : new FlyttetReservasjonDto(reservasjonDto.flyttetTidspunkt(),
+            reservasjonDto.flyttetAv(), reservasjonDto.flyttetAv(), reservasjonDto.flyttetAvNavn(), reservasjonDto.begrunnelse());
     }
 
-    @Override
-    public String toString() {
-        return "ReservasjonStatusDto{" + "erReservert=" + erReservert + ", reservertTilTidspunkt=" + reservertTilTidspunkt
-            + ", erReservertAvInnloggetBruker=" + erReservertAvInnloggetBruker + ", reservertAvUid='" + reservertAvUid + '\''
-            + ", reservertAvNavn='***'" + ", flyttetReservasjon=" + flyttetReservasjon + '}';
-    }
 }

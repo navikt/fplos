@@ -54,17 +54,15 @@ public class SaksbehandlerDtoTjeneste {
     }
 
     public SaksbehandlerDto saksbehandlerDto(Saksbehandler saksbehandler) {
-        var identDto = new SaksbehandlerBrukerIdentDto(saksbehandler.getSaksbehandlerIdent());
-        return new SaksbehandlerDto(identDto, saksbehandler.getNavnEllerUkjent(), saksbehandler.getAnsattVedEnhetEllerUkjent());
+        return new SaksbehandlerDto(saksbehandler.getSaksbehandlerIdent(), saksbehandler.getNavnEllerUkjent(), saksbehandler.getAnsattVedEnhetEllerUkjent());
     }
 
     // Denne skal hente Brukerprofil dersom saksbehandler ikke er lagret
     public Optional<SaksbehandlerDto> saksbehandlerDtoForNavIdent(String saksbehandlerIdent) {
         try {
-            var identDto = new SaksbehandlerBrukerIdentDto(saksbehandlerIdent);
             return organisasjonRepository.hentSaksbehandlerHvisEksisterer(saksbehandlerIdent).map(this::saksbehandlerDto)
                 .or(() -> ansattTjeneste.hentBrukerProfil(saksbehandlerIdent)
-                    .map(bp -> new SaksbehandlerDto(identDto, bp.navn(), bp.ansattAvdeling())));
+                    .map(bp -> new SaksbehandlerDto(saksbehandlerIdent, bp.navn(), bp.ansattAvdeling())));
         } catch (IntegrasjonException e) {
             return Optional.empty();
         }

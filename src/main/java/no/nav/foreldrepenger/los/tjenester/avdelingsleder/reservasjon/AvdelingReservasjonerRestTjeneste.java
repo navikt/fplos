@@ -49,7 +49,7 @@ public class AvdelingReservasjonerRestTjeneste {
     }
 
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Henter alle reservasjoner", tags = "AvdelingslederReservasjoner")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<ReservasjonDto> hentAvdelingensReservasjoner(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {

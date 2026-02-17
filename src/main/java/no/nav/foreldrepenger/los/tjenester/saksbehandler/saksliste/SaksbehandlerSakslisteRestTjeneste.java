@@ -3,6 +3,7 @@ package no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste;
 import java.util.List;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -13,8 +14,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-
-import io.swagger.v3.oas.annotations.Operation;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
@@ -53,9 +52,13 @@ public class SaksbehandlerSakslisteRestTjeneste {
     public List<SakslisteDto> hentSakslister() {
         var filtre = oppgaveKøTjeneste.hentOppgaveFiltreringerForPåloggetBruker();
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
-        return filtre.stream().map(of -> new SakslisteDto(of, Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null))).toList();
+        return filtre.stream().map(of -> new SakslisteDto(of,
+                saksbehandlerDtoTjeneste.hentAktiveSaksbehandlereTilknyttetSaksliste(of.getId()),
+                Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
+            .toList();
     }
 
+    @Deprecated(forRemoval = true) // Følger med i GET /saksbehandler/saksliste (metoden over)
     @GET
     @Path("/saksbehandlere")
     @Produces(MediaType.APPLICATION_JSON)

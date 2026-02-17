@@ -83,7 +83,7 @@ public class NøkkeltallRestTjeneste {
 
     @GET
     @Path("/åpne-behandlinger")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Åpne behandlinger", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<NøkkeltallBehandlingFørsteUttakDto> getAlleBehandlingerForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
@@ -92,7 +92,7 @@ public class NøkkeltallRestTjeneste {
 
     @GET
     @Path("/frist-utløp")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Førstegangsbehandlinger på vent pr enhet, ytelse og ventefrist", tags = "AvdelingslederTall")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<NøkkeltallBehandlingVentefristUtløperDto> getAlleVentefristerForAvdeling(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
