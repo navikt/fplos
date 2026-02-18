@@ -13,7 +13,6 @@
     <sequence-generator name="SEQ_AVDELING" allocation-size="50" sequence-name="SEQ_AVDELING"/>
     <sequence-generator name="SEQ_SAKSBEHANDLER" allocation-size="50" sequence-name="SEQ_SAKSBEHANDLER"/>
     <sequence-generator name="SEQ_GRUPPE" allocation-size="50" sequence-name="SEQ_GRUPPE"/>
-    <sequence-generator name="SEQ_DRIFTSMELDING" allocation-size="50" sequence-name="SEQ_DRIFTSMELDING"/>
     <entity class="no.nav.foreldrepenger.los.oppgave.Oppgave"/>
     <entity class="no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap"/>
     <entity class="no.nav.foreldrepenger.los.oppgave.Behandling"/>
