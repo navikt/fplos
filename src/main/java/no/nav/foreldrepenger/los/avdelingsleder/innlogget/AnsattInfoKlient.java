@@ -5,11 +5,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import no.nav.vedtak.felles.integrasjon.ansatt.AbstractAnsattInfoKlient;
 import no.nav.vedtak.felles.integrasjon.ansatt.AnsattInfoDto;
 import no.nav.vedtak.felles.integrasjon.rest.FpApplication;
@@ -77,8 +76,6 @@ public class AnsattInfoKlient extends AbstractAnsattInfoKlient {
     }
 
     static InnloggetNavAnsattDto mapTilDomene(InnloggetNavAnsatt ansatt, Set<AnsattGruppe> grupper) {
-        return new InnloggetNavAnsattDto.Builder(ansatt.brukernavn(), ansatt.navn())
-            .kanOppgavestyre(grupper.contains(AnsattGruppe.OPPGAVESTYRER))
-            .build();
+        return new InnloggetNavAnsattDto(ansatt.brukernavn(), ansatt.navn(), grupper.contains(AnsattGruppe.OPPGAVESTYRER));
     }
 }

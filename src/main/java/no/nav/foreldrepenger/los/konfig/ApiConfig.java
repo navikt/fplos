@@ -11,7 +11,6 @@ import org.glassfish.jersey.server.ServerProperties;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import no.nav.foreldrepenger.los.tjenester.admin.DriftsmeldingerRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.AvdelingslederRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.oppgave.AvdelingslederOppgaveRestTjeneste;
@@ -44,7 +43,6 @@ public class ApiConfig extends Application {
     private static Collection<Class<?>> getAllClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(KodeverkRestTjeneste.class);
-        classes.add(DriftsmeldingerRestTjeneste.class);
         classes.add(SaksbehandlerSakslisteRestTjeneste.class);
         classes.add(OppgaveRestTjeneste.class);
         classes.add(AvdelingslederSakslisteRestTjeneste.class);

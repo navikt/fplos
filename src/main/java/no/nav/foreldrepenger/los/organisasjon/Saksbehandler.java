@@ -1,7 +1,6 @@
 package no.nav.foreldrepenger.los.organisasjon;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,10 +20,6 @@ public class Saksbehandler extends BaseEntitet {
     @Column(name = "SAKSBEHANDLER_IDENT")
     private String saksbehandlerIdent;
 
-    // TODO: Vurder å fjerne saksbehandlerUuid. Nå brukes den kun for innlogget saksbehandler. Endres ved bytte av avdeling
-    @Column(name = "SAKSBEHANDLER_UUID")
-    private UUID saksbehandlerUuid;
-
     @Column(name = "NAVN")
     private String navn;
 
@@ -35,9 +30,8 @@ public class Saksbehandler extends BaseEntitet {
         //CDI
     }
 
-    public Saksbehandler(String saksbehandlerIdent, UUID saksbehandlerUuid, String navn, String ansattVedEnhet) {
+    public Saksbehandler(String saksbehandlerIdent, String navn, String ansattVedEnhet) {
         this.saksbehandlerIdent = saksbehandlerIdent;
-        this.saksbehandlerUuid = saksbehandlerUuid;
         this.navn = navn;
         this.ansattVedEnhet = ansattVedEnhet;
     }
@@ -48,18 +42,6 @@ public class Saksbehandler extends BaseEntitet {
 
     public String getSaksbehandlerIdent() {
         return saksbehandlerIdent;
-    }
-
-    public UUID getSaksbehandlerUuid() {
-        return saksbehandlerUuid;
-    }
-
-    public void setSaksbehandlerUuid(UUID saksbehandlerUuid) {
-        this.saksbehandlerUuid = saksbehandlerUuid;
-    }
-
-    public Optional<UUID> getSaksbehandlerUuidHvisFinnes() {
-        return Optional.ofNullable(saksbehandlerUuid);
     }
 
     public String getNavn() {

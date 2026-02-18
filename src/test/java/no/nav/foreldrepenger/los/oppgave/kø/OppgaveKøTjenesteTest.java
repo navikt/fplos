@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -118,7 +117,7 @@ class OppgaveKøTjenesteTest {
     @Test
     void hentAlleOppgaveFiltrering() {
         var lagtInnLister = leggInnEtSettMedLister(3);
-        var saksbehandler = new Saksbehandler("1234567", UUID.randomUUID(), "Navn Navnesen", "1234");
+        var saksbehandler = new Saksbehandler("1234567", "Navn Navnesen", "1234");
         entityManager.persist(saksbehandler);
         entityManager.flush();
 
