@@ -20,6 +20,7 @@
         <fp-kontrakter.version>9.4.26</fp-kontrakter.version>
         <felles.version>7.6.15</felles.version>
         <prosesstask.version>5.2.3</prosesstask.version>
+        <openapi-spec-utils.version>2.1.0</openapi-spec-utils.version>
     </properties>
 
     <dependencyManagement>
@@ -273,6 +274,11 @@
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-jaxrs2-jakarta</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.openapi.spec.utils</groupId>
+            <artifactId>openapi-spec-utils</artifactId>
+            <version>${openapi-spec-utils.version}</version>
         </dependency>
 
         <dependency>
