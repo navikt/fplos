@@ -80,10 +80,6 @@ public class Oppgave extends BaseEntitet {
     @Column(name = "OPPGAVE_AVSLUTTET")
     protected LocalDateTime oppgaveAvsluttet;
 
-    @Convert(converter = BooleanToStringConverter.class) //TODO trenger ikke denne
-    @Column(name = "UTFORT_FRA_ADMIN")
-    protected Boolean utfortFraAdmin = Boolean.FALSE;
-
     @Embedded
     protected BehandlingId behandlingId;
 
@@ -247,11 +243,6 @@ public class Oppgave extends BaseEntitet {
 
         public Builder medFørsteStønadsdag(LocalDate førsteStønadsdag) {
             tempOppgave.førsteStønadsdag = førsteStønadsdag;
-            return this;
-        }
-
-        public Builder medUtfortFraAdmin(Boolean utfortFraAdmin) {
-            tempOppgave.utfortFraAdmin = utfortFraAdmin;
             return this;
         }
 
