@@ -10,7 +10,7 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 import no.nav.foreldrepenger.los.oppgavekø.FiltreringAndreKriterierType;
 import no.nav.foreldrepenger.los.oppgavekø.OppgaveFiltrering;
-import no.nav.foreldrepenger.los.statistikk.AktiveOgTilgjenglige;
+import no.nav.foreldrepenger.los.statistikk.KøStatistikkDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.SorteringDto;
 
 public record SakslisteDto(@NotNull Long sakslisteId,
@@ -23,8 +23,8 @@ public record SakslisteDto(@NotNull Long sakslisteId,
                            @NotNull List<SaksbehandlerDto> saksbehandlere,
                            StatistikkDto gjeldendeStatistikk) {
 
-    public SakslisteDto(OppgaveFiltrering of, List<SaksbehandlerDto> saksbehandlere, AktiveOgTilgjenglige aktiveOgTilgjenglige) {
-        var statistikk = aktiveOgTilgjenglige != null ? new StatistikkDto(aktiveOgTilgjenglige.aktive(), aktiveOgTilgjenglige.tilgjengelige(), aktiveOgTilgjenglige.ventende()) : null;
+    public SakslisteDto(OppgaveFiltrering of, List<SaksbehandlerDto> saksbehandlere, KøStatistikkDto køStatistikk) {
+        var statistikk = køStatistikk != null ? new StatistikkDto(køStatistikk.aktive(), køStatistikk.tilgjengelige(), køStatistikk.ventende()) : null;
         this(of.getId(), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
             AndreKriterieDto.fra(of.getFiltreringAndreKriterierTyper()),
             KøSorteringFeltDto.alle(), saksbehandlere, statistikk);
