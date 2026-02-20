@@ -49,6 +49,6 @@ public class SaksbehandlerSakslisteRestTjeneste {
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
         return filtre.stream().map(of -> new SakslisteDto(of,
             oppgaveKøTjeneste.hentSaksbehandlereForOppgaveFiltrering(of).stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList(),
-            Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null))).toList();
+            Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilDto).orElse(null))).toList();
     }
 }

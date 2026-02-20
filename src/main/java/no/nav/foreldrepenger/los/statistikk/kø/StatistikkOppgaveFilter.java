@@ -103,7 +103,7 @@ public class StatistikkOppgaveFilter implements Serializable {
     }
 
     public Integer getAntallAvsluttet() {
-        return antallAvsluttet;
+        return Optional.ofNullable(antallAvsluttet).orElse(0);
     }
 
     @Override

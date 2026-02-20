@@ -19,7 +19,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-import no.nav.foreldrepenger.los.statistikk.AktiveOgTilgjenglige;
+import no.nav.foreldrepenger.los.statistikk.KøStatistikkDto;
 import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
 import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
@@ -103,16 +103,15 @@ public class NøkkeltallRestTjeneste {
     @Path("/statistikk-oppgave-filter")
     @Operation(description = "Hent statistikk for kø den siste måneden")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public List<AktiveOgTilgjenglige> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId,
-                                                                                  @NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+    public List<KøStatistikkDto> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId) {
         return statistikkRepository.hentStatistikkOppgaveFilterFraFom(sakslisteId.getVerdi(), LocalDate.now().minusMonths(1)).stream()
-            .map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige)
-            .sorted(Comparator.comparing(AktiveOgTilgjenglige::tidspunkt))
+            .map(NøkkeltallRestTjeneste::tilDto)
+            .sorted(Comparator.comparing(KøStatistikkDto::tidspunkt))
             .toList();
     }
 
-    public static AktiveOgTilgjenglige tilAktiveOgTilgjenglige(StatistikkOppgaveFilter s) {
+    public static KøStatistikkDto tilDto(StatistikkOppgaveFilter s) {
         var tid = Instant.ofEpochMilli(s.getTidsstempel()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return new AktiveOgTilgjenglige(tid, s.getAntallAktive(), s.getAntallTilgjengelige(), s.getAntallVentende());
+        return new KøStatistikkDto(tid, s.getAntallAktive(), s.getAntallTilgjengelige(), s.getAntallVentende(), s.getAntallAvsluttet());
     }
 }

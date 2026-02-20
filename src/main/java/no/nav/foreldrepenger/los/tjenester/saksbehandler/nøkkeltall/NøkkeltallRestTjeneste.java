@@ -14,7 +14,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-import no.nav.foreldrepenger.los.statistikk.AktiveOgTilgjenglige;
+import no.nav.foreldrepenger.los.statistikk.KøStatistikkDto;
 import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
 import no.nav.vedtak.sikkerhet.abac.beskyttet.ActionType;
@@ -42,10 +42,10 @@ public class NøkkeltallRestTjeneste {
     @GET
     @Path("/oppgaver")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public List<AktiveOgTilgjenglige> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam(ENHET_QUERY_NAME) @NotNull @Valid Long oppgaveFilterId) {
+    public List<KøStatistikkDto> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam(ENHET_QUERY_NAME) @NotNull @Valid Long oppgaveFilterId) {
         return statistikkRepository.hentStatistikkOppgaveFilterFraFom(oppgaveFilterId, LocalDate.now().minusMonths(1)).stream()
-            .map(no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige)
-            .sorted(Comparator.comparing(AktiveOgTilgjenglige::tidspunkt))
+            .map(no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste::tilDto)
+            .sorted(Comparator.comparing(KøStatistikkDto::tidspunkt))
             .toList();
     }
 
