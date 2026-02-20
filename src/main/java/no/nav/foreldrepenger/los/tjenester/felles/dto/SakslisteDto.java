@@ -30,7 +30,7 @@ public record SakslisteDto(@NotNull Long sakslisteId,
             KøSorteringFeltDto.alle(), saksbehandlere, statistikk);
     }
 
-    public record StatistikkDto(int alleOppgaver, int tilgjengeligeOppgaver, int behandlingerPåVent) {
+    public record StatistikkDto(@NotNull int alleOppgaver, @NotNull int tilgjengeligeOppgaver, int behandlingerPåVent) {
     }
 
     public record AndreKriterieDto(Set<AndreKriterierType> inkluder, Set<AndreKriterierType> ekskluder) {
