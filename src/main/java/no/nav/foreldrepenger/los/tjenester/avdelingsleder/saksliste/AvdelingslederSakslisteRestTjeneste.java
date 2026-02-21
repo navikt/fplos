@@ -72,7 +72,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         return filtersett.stream()
             .map(of -> new SakslisteDto(of,
                 avdelingslederTjeneste.saksbehandlereForOppgaveListe(of).stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList(),
-                Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige).orElse(null)))
+                Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilDto).orElse(null)))
             .toList();
     }
 

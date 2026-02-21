@@ -19,12 +19,13 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-import no.nav.foreldrepenger.los.statistikk.AktiveOgTilgjenglige;
+import no.nav.foreldrepenger.los.statistikk.KøStatistikkDto;
 import no.nav.foreldrepenger.los.statistikk.StatistikkRepository;
 import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingFørsteUttakDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingVentefristUtløperDto;
+import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaveEndringForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdeling;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagUkeMåned;
@@ -66,11 +67,24 @@ public class NøkkeltallRestTjeneste {
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
     public List<OppgaverForAvdelingPerDato> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         var eldre = statistikkRepository.hentStatistikkForEnhetFomDato(avdelingEnhet.getAvdelingEnhet(), LocalDate.now().minusWeeks(4)).stream()
-            .map(s -> new OppgaverForAvdelingPerDato(s.getFagsakYtelseType(), s.getBehandlingType(), s.getStatistikkDato(), Long.valueOf(s.getAntallAktive())));
+            .map(s -> new OppgaverForAvdelingPerDato(s.getFagsakYtelseType(), s.getBehandlingType(),
+                s.getStatistikkDato(), s.getStatistikkDato(), Long.valueOf(s.getAntallAktive())));
         var dagens = statistikkRepository.hentÅpneOppgaverPerEnhetYtelseBehandling().stream()
             .filter(tall -> Objects.equals(tall.enhet(), avdelingEnhet.getAvdelingEnhet()))
-            .map(tall -> new OppgaverForAvdelingPerDato(tall.fagsakYtelseType(), tall.behandlingType(), LocalDate.now(), tall.antall()));
+            .map(tall -> new OppgaverForAvdelingPerDato(tall.fagsakYtelseType(), tall.behandlingType(),
+                LocalDate.now(), LocalDate.now(), tall.antall()));
         return Stream.concat(eldre, dagens).toList();
+    }
+
+    @GET
+    @Path("/behandlinger-opprettet-avsluttet")
+    @Operation(description = "UA Historikk", tags = "AvdelingslederTall")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
+    public List<OppgaveEndringForAvdelingPerDato> getAntallOppgaverEndretForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+        return statistikkRepository.hentStatistikkForEnhetFomDato(avdelingEnhet.getAvdelingEnhet(), LocalDate.now().minusWeeks(4)).stream()
+            .map(s -> new OppgaveEndringForAvdelingPerDato(s.getFagsakYtelseType(), s.getBehandlingType(),
+                s.getStatistikkDato(), s.getAntallOpprettet(), s.getAntallAvsluttet()))
+            .toList();
     }
 
     @GET
@@ -103,16 +117,15 @@ public class NøkkeltallRestTjeneste {
     @Path("/statistikk-oppgave-filter")
     @Operation(description = "Hent statistikk for kø den siste måneden")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public List<AktiveOgTilgjenglige> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId,
-                                                                                  @NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
+    public List<KøStatistikkDto> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId) {
         return statistikkRepository.hentStatistikkOppgaveFilterFraFom(sakslisteId.getVerdi(), LocalDate.now().minusMonths(1)).stream()
-            .map(NøkkeltallRestTjeneste::tilAktiveOgTilgjenglige)
-            .sorted(Comparator.comparing(AktiveOgTilgjenglige::tidspunkt))
+            .map(NøkkeltallRestTjeneste::tilDto)
+            .sorted(Comparator.comparing(KøStatistikkDto::tidspunkt))
             .toList();
     }
 
-    public static AktiveOgTilgjenglige tilAktiveOgTilgjenglige(StatistikkOppgaveFilter s) {
+    public static KøStatistikkDto tilDto(StatistikkOppgaveFilter s) {
         var tid = Instant.ofEpochMilli(s.getTidsstempel()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return new AktiveOgTilgjenglige(tid, s.getAntallAktive(), s.getAntallTilgjengelige(), s.getAntallVentende());
+        return new KøStatistikkDto(tid, s.getAntallAktive(), s.getAntallTilgjengelige(), s.getAntallVentende(), s.getAntallAvsluttet());
     }
 }
