@@ -1,9 +1,11 @@
 package no.nav.foreldrepenger.los.tjenester.felles.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 
 public class OppgaveDtoMedStatus extends OppgaveDto {
-    private final OppgaveBehandlingStatus oppgaveBehandlingStatus;
+    @NotNull private final OppgaveBehandlingStatus oppgaveBehandlingStatus;
 
     public OppgaveDtoMedStatus(OppgaveDto oppgaveDto, OppgaveBehandlingStatus status) {
         super(oppgaveDto);
