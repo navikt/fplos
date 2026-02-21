@@ -3,7 +3,7 @@ package no.nav.foreldrepenger.los.tjenester.felles.dto;
 import jakarta.validation.constraints.NotNull;
 
 public record SaksbehandlerDto(@NotNull String brukerIdent,
-                               String navn,
+                               @NotNull String navn,
                                String ansattAvdeling) {
 
     @Override

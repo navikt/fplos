@@ -16,8 +16,8 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.Sorterin
 public record SakslisteDto(@NotNull Long sakslisteId,
                            @NotNull String navn,
                            @NotNull SorteringDto sortering,
-                           @Size(max = 20) List<BehandlingType> behandlingTyper,
-                           @Size(max = 20) List<FagsakYtelseType> fagsakYtelseTyper,
+                           @NotNull @Size(max = 20) List<BehandlingType> behandlingTyper,
+                           @NotNull @Size(max = 20) List<FagsakYtelseType> fagsakYtelseTyper,
                            @NotNull AndreKriterieDto andreKriterie,
                            @NotNull List<KøSorteringFeltDto> sorteringTyper,
                            @NotNull List<SaksbehandlerDto> saksbehandlere,
@@ -30,10 +30,10 @@ public record SakslisteDto(@NotNull Long sakslisteId,
             KøSorteringFeltDto.alle(), saksbehandlere, statistikk);
     }
 
-    public record StatistikkDto(int alleOppgaver, int tilgjengeligeOppgaver, int behandlingerPåVent) {
+    public record StatistikkDto(@NotNull int alleOppgaver, @NotNull int tilgjengeligeOppgaver, int behandlingerPåVent) {
     }
 
-    public record AndreKriterieDto(Set<AndreKriterierType> inkluder, Set<AndreKriterierType> ekskluder) {
+    public record AndreKriterieDto(@NotNull Set<AndreKriterierType> inkluder, @NotNull Set<AndreKriterierType> ekskluder) {
 
         static AndreKriterieDto fra(List<FiltreringAndreKriterierType> filtreringAndreKriterierTyper) {
             var inkluder = filtreringAndreKriterierTyper.stream()

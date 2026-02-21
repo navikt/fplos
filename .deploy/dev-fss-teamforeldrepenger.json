@@ -66,6 +66,11 @@
       "app": "fp-avdelingsleder",
       "namespace": "teamforeldrepenger",
       "cluster": "dev-gcp"
+    },
+    {
+      "app": "azure-token-generator",
+      "namespace": "nais",
+      "cluster": "dev-gcp"
     }
   ]
 }

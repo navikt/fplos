@@ -5,12 +5,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.glassfish.jersey.server.ServerProperties;
 
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import io.swagger.v3.oas.models.info.Info;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
+import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.AvdelingslederRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.oppgave.AvdelingslederOppgaveRestTjeneste;
@@ -26,7 +30,28 @@ import no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste.Saksbehandler
 @ApplicationPath(ApiConfig.API_URI)
 public class ApiConfig extends Application {
 
+    private static final Environment ENV = Environment.current();
+    private static final boolean ER_PROD = ENV.isProd();
+
     public static final String API_URI = "/api";
+
+    public ApiConfig() {
+        if (!ER_PROD) {
+            registerOpenApi();
+        }
+    }
+
+    private void registerOpenApi() {
+        var info = new Info()
+            .title("FPLOS - Foreldrepenger, engangsstønad og svangerskapspenger")
+            .version(Optional.ofNullable(ENV.imageName()).orElse("1.0"))
+            .description("REST grensesnitt for FP-LOS.");
+        var contextPath = ENV.getProperty("context.path", "/fplos");
+        OpenApiUtils.settOppForTypegenereringFrontend();
+        OpenApiUtils.openApiConfigFor(info, contextPath, this)
+            .registerClasses(getAllClasses())
+            .buildOpenApiContext();
+    }
 
     @Override
     public Set<Class<?>> getClasses() {
@@ -36,6 +61,11 @@ public class ApiConfig extends Application {
         // Standard Jakarta RS oppsett for filtre og plugins
         classes.addAll(FellesConfigClasses.getFellesContainerFilterClasses());
         classes.addAll(FellesConfigClasses.getFellesRsExtConfigClasses());
+
+        if (!ER_PROD) {
+            // swagger
+            classes.add(OpenApiResource.class);
+        }
 
         return Collections.unmodifiableSet(classes);
     }
