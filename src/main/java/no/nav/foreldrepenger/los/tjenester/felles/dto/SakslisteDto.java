@@ -33,7 +33,7 @@ public record SakslisteDto(@NotNull Long sakslisteId,
     public record StatistikkDto(@NotNull int alleOppgaver, @NotNull int tilgjengeligeOppgaver, int behandlingerPåVent) {
     }
 
-    public record AndreKriterieDto(Set<AndreKriterierType> inkluder, Set<AndreKriterierType> ekskluder) {
+    public record AndreKriterieDto(@NotNull Set<AndreKriterierType> inkluder, @NotNull Set<AndreKriterierType> ekskluder) {
 
         static AndreKriterieDto fra(List<FiltreringAndreKriterierType> filtreringAndreKriterierTyper) {
             var inkluder = filtreringAndreKriterierTyper.stream()
