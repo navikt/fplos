@@ -10,22 +10,19 @@ public record ReservasjonStatusDto(boolean erReservert, LocalDateTime reservertT
                                    String reservertAvIdent, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjon) {
 
     static ReservasjonStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
-        var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, navnFlyttetAv);
-        return new ReservasjonStatusDto(true, reservasjonDto, null);
+        var flyttet = utledFlyttetReservasjonDto(reservasjon, null, navnFlyttetAv);
+        return new ReservasjonStatusDto(true, reservasjon.getReservertTil(),
+            isErReservertAvInnloggetBruker(reservasjon.getReservertAv()), reservasjon.getReservertAv(), reservertAvNavn, flyttet);
     }
 
     static ReservasjonStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjonDto) {
-        var reservasjonDto = new ReservasjonDto(reservasjon, reservertAvNavn, flyttetReservasjonDto.navn());
-        return new ReservasjonStatusDto(true, reservasjonDto, flyttetReservasjonDto);
+        var flyttet = utledFlyttetReservasjonDto(reservasjon, flyttetReservasjonDto, null);
+        return new ReservasjonStatusDto(true, reservasjon.getReservertTil(),
+            isErReservertAvInnloggetBruker(reservasjon.getReservertAv()), reservasjon.getReservertAv(), reservertAvNavn, flyttet);
     }
 
     static ReservasjonStatusDto ikkeReservert() {
         return new ReservasjonStatusDto(false);
-    }
-
-    private ReservasjonStatusDto(boolean erReservert, ReservasjonDto reservasjonDto, FlyttetReservasjonDto flyttetReservasjonDto) {
-        this(erReservert, reservasjonDto.reservertTilTidspunkt(), isErReservertAvInnloggetBruker(reservasjonDto.reservertAvIdent()),
-            reservasjonDto.reservertAvIdent(), reservasjonDto.reservertAvNavn(), utledFlyttetReservasjonDto(reservasjonDto, flyttetReservasjonDto));
     }
 
     private ReservasjonStatusDto(boolean erReservert) {
@@ -36,12 +33,12 @@ public record ReservasjonStatusDto(boolean erReservert, LocalDateTime reservertT
         return reservertAvIdent != null && reservertAvIdent.equalsIgnoreCase(brukerIdent());
     }
 
-    private static FlyttetReservasjonDto utledFlyttetReservasjonDto(ReservasjonDto reservasjonDto, FlyttetReservasjonDto flyttetReservasjonDto) {
-        if (reservasjonDto.begrunnelse() == null && reservasjonDto.flyttetTidspunkt() == null) {
+    private static FlyttetReservasjonDto utledFlyttetReservasjonDto(Reservasjon reservasjon, FlyttetReservasjonDto flyttetReservasjonDto, String navnFlyttetAv) {
+        if (reservasjon.getBegrunnelse() == null && reservasjon.getFlyttetTidspunkt() == null) {
             return null;
         }
-        return flyttetReservasjonDto != null ? flyttetReservasjonDto : new FlyttetReservasjonDto(reservasjonDto.flyttetTidspunkt(),
-            reservasjonDto.flyttetAvIdent(), reservasjonDto.flyttetAvNavn(), reservasjonDto.begrunnelse());
+        return flyttetReservasjonDto != null ? flyttetReservasjonDto : new FlyttetReservasjonDto(reservasjon.getFlyttetTidspunkt(),
+            reservasjon.getFlyttetAv(), navnFlyttetAv, reservasjon.getBegrunnelse());
     }
 
 }

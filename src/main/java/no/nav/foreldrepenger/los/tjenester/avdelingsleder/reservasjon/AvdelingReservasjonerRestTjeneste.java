@@ -22,7 +22,6 @@ import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 import no.nav.foreldrepenger.los.reservasjon.ReservasjonTjeneste;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.ReservasjonDto;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.dto.OppgaveIdDto;
 import no.nav.vedtak.felles.jpa.TomtResultatException;
 import no.nav.vedtak.sikkerhet.abac.BeskyttetRessurs;
@@ -52,7 +51,7 @@ public class AvdelingReservasjonerRestTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Henter alle reservasjoner", tags = "AvdelingslederReservasjoner")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public List<ReservasjonDto> hentAvdelingensReservasjoner(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
+    public List<AvdelingReservasjonDto> hentAvdelingensReservasjoner(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         var reservasjoner = reservasjonTjeneste.hentReservasjonerForAvdeling(avdelingEnhetDto.getAvdelingEnhet());
         return tilReservasjonDtoListe(reservasjoner);
     }
@@ -70,12 +69,12 @@ public class AvdelingReservasjonerRestTjeneste {
         return Response.noContent().build();
     }
 
-    private List<ReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
+    private List<AvdelingReservasjonDto> tilReservasjonDtoListe(List<Reservasjon> reservasjoner) {
         return reservasjoner.stream().map(reservasjon -> {
             var reservertAvNavn = organisasjonRepository.hentSaksbehandlerHvisEksisterer(reservasjon.getReservertAv())
                 .map(Saksbehandler::getNavn)
                 .orElseGet(() -> "Ukjent saksbehandler " + reservasjon.getReservertAv());
-            return new ReservasjonDto(reservasjon, reservertAvNavn, null);
+            return new AvdelingReservasjonDto(reservasjon, reservertAvNavn);
         }).toList();
     }
 }
