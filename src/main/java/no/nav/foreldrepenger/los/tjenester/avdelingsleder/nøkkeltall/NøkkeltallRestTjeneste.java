@@ -25,7 +25,6 @@ import no.nav.foreldrepenger.los.statistikk.kø.StatistikkOppgaveFilter;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.dto.AvdelingEnhetDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingFørsteUttakDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.NøkkeltallBehandlingVentefristUtløperDto;
-import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaveEndringForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdeling;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForAvdelingPerDato;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.dto.OppgaverForFørsteStønadsdagUkeMåned;
@@ -68,23 +67,12 @@ public class NøkkeltallRestTjeneste {
     public List<OppgaverForAvdelingPerDato> getAntallOppgaverForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
         var eldre = statistikkRepository.hentStatistikkForEnhetFomDato(avdelingEnhet.getAvdelingEnhet(), LocalDate.now().minusWeeks(4)).stream()
             .map(s -> new OppgaverForAvdelingPerDato(s.getFagsakYtelseType(), s.getBehandlingType(),
-                s.getStatistikkDato(), s.getStatistikkDato(), Long.valueOf(s.getAntallAktive())));
+                s.getStatistikkDato(), Long.valueOf(s.getAntallAktive()), s.getAntallOpprettet(), s.getAntallAvsluttet()));
         var dagens = statistikkRepository.hentÅpneOppgaverPerEnhetYtelseBehandling().stream()
             .filter(tall -> Objects.equals(tall.enhet(), avdelingEnhet.getAvdelingEnhet()))
             .map(tall -> new OppgaverForAvdelingPerDato(tall.fagsakYtelseType(), tall.behandlingType(),
-                LocalDate.now(), LocalDate.now(), tall.antall()));
+                LocalDate.now(), tall.antall(), 0, 0));
         return Stream.concat(eldre, dagens).toList();
-    }
-
-    @GET
-    @Path("/behandlinger-opprettet-avsluttet")
-    @Operation(description = "UA Historikk", tags = "AvdelingslederTall")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.OPPGAVESTYRING_AVDELINGENHET, sporingslogg = false)
-    public List<OppgaveEndringForAvdelingPerDato> getAntallOppgaverEndretForAvdelingPerDato(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhet) {
-        return statistikkRepository.hentStatistikkForEnhetFomDato(avdelingEnhet.getAvdelingEnhet(), LocalDate.now().minusWeeks(4)).stream()
-            .map(s -> new OppgaveEndringForAvdelingPerDato(s.getFagsakYtelseType(), s.getBehandlingType(),
-                s.getStatistikkDato(), s.getAntallOpprettet(), s.getAntallAvsluttet()))
-            .toList();
     }
 
     @GET
