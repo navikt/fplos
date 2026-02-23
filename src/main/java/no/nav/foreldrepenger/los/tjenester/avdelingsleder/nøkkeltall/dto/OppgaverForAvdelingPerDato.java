@@ -7,5 +7,6 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 
 public record OppgaverForAvdelingPerDato(@NotNull FagsakYtelseType fagsakYtelseType, @NotNull BehandlingType behandlingType,
-                                         @NotNull LocalDate opprettetDato, @NotNull LocalDate statistikkDato, @NotNull Long antall) {
+                                         @NotNull LocalDate statistikkDato, @NotNull Long antall, @NotNull Integer opprettet,
+                                         @NotNull Integer avsluttet) {
 }
