@@ -4,9 +4,10 @@ import static no.nav.foreldrepenger.los.felles.util.BrukerIdent.brukerIdent;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
 import no.nav.foreldrepenger.los.reservasjon.Reservasjon;
 
-public record ReservasjonStatusDto(boolean erReservert, LocalDateTime reservertTilTidspunkt, Boolean erReservertAvInnloggetBruker,
+public record ReservasjonStatusDto(@NotNull boolean erReservert, LocalDateTime reservertTilTidspunkt, Boolean erReservertAvInnloggetBruker,
                                    String reservertAvIdent, String reservertAvNavn, FlyttetReservasjonDto flyttetReservasjon) {
 
     static ReservasjonStatusDto reservert(Reservasjon reservasjon, String reservertAvNavn, String navnFlyttetAv) {
