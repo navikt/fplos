@@ -54,12 +54,14 @@ public class ApiConfig extends Application {
         // eksponert grensesnitt
         Set<Class<?>> classes = new HashSet<>(getAllClasses());
 
+        // Klasser som ikke typegenereres
+        classes.add(MigreringRestTjeneste.class);
+
         // Standard Jakarta RS oppsett for filtre og plugins
         classes.addAll(FellesConfigClasses.getFellesContainerFilterClasses());
         classes.addAll(FellesConfigClasses.getFellesRsExtConfigClasses());
 
         if (!ER_PROD) {
-            // swagger
             classes.add(OpenApiResource.class);
         }
 
@@ -78,7 +80,6 @@ public class ApiConfig extends Application {
         classes.add(NøkkeltallRestTjeneste.class);
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
-        classes.add(MigreringRestTjeneste.class);
         return classes;
     }
 
