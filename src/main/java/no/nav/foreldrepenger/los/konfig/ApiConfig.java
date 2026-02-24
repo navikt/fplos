@@ -42,15 +42,11 @@ public class ApiConfig extends Application {
     }
 
     private void registerOpenApi() {
-        var info = new Info()
-            .title("FPLOS - Foreldrepenger, engangsstønad og svangerskapspenger")
-            .version(Optional.ofNullable(ENV.imageName()).orElse("1.0"))
-            .description("REST grensesnitt for FP-LOS.");
+        var info = new Info().title("FPLOS - specifikasjon for typegenerering frontend")
+            .version(Optional.ofNullable(ENV.imageName()).orElse("1.0"));
         var contextPath = ENV.getProperty("context.path", "/fplos");
         OpenApiUtils.settOppForTypegenereringFrontend();
-        OpenApiUtils.openApiConfigFor(info, contextPath, this)
-            .registerClasses(getAllClasses())
-            .buildOpenApiContext();
+        OpenApiUtils.openApiConfigFor(info, contextPath, this).registerClasses(getAllClasses()).buildOpenApiContext();
     }
 
     @Override

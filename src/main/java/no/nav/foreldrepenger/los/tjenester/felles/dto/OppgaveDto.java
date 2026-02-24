@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.validation.constraints.NotNull;
 import no.nav.foreldrepenger.los.domene.typer.BehandlingId;
 import no.nav.foreldrepenger.los.domene.typer.Fagsystem;
 import no.nav.foreldrepenger.los.domene.typer.aktør.Person;
@@ -15,19 +16,19 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 import no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap;
 
 public class OppgaveDto {
-    private Long id;
-    private String saksnummer;
-    private String navn;
-    private Fagsystem system;
-    private String personnummer;
-    private BehandlingType behandlingstype;
-    private FagsakYtelseType fagsakYtelseType;
-    private Boolean erTilSaksbehandling;
-    private LocalDateTime opprettetTidspunkt;
-    private LocalDateTime behandlingsfrist;
-    private BehandlingId behandlingId;
-    private Set<AndreKriterierType> andreKriterier;
-    private ReservasjonStatusDto reservasjonStatus;
+    @NotNull private Long id;
+    @NotNull private String saksnummer;
+    @NotNull private String navn;
+    @NotNull private Fagsystem system;
+    @NotNull private String personnummer;
+    @NotNull private BehandlingType behandlingstype;
+    @NotNull private FagsakYtelseType fagsakYtelseType;
+    @NotNull private Boolean erTilSaksbehandling;
+    @NotNull private LocalDateTime opprettetTidspunkt;
+    @NotNull private LocalDateTime behandlingsfrist;
+    @NotNull private BehandlingId behandlingId;
+    @NotNull private Set<AndreKriterierType> andreKriterier;
+    @NotNull private ReservasjonStatusDto reservasjonStatus;
 
     OppgaveDto(OppgaveDto other) {
         this.id = other.getId();
