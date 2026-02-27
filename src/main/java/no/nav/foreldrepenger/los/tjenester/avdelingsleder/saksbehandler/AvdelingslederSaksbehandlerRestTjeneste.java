@@ -58,7 +58,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
     public List<SaksbehandlerDto> hentAvdelingensSaksbehandlere(@NotNull @QueryParam("avdelingEnhet") @Valid AvdelingEnhetDto avdelingEnhetDto) {
         return avdelingslederSaksbehandlerTjeneste.hentAvdelingensSaksbehandlere(avdelingEnhetDto.getAvdelingEnhet())
             .stream()
-            .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
+            .map(SaksbehandlerDtoTjeneste::saksbehandlerDto)
             .toList();
     }
 
@@ -104,7 +104,7 @@ public class AvdelingslederSaksbehandlerRestTjeneste {
             .stream()
             .map(g -> new SaksbehandlerGruppeDto(g.getId(), g.getGruppeNavn(),
                 avdelingslederSaksbehandlerTjeneste.hentSaksbehandlereForGrupper(g).stream()
-                    .map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler)
+                    .map(SaksbehandlerDtoTjeneste::saksbehandlerDto)
                     .toList()))
             .toList();
         return new SaksbehandlereOgSaksbehandlerGrupper(saksbehandlereGruppe);

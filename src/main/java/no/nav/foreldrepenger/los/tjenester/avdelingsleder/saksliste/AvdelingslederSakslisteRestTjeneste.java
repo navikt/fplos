@@ -71,7 +71,7 @@ public class AvdelingslederSakslisteRestTjeneste {
         var statistikkMap = statistikkRepository.hentSisteStatistikkForAlleOppgaveFiltre();
         return filtersett.stream()
             .map(of -> new SakslisteDto(of,
-                avdelingslederTjeneste.saksbehandlereForOppgaveListe(of).stream().map(saksbehandlerDtoTjeneste::lagKjentOgUkjentSaksbehandler).toList(),
+                avdelingslederTjeneste.saksbehandlereForOppgaveListe(of).stream().map(SaksbehandlerDtoTjeneste::saksbehandlerDto).toList(),
                 Optional.ofNullable(statistikkMap.get(of.getId())).map(NøkkeltallRestTjeneste::tilDto).orElse(null)))
             .toList();
     }
