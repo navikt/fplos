@@ -5,9 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -32,7 +30,6 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.Saks
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.SaksbehandlerGruppeNavneEndringRequestDto;
 import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksbehandler.dto.SaksbehandlerGruppeSletteRequestDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.vedtak.felles.jpa.TomtResultatException;
 
@@ -42,7 +39,6 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     private static final AvdelingEnhetDto avdelingDto = new AvdelingEnhetDto("4817");
     private static final SaksbehandlerBrukerIdentDto brukerIdentDto = new SaksbehandlerBrukerIdentDto("Z999999");
-    private static final SaksbehandlerDto saksbehandlerDto = new SaksbehandlerDto(brukerIdentDto.getVerdi(), "Navnesen, Navn", "Nav Drammen");
     @Mock
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
 
@@ -83,8 +79,6 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     @Test
     void kan_legge_saksbehandlere_til_gruppe() {
-        setupMockForMappingAvSaksbehandlerDto();
-
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
         em.flush();
@@ -100,7 +94,6 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     @Test
     void kan_fjerne_saksbehandlere_fra_gruppe() {
-        setupMockForMappingAvSaksbehandlerDto();
         var gruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
         em.flush();
@@ -142,7 +135,6 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
 
     @Test
     void skal_kunne_fjerne_saksbehandler_fra_individuelle_grupper() {
-        setupMockForMappingAvSaksbehandlerDto();
         var førsteGruppe = restTjeneste.opprettSaksbehandlerGruppe(avdelingDto);
         restTjeneste.leggTilNySaksbehandler(new SaksbehandlerOgAvdelingDto(brukerIdentDto, avdelingDto));
         em.flush();
@@ -168,11 +160,6 @@ class AvdelingslederSaksbehandlerRestTjenesteTest {
                 fail("Ukjent gruppe");
             }
         }
-    }
-
-    private void setupMockForMappingAvSaksbehandlerDto() {
-        when(saksbehandlerDtoTjeneste.lagKjentOgUkjentSaksbehandler(argThat(sb -> sb.getSaksbehandlerIdent().equals("Z999999"))))
-            .thenReturn(saksbehandlerDto);
     }
 
 }

@@ -52,9 +52,9 @@ public class ReservasjonRestTjeneste {
 
     @Inject
     public ReservasjonRestTjeneste(OppgaveTjeneste oppgaveTjeneste,
-                               ReservasjonTjeneste reservasjonTjeneste,
-                               OppgaveDtoTjeneste oppgaveDtoTjeneste,
-                               SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
+                                   ReservasjonTjeneste reservasjonTjeneste,
+                                   OppgaveDtoTjeneste oppgaveDtoTjeneste,
+                                   SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste) {
         this.oppgaveTjeneste = oppgaveTjeneste;
         this.reservasjonTjeneste = reservasjonTjeneste;
         this.oppgaveDtoTjeneste = oppgaveDtoTjeneste;
@@ -144,6 +144,17 @@ public class ReservasjonRestTjeneste {
         var ident = brukerIdent.getVerdi().toUpperCase();
         var saksbehandler = saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(ident);
         return saksbehandler.orElse(null);
+    }
+
+    @POST
+    @Path("/hent-aktuelle-saksbehandlere")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(description = "Hent aktuelle saksbehandlere ved flytting av reservasjon til annen saksbehandler", tags = "Saksbehandler")
+    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
+    public List<SaksbehandlerDto> hentAktuelleSaksbehandlere(@NotNull @Parameter(description = "oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
+        var oppgave = oppgaveTjeneste.hentOppgave(oppgaveIdDto.getVerdi());
+        return saksbehandlerDtoTjeneste.hentAvdelingensSaksbehandlere(oppgave.getBehandlendeEnhet());
     }
 
     @POST
