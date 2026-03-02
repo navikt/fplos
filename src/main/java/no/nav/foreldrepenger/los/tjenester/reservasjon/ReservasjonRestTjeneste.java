@@ -146,13 +146,12 @@ public class ReservasjonRestTjeneste {
         return saksbehandler.orElse(null);
     }
 
-    @POST
+    @GET
     @Path("/hent-aktuelle-saksbehandlere")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Hent aktuelle saksbehandlere ved flytting av reservasjon til annen saksbehandler", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public List<SaksbehandlerDto> hentAktuelleSaksbehandlere(@NotNull @Parameter(description = "oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
+    public List<SaksbehandlerDto> hentAktuelleSaksbehandlere(@NotNull @Parameter(description = "oppgaveId") @QueryParam("oppgaveId") @Valid OppgaveIdDto oppgaveIdDto) {
         var oppgave = oppgaveTjeneste.hentOppgave(oppgaveIdDto.getVerdi());
         return saksbehandlerDtoTjeneste.hentAvdelingensSaksbehandlere(oppgave.getBehandlendeEnhet());
     }
