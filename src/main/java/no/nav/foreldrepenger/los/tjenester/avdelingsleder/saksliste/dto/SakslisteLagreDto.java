@@ -24,6 +24,7 @@ import no.nav.vedtak.util.InputValideringRegex;
 public record SakslisteLagreDto(@NotNull @Pattern(regexp = InputValideringRegex.FRITEKST) String avdelingEnhet,
                                 @NotNull @Digits(integer = 18, fraction = 0) Long sakslisteId,
                                 @NotNull @Pattern(regexp = InputValideringRegex.FRITEKST) String navn,
+                                @Size(max = 500) @Pattern(regexp = InputValideringRegex.FRITEKST) String beskrivelse,
                                 @NotNull @Valid SorteringDto sortering,
                                 @Size(max = 20) Set<@ValidKodeverk @NotNull BehandlingType> behandlingTyper,
                                 @Size(max = 20) Set<@ValidKodeverk @NotNull FagsakYtelseType> fagsakYtelseTyper,

@@ -15,6 +15,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.Sorterin
 
 public record SakslisteDto(@NotNull Long sakslisteId,
                            @NotNull String navn,
+                           String beskrivelse,
                            @NotNull SorteringDto sortering,
                            @NotNull @Size(max = 20) List<BehandlingType> behandlingTyper,
                            @NotNull @Size(max = 20) List<FagsakYtelseType> fagsakYtelseTyper,
@@ -25,7 +26,7 @@ public record SakslisteDto(@NotNull Long sakslisteId,
 
     public SakslisteDto(OppgaveFiltrering of, List<SaksbehandlerDto> saksbehandlere, KøStatistikkDto køStatistikk) {
         var statistikk = køStatistikk != null ? new StatistikkDto(køStatistikk.aktive(), køStatistikk.tilgjengelige(), køStatistikk.ventende()) : null;
-        this(of.getId(), of.getNavn(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
+        this(of.getId(), of.getNavn(), of.getBeskrivelse(), new SorteringDto(of), of.getBehandlingTyper(), of.getFagsakYtelseTyper(),
             AndreKriterieDto.fra(of.getFiltreringAndreKriterierTyper()),
             KøSorteringFeltDto.alle(), saksbehandlere, statistikk);
     }

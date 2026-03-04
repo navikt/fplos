@@ -69,6 +69,7 @@ public class AvdelingslederTjeneste {
     public void endreEksistrendeOppgaveFilter(SakslisteLagreDto sakslisteLagre) {
         var oppgavefilter = oppgaveRepository.hentOppgaveFilterSett(sakslisteLagre.sakslisteId()).orElseThrow();
         oppgavefilter.setNavn(sakslisteLagre.navn());
+        oppgavefilter.setBeskrivelse(sakslisteLagre.beskrivelse());
         oppgavefilter.setSortering(sakslisteLagre.sortering().sorteringType());
         oppgavefilter.setFomDato(sakslisteLagre.sortering().fomDato());
         oppgavefilter.setTomDato(sakslisteLagre.sortering().tomDato());

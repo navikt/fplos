@@ -89,6 +89,7 @@ class OppgaveTjenesteTest {
             liste.getAvdeling().getAvdelingEnhet(),
             liste.getId(),
             liste.getNavn(),
+            liste.getBeskrivelse(),
             new SakslisteLagreDto.SorteringDto(liste.getSortering(), Periodefilter.FAST_PERIODE, null, null, null, null),
             Set.of(BehandlingType.FØRSTEGANGSSØKNAD),
             Set.of(),

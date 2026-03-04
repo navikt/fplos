@@ -74,6 +74,7 @@ class AvdelingslederTjenesteTest {
     void test_samlet() {
         var liste = new OppgaveFiltrering();
         liste.setNavn("Test");
+        liste.setBeskrivelse("Dette er en beskrivelse.");
         liste.setAvdeling(avdelingDrammen());
         liste.setSortering(KøSortering.BEHANDLINGSFRIST);
         persistAndFlush(liste);
@@ -84,6 +85,7 @@ class AvdelingslederTjenesteTest {
             liste.getAvdeling().getAvdelingEnhet(),
             liste.getId(),
             liste.getNavn(),
+            liste.getBeskrivelse(),
             new SakslisteLagreDto.SorteringDto(KøSortering.BELØP, Periodefilter.FAST_PERIODE, 100L, 200L, null, null),
             Set.of(BehandlingType.TILBAKEBETALING),
             Set.of(FagsakYtelseType.ENGANGSTØNAD, FagsakYtelseType.FORELDREPENGER),
@@ -95,6 +97,7 @@ class AvdelingslederTjenesteTest {
         var oppgaveFiltrering = avdelingslederTjeneste.hentOppgaveFiltering(saksliste.sakslisteId());
         assertThat(oppgaveFiltrering).isPresent();
         assertThat(oppgaveFiltrering.get().getNavn()).isEqualTo(saksliste.navn());
+        assertThat(oppgaveFiltrering.get().getBeskrivelse()).isEqualTo(saksliste.beskrivelse());
         assertThat(oppgaveFiltrering.get().getSortering()).isEqualTo(saksliste.sortering().sorteringType());
         assertThat(oppgaveFiltrering.get().getPeriodefilter()).isEqualTo(saksliste.sortering().periodefilter());
         assertThat(oppgaveFiltrering.get().getFra()).isEqualTo(saksliste.sortering().fra());
