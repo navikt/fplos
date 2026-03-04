@@ -37,6 +37,9 @@ public class OppgaveFiltrering extends BaseEntitet {
     @Column(name = "navn")
     private String navn;
 
+    @Column(name = "BESKRIVELSE")
+    private String beskrivelse;
+
     @Column(name = "sortering", nullable = false)
     @Enumerated(EnumType.STRING)
     private KøSortering sortering;
@@ -79,6 +82,10 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     public String getNavn() {
         return navn;
+    }
+
+    public String getBeskrivelse() {
+        return beskrivelse;
     }
 
     public KøSortering getSortering() {
@@ -127,6 +134,10 @@ public class OppgaveFiltrering extends BaseEntitet {
 
     public void setNavn(String navn) {
         this.navn = navn;
+    }
+
+    public void setBeskrivelse(String beskrivelse) {
+        this.beskrivelse = beskrivelse;
     }
 
     public void setAvdeling(Avdeling avdeling) {
