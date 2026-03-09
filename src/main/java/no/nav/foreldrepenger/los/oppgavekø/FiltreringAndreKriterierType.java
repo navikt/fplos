@@ -21,7 +21,7 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 @Table(name = "FILTRERING_ANDRE_KRITERIER")
 public class FiltreringAndreKriterierType extends BaseEntitet {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FILTRERING_ANDRE_KRIT")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     private Long id;
 
     @ManyToOne
