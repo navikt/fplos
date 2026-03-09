@@ -127,7 +127,7 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
                    FROM information_schema.table_constraints tc
                   WHERE tc.constraint_type = 'PRIMARY KEY'
                     AND tc.table_schema = current_schema()
-                    AND tc.constraint_name LIKE 'PK_%'
+                    AND tc.constraint_name LIKE 'pk_%'
                )
             """;
 
@@ -135,7 +135,7 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
         var avvik = query.getResultList();
         var tekst = avvik.stream().collect(Collectors.joining("\n"));
         var sz = avvik.size();
-        var feilTekst = "Feil eller mangelende definisjon av primary key (skal hete 'PK_<tabell navn>'). Antall feil = %s \n\nTabell:\n%s";
+        var feilTekst = "Feil eller mangelende definisjon av primary key (skal hete 'pk_<tabell navn>'). Antall feil = %s \n\nTabell:\n%s";
         assertThat(avvik).withFailMessage(feilTekst, sz, tekst).isEmpty();
     }
 
@@ -146,13 +146,13 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
               FROM information_schema.table_constraints tc
              WHERE tc.constraint_type = 'FOREIGN KEY'
                AND tc.table_schema = current_schema()
-               AND tc.constraint_name NOT LIKE 'FK_%'
+               AND tc.constraint_name NOT LIKE 'fk_%'
             """;
 
         var query = getEntityManager().createNativeQuery(sql, Object[].class);
         List<Object[]> rowList = query.getResultList();
         var tekst = rowList.stream().map(row -> Arrays.stream(row).map(String.class::cast).collect(Collectors.joining(", "))).collect(Collectors.joining("\n"));
-        var feilTekst = "Feil eller mangelende definisjon av foreign key (skal hete 'FK_<tabell navn>_<løpenummer>'). Antall feil = %s\n\nTabell, Foreign Key\n%s";
+        var feilTekst = "Feil eller mangelende definisjon av foreign key (skal hete 'fk_<tabell navn>_<løpenummer>'). Antall feil = %s\n\nTabell, Foreign Key\n%s";
         assertThat(rowList).withFailMessage(feilTekst, rowList.size(), tekst).isEmpty();
     }
 
@@ -166,9 +166,9 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
               JOIN pg_catalog.pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(ix.indkey)
               JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace
              WHERE n.nspname = current_schema()
-               AND i.relname NOT LIKE 'PK_%'
-               AND i.relname NOT LIKE 'IDX_%'
-               AND i.relname NOT LIKE 'UIDX_%'
+               AND i.relname NOT LIKE 'pk_%'
+               AND i.relname NOT LIKE 'idx_%'
+               AND i.relname NOT LIKE 'uidx_%'
                AND upper(t.relname) NOT LIKE '%SCHEMA_%'
                AND NOT ix.indisprimary
             """;
@@ -177,7 +177,7 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
         List<Object[]> rowList = query.getResultList();
         var tekst = rowList.stream().map(row -> Arrays.stream(row).map(String.class::cast).collect(Collectors.joining(", "))).collect(Collectors.joining("\n"));
 
-        var feilTekst = "Feil navngiving av index. Primary Keys skal ha prefiks PK_, andre unike indekser prefiks UIDX_, vanlige indekser prefiks IDX_. Antall feil = %s\n\nTabell, Index, Kolonne\n%s";
+        var feilTekst = "Feil navngiving av index. Primary Keys skal ha prefiks pk_, andre unike indekser prefiks uidx_, vanlige indekser prefiks idx_. Antall feil = %s\n\nTabell, Index, Kolonne\n%s";
         assertThat(rowList).withFailMessage(feilTekst, rowList.size(), tekst).isEmpty();
     }
 
@@ -249,7 +249,11 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
     @Test
     void sjekk_at_status_verdiene_i_prosess_task_tabellen_er_også_i_pollingSQL() {
         var sql = """
-            SELECT pg_get_constraintdef(c.oid)
+                SELECT (regexp_matches(
+                           pg_get_expr(c.conbin, c.conrelid),
+                           '''([A-Z_]+)''',
+                           'g'
+                       ))[1]
               FROM pg_catalog.pg_constraint c
               JOIN pg_catalog.pg_class t ON t.oid = c.conrelid
               JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace
@@ -258,11 +262,10 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
                AND n.nspname = current_schema()
             """;
 
-        var query = getEntityManager().createNativeQuery(sql, String.class);
-        var statusVerdier = query.getResultList();
-
+        @SuppressWarnings("unchecked")
+        List<String> statuserFraConstraint = getEntityManager().createNativeQuery(sql).getResultList();
         var feilTekst = "Ved innføring av ny stauser må sqlen i TaskManager_pollTask.sql må oppdateres.";
-        assertThat(statusVerdier).withFailMessage(feilTekst)
-            .containsExactly("CHECK ((status = ANY (ARRAY['KLAR'::text, 'FEILET'::text, 'VENTER_SVAR'::text, 'SUSPENDERT'::text, 'VETO'::text, 'FERDIG'::text, 'KJOERT'::text])))");
+        assertThat(statuserFraConstraint).withFailMessage(feilTekst)
+            .containsExactlyInAnyOrder("KLAR", "FEILET", "VENTER_SVAR", "SUSPENDERT", "VETO", "FERDIG", "KJOERT");
     }
 }
