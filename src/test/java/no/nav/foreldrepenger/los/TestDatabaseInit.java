@@ -25,6 +25,7 @@ public final class TestDatabaseInit {
     private static final AtomicBoolean GUARD_UNIT_TEST_SKJEMAER = new AtomicBoolean();
     private static final Environment ENV = Environment.current();
     private static final String DB_SCRIPT_LOCATION = "/db/migration/defaultDS";
+    private static final String TEST_DATA_SCRIPT_LOCATION = "classpath:/db/migration/defaultDS";
 
     public static void settOppDatasourceOgMigrer(String jdbcUrl, String username, String password) {
         var ds = createDatasource(jdbcUrl, username, password);
@@ -32,7 +33,7 @@ public final class TestDatabaseInit {
         if (GUARD_UNIT_TEST_SKJEMAER.compareAndSet(false, true)) {
             var flyway = Flyway.configure()
                 .dataSource(ds)
-                .locations(getScriptLocation())
+                .locations(getScriptLocation(), TEST_DATA_SCRIPT_LOCATION)
                 .baselineOnMigrate(true)
                 .cleanDisabled(false)
                 .load();

@@ -37,7 +37,7 @@ import no.nav.vedtak.felles.jpa.TomtResultatException;
 @ExtendWith(JpaExtension.class)
 class AvdelingslederSaksbehandlerRestTjenesteTest {
 
-    private static final AvdelingEnhetDto avdelingDto = new AvdelingEnhetDto("4817");
+    private static final AvdelingEnhetDto avdelingDto = new AvdelingEnhetDto("4867");
     private static final SaksbehandlerBrukerIdentDto brukerIdentDto = new SaksbehandlerBrukerIdentDto("Z999999");
     @Mock
     private SaksbehandlerDtoTjeneste saksbehandlerDtoTjeneste;
