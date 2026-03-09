@@ -1,1 +1,0 @@
-alter table OPPGAVE_FILTRERING drop column ER_DYNAMISK_PERIODE;
