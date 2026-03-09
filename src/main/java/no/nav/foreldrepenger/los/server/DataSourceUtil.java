@@ -25,8 +25,8 @@ class DataSourceUtil {
         config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(2));
         config.setMinimumIdle(minIdle);
         config.setMaximumPoolSize(maxPoolSize);
-        config.setConnectionTestQuery("select 1 from dual");
-        config.setDriverClassName("oracle.jdbc.OracleDriver");
+        config.setConnectionTestQuery("select 1");
+        config.setDriverClassName("org.postgresql.Driver");
         config.setMetricRegistry(Metrics.globalRegistry);
 
         var dsProperties = new Properties();
