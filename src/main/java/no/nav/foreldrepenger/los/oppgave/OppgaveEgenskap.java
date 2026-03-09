@@ -18,7 +18,7 @@ import no.nav.foreldrepenger.los.felles.BaseEntitet;
 @Table(name = "OPPGAVE_EGENSKAP")
 public class OppgaveEgenskap extends BaseEntitet {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE_EGENSKAP")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     private Long id;
 
     @ManyToOne

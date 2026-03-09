@@ -5,14 +5,7 @@
                  https://jakarta.ee/xml/ns/persistence/orm/orm_3_0.xsd"
                  version="3.0">
 
-    <sequence-generator name="SEQ_OPPGAVE" allocation-size="50" sequence-name="SEQ_OPPGAVE"/>
-    <sequence-generator name="SEQ_RESERVASJON" allocation-size="50" sequence-name="SEQ_RESERVASJON"/>
-    <sequence-generator name="SEQ_LISTE" allocation-size="50" sequence-name="SEQ_LISTE"/>
-    <sequence-generator name="SEQ_FILTR_BEHANDLING_TYPE" allocation-size="50" sequence-name="SEQ_FILTR_BEHANDLING_TYPE"/>
-    <sequence-generator name="SEQ_FILTRERING_YTELSE_TYPE" allocation-size="50" sequence-name="SEQ_FILTRERING_YTELSE_TYPE"/>
-    <sequence-generator name="SEQ_AVDELING" allocation-size="50" sequence-name="SEQ_AVDELING"/>
-    <sequence-generator name="SEQ_SAKSBEHANDLER" allocation-size="50" sequence-name="SEQ_SAKSBEHANDLER"/>
-    <sequence-generator name="SEQ_GRUPPE" allocation-size="50" sequence-name="SEQ_GRUPPE"/>
+    <sequence-generator name="SEQ_GLOBAL_PK" allocation-size="50" sequence-name="SEQ_GLOBAL_PK"/>
     <entity class="no.nav.foreldrepenger.los.oppgave.Oppgave"/>
     <entity class="no.nav.foreldrepenger.los.oppgave.OppgaveEgenskap"/>
     <entity class="no.nav.foreldrepenger.los.oppgave.Behandling"/>

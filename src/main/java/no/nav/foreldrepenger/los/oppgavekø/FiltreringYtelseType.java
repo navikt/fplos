@@ -19,7 +19,7 @@ import no.nav.foreldrepenger.los.oppgave.FagsakYtelseType;
 @Table(name = "FILTRERING_YTELSE_TYPE")
 public class FiltreringYtelseType extends BaseEntitet {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FILTRERING_YTELSE_TYPE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     private Long id;
 
     @ManyToOne

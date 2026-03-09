@@ -21,7 +21,7 @@ import no.nav.foreldrepenger.los.oppgave.Oppgave;
 public class Reservasjon extends BaseEntitet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_RESERVASJON")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     private Long id;
 
     @OneToOne(optional = false, cascade = CascadeType.REFRESH)

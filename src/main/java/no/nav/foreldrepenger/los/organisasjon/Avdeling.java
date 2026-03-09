@@ -16,7 +16,7 @@ public class Avdeling extends BaseEntitet {
     public static final String AVDELING_DRAMMEN_ENHET = "4806";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_AVDELING")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     private Long id;
 
     @Column(name = "AVDELING_ENHET")

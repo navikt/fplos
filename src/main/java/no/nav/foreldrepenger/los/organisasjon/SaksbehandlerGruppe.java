@@ -16,7 +16,7 @@ import no.nav.foreldrepenger.los.felles.BaseEntitet;
 public class SaksbehandlerGruppe extends BaseEntitet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GRUPPE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     private Long id;
 
     @Column(name = "GRUPPE_NAVN")
