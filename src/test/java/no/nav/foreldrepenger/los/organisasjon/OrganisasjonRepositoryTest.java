@@ -31,7 +31,7 @@ class OrganisasjonRepositoryTest {
 
     @Test
     void deaktiverAvdeling() {
-        var enhetsNummer = "4802";
+        var enhetsNummer = "1111";
         var avdelinger = repository.hentAktiveAvdelinger().stream().map(Avdeling::getAvdelingEnhet);
 
         repository.deaktiverAvdeling(enhetsNummer);
