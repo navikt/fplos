@@ -5,7 +5,7 @@
     <parent>
         <groupId>no.nav.foreldrepenger.felles</groupId>
         <artifactId>fp-parent-app</artifactId>
-        <version>5.2.4</version>
+        <version>5.3.1</version>
     </parent>
 
     <groupId>no.nav.foreldrepenger.los</groupId>
@@ -17,9 +17,9 @@
         <sonar.projectName>fp-los</sonar.projectName>
         <sonar.projectKey>navikt_fplos</sonar.projectKey>
 
-        <fp-kontrakter.version>9.4.28</fp-kontrakter.version>
-        <felles.version>7.6.16</felles.version>
-        <prosesstask.version>5.2.4</prosesstask.version>
+        <fp-kontrakter.version>9.4.29</fp-kontrakter.version>
+        <felles.version>7.7.1</felles.version>
+        <prosesstask.version>5.2.5</prosesstask.version>
         <openapi-spec-utils.version>2.1.0</openapi-spec-utils.version>
     </properties>
 
