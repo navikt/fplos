@@ -227,7 +227,7 @@ public class OppgaveKøRepository {
                 select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
                 where oetilbesl.oppgave = o
                     AND oetilbesl.andreKriterierType = :tilbeslutter
-                    AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = :uid
+                    AND oetilbesl.sisteSaksbehandlerForTotrinn = :uid
             )""";
     }
 
