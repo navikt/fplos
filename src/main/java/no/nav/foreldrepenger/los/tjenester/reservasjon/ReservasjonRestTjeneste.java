@@ -28,7 +28,6 @@ import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoMedStatus;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.ReservasjonStatusDto;
-import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerBrukerIdentDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDto;
 import no.nav.foreldrepenger.los.tjenester.felles.dto.SaksbehandlerDtoTjeneste;
 import no.nav.foreldrepenger.los.tjenester.reservasjon.dto.ReservasjonEndringRequestDto;

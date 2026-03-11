@@ -32,7 +32,8 @@ class SaksbehandlerDtoTjenesteTest {
     void testHentSaksbehandlerSomIkkeFinnesILos() {
         var saksbehandler1Ident = "Z999999";
 
-        when(ansattTjeneste.hentBrukerProfil(saksbehandler1Ident)).thenReturn(Optional.of(new BrukerProfil(saksbehandler1Ident, "Navn Navnesen", "Avdelingsnavnet")));
+        when(ansattTjeneste.hentBrukerProfil(saksbehandler1Ident))
+                .thenReturn(Optional.of(new BrukerProfil(saksbehandler1Ident, "Navn Navnesen", "Avdelingsnavnet")));
         var saksbehandlerDto = saksbehandlerDtoTjeneste.saksbehandlerDtoForNavIdent(saksbehandler1Ident);
 
         assertThat(saksbehandlerDto).isPresent().hasValueSatisfying(dto -> {
