@@ -134,18 +134,6 @@ public class ReservasjonRestTjeneste {
         return oppgaveDtoTjeneste.getSaksbehandlersReserverteAktiveOppgaver();
     }
 
-    @POST
-    @Path("/flytt-reservasjon/søk")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Søk etter saksbehandler som er tilknyttet behandlingskø", tags = "Saksbehandler")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public SaksbehandlerDto søkAvdelingensSaksbehandlere(@NotNull @Parameter(description = "Brukeridentifikasjon") @Valid SaksbehandlerBrukerIdentDto brukerIdent) {
-        var ident = brukerIdent.getVerdi().toUpperCase();
-        var saksbehandler = saksbehandlerDtoTjeneste.hentSaksbehandlerTilknyttetMinstEnKø(ident);
-        return saksbehandler.orElse(null);
-    }
-
     @GET
     @Path("/hent-aktuelle-saksbehandlere")
     @Produces(MediaType.APPLICATION_JSON)
