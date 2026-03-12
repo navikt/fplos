@@ -30,9 +30,9 @@ class ReservasjonTidspunktUtilTest {
     }
 
     @Test
-    void skalJustereDatoTilUkedagOgMidnatt() {
-        var lørdag = LocalDateTime.of(2026, 3, 15, 15, 43);
-        var justertTidspunkt = lørdag.with(JUSTER_TIL_GYLDIG_TIDSPUNKT);
-        assertThat(justertTidspunkt).isEqualTo(LocalDateTime.of(2026, 3, 16, 23, 59));
+    void skalJustereDatoTilUkedagOgSluttenAvDagen() {
+        var søndag = LocalDateTime.of(2026, 3, 15, 15, 43);
+        var justertTidspunkt = søndag.with(JUSTER_TIL_GYLDIG_TIDSPUNKT);
+        assertThat(justertTidspunkt).isEqualTo(LocalDateTime.of(2026, 3, 16, 23, 59, 59));
     }
 }

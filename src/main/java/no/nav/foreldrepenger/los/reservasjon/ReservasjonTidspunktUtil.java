@@ -7,11 +7,11 @@ import java.time.temporal.TemporalAdjuster;
 public final class ReservasjonTidspunktUtil {
 
     public static final TemporalAdjuster JUSTER_TIL_GYLDIG_TIDSPUNKT = temporal -> {
-        var dateTime = LocalDateTime.from(temporal).withHour(23).withMinute(59);
-        return switch (dateTime.getDayOfWeek()) {
-            case SATURDAY -> dateTime.plusDays(2);
-            case SUNDAY -> dateTime.plusDays(1);
-            default -> dateTime;
+        var justertDateTime = LocalDateTime.from(temporal).withHour(23).withMinute(59).withSecond(59);
+        return switch (justertDateTime.getDayOfWeek()) {
+            case SATURDAY -> justertDateTime.plusDays(2);
+            case SUNDAY -> justertDateTime.plusDays(1);
+            default -> justertDateTime;
         };
     };
 
