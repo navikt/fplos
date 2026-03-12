@@ -22,7 +22,7 @@ public final class ReservasjonTidspunktUtil {
         return LocalDateTime.now().plusDays(1).with(JUSTER_TIL_GYLDIG_TIDSPUNKT);
     }
 
-    public static void validerReservasjonTil(LocalDate reserverTil) throws IllegalArgumentException {
+    public static void validerReservasjonsdato(LocalDate reserverTil) throws IllegalArgumentException {
         var iDag = LocalDate.now();
         if (reserverTil.isBefore(iDag)) {
             throw new IllegalArgumentException("Reservasjon kan ikke avsluttes før dagens dato");
