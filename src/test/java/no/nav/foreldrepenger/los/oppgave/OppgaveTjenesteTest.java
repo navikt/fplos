@@ -189,7 +189,6 @@ class OppgaveTjenesteTest {
 
         reservasjonTjeneste.forlengReservasjonMed24timer(førstegangOppgave.getId());
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
-        assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
 
         reservasjonTjeneste.endreReservasjonsdato(førstegangOppgave.getId(), LocalDate.now().plusDays(3));
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
