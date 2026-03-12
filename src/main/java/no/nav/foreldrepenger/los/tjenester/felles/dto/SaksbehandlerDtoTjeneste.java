@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import no.nav.foreldrepenger.los.avdelingsleder.AvdelingslederTjeneste;
-import no.nav.foreldrepenger.los.oppgavekø.OppgaveKøTjeneste;
 import no.nav.foreldrepenger.los.organisasjon.OrganisasjonRepository;
 import no.nav.foreldrepenger.los.organisasjon.Saksbehandler;
 import no.nav.foreldrepenger.los.organisasjon.ansatt.AnsattTjeneste;
@@ -15,27 +13,17 @@ import no.nav.vedtak.exception.IntegrasjonException;
 @ApplicationScoped
 public class SaksbehandlerDtoTjeneste {
     private OrganisasjonRepository organisasjonRepository;
-    private OppgaveKøTjeneste oppgaveKøTjeneste;
     private AnsattTjeneste ansattTjeneste;
 
     @Inject
     public SaksbehandlerDtoTjeneste(OrganisasjonRepository organisasjonRepository,
-                                    AvdelingslederTjeneste avdelingslederTjeneste,
-                                    AnsattTjeneste ansattTjeneste,
-                                    OppgaveKøTjeneste oppgaveKøTjeneste) {
+                                    AnsattTjeneste ansattTjeneste) {
         this.organisasjonRepository = organisasjonRepository;
         this.ansattTjeneste = ansattTjeneste;
-        this.oppgaveKøTjeneste = oppgaveKøTjeneste;
     }
 
     SaksbehandlerDtoTjeneste() {
         //CDI
-    }
-
-    public Optional<SaksbehandlerDto> hentSaksbehandlerTilknyttetMinstEnKø(String ident) {
-        return organisasjonRepository.hentSaksbehandlerHvisEksisterer(ident)
-            .filter(sb -> !oppgaveKøTjeneste.hentAlleOppgaveFiltrering(sb.getSaksbehandlerIdent()).isEmpty())
-            .map(SaksbehandlerDtoTjeneste::saksbehandlerDto);
     }
 
     public List<SaksbehandlerDto> hentAvdelingensSaksbehandlere(String avdelingEnhet) {
