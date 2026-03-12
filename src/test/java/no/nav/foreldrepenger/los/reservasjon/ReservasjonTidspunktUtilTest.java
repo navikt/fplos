@@ -17,7 +17,7 @@ class ReservasjonTidspunktUtilTest {
     void skalGodtaGyldigeDatoer() {
         for (var dagerFraIdag : new long[]{0, 10, 30}) {
             var date = LocalDate.now().plusDays(dagerFraIdag);
-            assertDoesNotThrow(() -> ReservasjonTidspunktUtil.validerReservasjonTil(date));
+            assertDoesNotThrow(() -> ReservasjonTidspunktUtil.validerReservasjonsdato(date));
         }
     }
 
@@ -25,7 +25,7 @@ class ReservasjonTidspunktUtilTest {
     void skalFeileForUgyldigeDatoer() {
         for (var dagerFraIdag : new long[]{-1, 31}) {
             var date = LocalDate.now().plusDays(dagerFraIdag);
-            assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.validerReservasjonTil(date));
+            assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.validerReservasjonsdato(date));
         }
     }
 

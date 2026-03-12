@@ -120,7 +120,7 @@ public class ReservasjonRestTjeneste {
     @Operation(description = "Endre reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public ReservasjonStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonEndringRequestDto reservasjonsEndring) {
-        ReservasjonTidspunktUtil.validerReservasjonTil(reservasjonsEndring.reserverTil());
+        ReservasjonTidspunktUtil.validerReservasjonsdato(reservasjonsEndring.reserverTil());
         var reservasjon = reservasjonTjeneste.endreReservasjonsdato(reservasjonsEndring.oppgaveId().getVerdi(), reservasjonsEndring.reserverTil());
         return oppgaveDtoTjeneste.lagOppgaveStatusUtenPersonoppslag(reservasjon.getOppgave());
     }
