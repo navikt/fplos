@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -45,12 +44,12 @@ public class NøkkeltallRepository {
     @SuppressWarnings("unchecked")
     public List<OppgaverForAvdeling> hentAlleOppgaverForAvdeling(String avdelingEnhet) {
         return entityManager.createNativeQuery("""
-                Select o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, nvl2(oe.ANDRE_KRITERIER_TYPE,'J','N') AS BESLUTTER_JN, Count(o.ID) AS ANTALL
+                Select o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, CASE WHEN oe.ANDRE_KRITERIER_TYPE IS NOT NULL THEN 'J' ELSE 'N' END AS BESLUTTER_JN, Count(*) AS ANTALL
                 FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
                 LEFT JOIN OPPGAVE_EGENSKAP oe ON oe.OPPGAVE_ID = o.ID AND oe.ANDRE_KRITERIER_TYPE = :tilBeslutter
                 WHERE a.AVDELING_ENHET =:avdelingEnhet AND o.AKTIV='J'
                 GROUP BY o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, oe.ANDRE_KRITERIER_TYPE
-                ORDER BY o.FAGSAK_YTELSE_TYPE, o.BEHANDLING_TYPE, oe.ANDRE_KRITERIER_TYPE
+                ORDER BY 1,2,3
                 """)
             .setParameter(AVDELING_ENHET, avdelingEnhet)
             .setParameter(TIL_BESLUTTER, AndreKriterierType.TIL_BESLUTTER.getKode())
@@ -62,32 +61,33 @@ public class NøkkeltallRepository {
     private static OppgaverForAvdeling mapOppgaverForAvdeling(Object[] row) {
         var fagsakYtelseType = FagsakYtelseType.fraKode((String) row[0]); // NOSONAR
         var behandlingType = BehandlingType.fraKode((String) row[1]); // NOSONAR
-        var tilBeslutter = new BooleanToStringConverter().convertToEntityAttribute(Character.toString((Character) row[2])); // NOSONAR
-        var antall = ((BigDecimal) row[3]).longValue(); // NOSONAR
+        var beslutterRaw = row[2] instanceof Character c ? Character.toString(c) : (String) row[2]; // NOSONAR
+        var tilBeslutter = new BooleanToStringConverter().convertToEntityAttribute(beslutterRaw);
+        var antall = (Long) row[3]; // NOSONAR
         return new OppgaverForAvdeling(fagsakYtelseType, behandlingType, !tilBeslutter, antall);
     }
 
     @SuppressWarnings("unchecked")
     public List<OppgaverForFørsteStønadsdagUkeMåned> hentOppgaverPerFørsteStønadsdagMåned(String avdeling) {
         return entityManager.createNativeQuery("""
-            select trunc(ytre.DATO, 'MM') as DATO, YTELSE, sum(ytre.ANTALL) as ANTALL from (
-               select case when indre.fstonad < sysdate - 245 then trunc(sysdate-245)
-                           when indre.fstonad > sysdate + 126 then trunc(sysdate+126)
+            select date_trunc('month', ytre.DATO)::date as DATO, YTELSE, sum(ytre.ANTALL) as ANTALL from (
+               select case when indre.fstonad < current_date - 245 then (current_date - 245)
+                           when indre.fstonad > current_date + 126 then (current_date + 126)
                            else indre.fstonad end as DATO, YTELSE, Count(1) AS ANTALL from (
-                  select trunc(o.FORSTE_STONADSDAG) as fstonad, o.FAGSAK_YTELSE_TYPE as YTELSE
+                  select o.FORSTE_STONADSDAG::date as fstonad, o.FAGSAK_YTELSE_TYPE as YTELSE
                   FROM OPPGAVE o INNER JOIN avdeling a ON a.AVDELING_ENHET = o.BEHANDLENDE_ENHET
                   WHERE a.AVDELING_ENHET = :avdelingEnhet AND o.AKTIV='J' AND o.FORSTE_STONADSDAG IS NOT NULL and o.behandling_type = :behandlingType
-               ) indre GROUP BY indre.fstonad, YTELSE
+               ) indre GROUP BY indre.fstonad::date, YTELSE
             ) ytre
-            group by trunc(ytre.DATO, 'MM'), YTELSE
-            order by trunc(ytre.DATO, 'MM'), YTELSE
+            group by date_trunc('month', ytre.DATO)::date, YTELSE
+            order by 1,2
             """).setParameter(AVDELING_ENHET, avdeling)
             .setParameter("behandlingType", BehandlingType.FØRSTEGANGSSØKNAD.getKode())
             .getResultStream().map(row -> mapOppgaverForFørsteStønadsdagUkeMåned((Object[]) row)).toList();
     }
 
     private static OppgaverForFørsteStønadsdagUkeMåned mapOppgaverForFørsteStønadsdagUkeMåned(Object[] row) {
-        var date = ((LocalDateTime) row[0]).toLocalDate();
+        var date = (LocalDate) row[0];
         var ytelse = FagsakYtelseType.fraKode((String) row[1]); // NOSONAR
         var resultat = ((BigDecimal) row[2]).longValue();
         return new OppgaverForFørsteStønadsdagUkeMåned(ytelse, date, resultat);
@@ -97,11 +97,11 @@ public class NøkkeltallRepository {
     public List<NøkkeltallBehandlingVentefristUtløperDto> hentVentefristUkefordelt(String avdeling) {
         return entityManager.createNativeQuery("""
             select yt, to_char(frist, 'IYYY-IW'), count(1) as ant from (
-                select yt, case when fristi <= sysdate then trunc(sysdate + 1, 'IW')
-                                when fristi > sysdate + 245 then trunc(sysdate+245, 'IW')
-                                else trunc(fristi, 'IW') end as frist
+                select yt, case when fristi <= current_date then date_trunc('week', current_date + 1)
+                                when fristi > current_date + 245 then date_trunc('week', current_date + 245)
+                                else date_trunc('week', fristi) end as frist
                 from (
-                    select FAGSAK_YTELSE_TYPE as yt, trunc(VENTEFRIST) as fristi
+                    select FAGSAK_YTELSE_TYPE as yt, VENTEFRIST::date as fristi
                     from behandling b
                     where b.behandling_tilstand in (:ventetilstander)
                       and b.behandling_type = :behandlingType
@@ -119,8 +119,8 @@ public class NøkkeltallRepository {
     private static NøkkeltallBehandlingVentefristUtløperDto mapVentefristUkefordelt(Object[] queryResultat) {
         var ytelseType = FagsakYtelseType.fraKode((String) queryResultat[0]);
         var fristUke = (String) queryResultat[1];
-        var antall = (BigDecimal) queryResultat[2];
-        return new NøkkeltallBehandlingVentefristUtløperDto(ytelseType, fristUke, antall.longValue());
+        var antall = (Long) queryResultat[2];
+        return new NøkkeltallBehandlingVentefristUtløperDto(ytelseType, fristUke, antall);
     }
 
     public List<NøkkeltallBehandlingFørsteUttakDto> hentBehandlingMånedsfordeltStønadsdato(String avdeling) {
@@ -128,9 +128,9 @@ public class NøkkeltallRepository {
             select beh.behandling_type as btype, beh.ventestatus as på_vent, beh.tidligste_fom as dato, count(1) as antall
             from (
                 select b.id, b.behandling_type,
-                    case when FORSTE_STONADSDAG < sysdate - 180 then trunc(sysdate - 180, 'MM')
-                         when FORSTE_STONADSDAG > sysdate + 300 then trunc(sysdate + 300, 'MM')
-                         else trunc(FORSTE_STONADSDAG, 'MM') end as tidligste_fom,
+                    case when FORSTE_STONADSDAG < current_date - 180 then date_trunc('month', current_date - 180)
+                         when FORSTE_STONADSDAG > current_date + 300 then date_trunc('month', current_date + 300)
+                         else date_trunc('month', FORSTE_STONADSDAG) end as tidligste_fom,
                     case when b.behandling_tilstand like 'VENT%' then 'PÅ_VENT' else 'IKKE_PÅ_VENT' end as ventestatus
                 from behandling b
                 where b.behandling_tilstand not in (:utelatteTilstander)
@@ -149,15 +149,16 @@ public class NøkkeltallRepository {
         var behandlingType = BehandlingType.fraKode((String) queryResultat[0]);
         var påVent = BehandlingVenteStatus.PÅ_VENT.getKode().equals(queryResultat[1]) ? BehandlingVenteStatus.PÅ_VENT : BehandlingVenteStatus.IKKE_PÅ_VENT;
         var førsteUttaksMåned = localDate(queryResultat[2]);
-        var antall = (BigDecimal) queryResultat[3];
+        var antall = (Long) queryResultat[3];
         return new NøkkeltallBehandlingFørsteUttakDto(behandlingType, påVent, førsteUttaksMåned, antall.intValue());
     }
 
     private static LocalDate localDate(Object sqlTimestamp) {
-        return switch (sqlTimestamp) {
+        return switch (sqlTimestamp) { // TODO: sjekk om denne nå alltid kommer som Instant fra postgres. sjekk tz
             case null -> null;
             case java.time.LocalDateTime localDateTime -> localDateTime.toLocalDate();
             case java.time.LocalDate localDate -> localDate;
+            case java.time.Instant instant -> instant.atZone(java.time.ZoneId.systemDefault()).toLocalDate();
             default -> throw new IllegalArgumentException("Unsupported SQL timestamp: " + sqlTimestamp.getClass().getSimpleName());
         };
     }

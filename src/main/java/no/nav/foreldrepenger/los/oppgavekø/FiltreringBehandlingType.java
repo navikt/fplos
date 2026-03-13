@@ -19,7 +19,7 @@ import no.nav.foreldrepenger.los.oppgave.BehandlingType;
 @Table(name = "FILTRERING_BEHANDLING_TYPE")
 public class FiltreringBehandlingType extends BaseEntitet {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_FILTR_BEHANDLING_TYPE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     private Long id;
 
     @ManyToOne

@@ -34,7 +34,7 @@ import no.nav.foreldrepenger.los.tjenester.avdelingsleder.saksliste.dto.Sakslist
 @ExtendWith(JpaExtension.class)
 class OppgaveKøTjenesteTest {
 
-    private static final String AVDELING_BERGEN_ENHET = "4812";
+    private static final String NASJONAL = "4867";
 
     private OppgaveRepository oppgaveRepository;
 
@@ -48,7 +48,7 @@ class OppgaveKøTjenesteTest {
     private final Oppgave klageOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.KLAGE).build();
     private final Oppgave innsynOppgave = Oppgave.builder().dummyOppgave(AVDELING_DRAMMEN_ENHET).medBehandlingType(BehandlingType.INNSYN).build();
     private final Oppgave førstegangOppgaveBergen = Oppgave.builder()
-        .dummyOppgave(AVDELING_BERGEN_ENHET)
+        .dummyOppgave(NASJONAL)
         .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
         .build();
     private EntityManager entityManager;
@@ -143,7 +143,7 @@ class OppgaveKøTjenesteTest {
         leggeInnEtSettMedOppgaver();
         var antallOppgaverDrammen = oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(AVDELING_DRAMMEN_ENHET);
         assertThat(antallOppgaverDrammen).isEqualTo(3);
-        var antallOppgaverBergen = oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(AVDELING_BERGEN_ENHET);
+        var antallOppgaverBergen = oppgaveKøTjeneste.hentAntallOppgaverForAvdeling(NASJONAL);
         assertThat(antallOppgaverBergen).isEqualTo(1);
     }
 

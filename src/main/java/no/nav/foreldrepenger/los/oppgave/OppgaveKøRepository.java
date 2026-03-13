@@ -2,7 +2,6 @@ package no.nav.foreldrepenger.los.oppgave;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -227,7 +226,7 @@ public class OppgaveKøRepository {
                 select oetilbesl.oppgave from OppgaveEgenskap oetilbesl
                 where oetilbesl.oppgave = o
                     AND oetilbesl.andreKriterierType = :tilbeslutter
-                    AND upper(oetilbesl.sisteSaksbehandlerForTotrinn) = :uid
+                    AND oetilbesl.sisteSaksbehandlerForTotrinn = :uid
             )""";
     }
 
@@ -258,13 +257,13 @@ public class OppgaveKøRepository {
             // Perioden man ser på kan være i fortid eller fremtid, avhengig av positiv/negativ verdi på filtrerFra/Til
             if (oppgavespørring.getFiltrerFra() != null) {
                 var fomDato = LocalDate.now().plusDays(oppgavespørring.getFiltrerFra());
-                putDatoParam(parameters, "filterFom", fomDato, gjelderKunDatoFelt, true);
+                parameters.put("filterFom", gjelderKunDatoFelt ? fomDato : fomDato.atStartOfDay());
                 sbuilder.append("AND ").append(feltLiteral).append(" >= :filterFom ");
             }
             if (oppgavespørring.getFiltrerTil() != null) {
                 var tomDato = LocalDate.now().plusDays(oppgavespørring.getFiltrerTil());
-                putDatoParam(parameters, "filterTom", tomDato, gjelderKunDatoFelt, false);
-                sbuilder.append("AND ").append(feltLiteral).append(" <= :filterTom ");
+                parameters.put("filterTil", gjelderKunDatoFelt ? tomDato.plusDays(1) : tomDato.plusDays(1).atStartOfDay());
+                sbuilder.append("AND ").append(feltLiteral).append(" < :filterTil ");
             }
 
         } else if (oppgavespørring.getPeriodefilter() == Periodefilter.RELATIV_PERIODE_MÅNEDER) {
@@ -272,36 +271,28 @@ public class OppgaveKøRepository {
             // Perioden man ser på kan være i fortid eller fremtid, avhengig av positiv/negativ verdi på filtrerFra/Til
             if (oppgavespørring.getFiltrerFra() != null) {
                 var fomDato = YearMonth.now().plusMonths(oppgavespørring.getFiltrerFra()).atDay(1);
-                putDatoParam(parameters, "filterFom", fomDato, gjelderKunDatoFelt, true);
+                parameters.put("filterFom", gjelderKunDatoFelt ? fomDato : fomDato.atStartOfDay());
                 sbuilder.append("AND ").append(feltLiteral).append(" >= :filterFom ");
             }
             if (oppgavespørring.getFiltrerTil() != null) {
                 var tomDato = YearMonth.now().plusMonths(oppgavespørring.getFiltrerTil()).atEndOfMonth();
-                putDatoParam(parameters, "filterTom", tomDato, gjelderKunDatoFelt, false);
-                sbuilder.append("AND ").append(feltLiteral).append(" <= :filterTom ");
+                parameters.put("filterTil", gjelderKunDatoFelt ? tomDato.plusDays(1) : tomDato.plusDays(1).atStartOfDay());
+                sbuilder.append("AND ").append(feltLiteral).append(" < :filterTil ");
             }
         } else {
             // Filtrerer på absolutte datoer
             var fomDato = oppgavespørring.getFiltrerFomDato();
             var tomDato = oppgavespørring.getFiltrerTomDato();
             if (fomDato != null) {
-                putDatoParam(parameters, "filterFom", fomDato, gjelderKunDatoFelt, true);
+                parameters.put("filterFom", gjelderKunDatoFelt ? fomDato : fomDato.atStartOfDay());
                 sbuilder.append("AND ").append(feltLiteral).append(" >= :filterFom ");
             }
             if (tomDato != null) {
-                putDatoParam(parameters, "filterTom", tomDato, gjelderKunDatoFelt, false);
-                sbuilder.append("AND ").append(feltLiteral).append(" <= :filterTom ");
+                parameters.put("filterTil", gjelderKunDatoFelt ? tomDato.plusDays(1) : tomDato.plusDays(1).atStartOfDay());
+                sbuilder.append("AND ").append(feltLiteral).append(" < :filterTil ");
             }
         }
         return sbuilder.toString();
-    }
-
-    private static void putDatoParam(Map<String, Object> p, String parameterNavn, LocalDate d, boolean erKunDato, boolean erStartPåDag) {
-        if (erKunDato) {
-            p.put(parameterNavn, d);
-        } else {
-            p.put(parameterNavn, erStartPåDag ? d.atTime(LocalTime.MIN) : d.atTime(LocalTime.MAX));
-        }
     }
 
 }

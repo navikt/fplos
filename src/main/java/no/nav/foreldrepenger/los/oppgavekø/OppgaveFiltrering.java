@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import no.nav.foreldrepenger.los.felles.BaseEntitet;
 import no.nav.foreldrepenger.los.oppgave.AndreKriterierType;
@@ -30,8 +29,7 @@ import no.nav.foreldrepenger.los.organisasjon.Avdeling;
 @Table(name = "OPPGAVE_FILTRERING")
 public class OppgaveFiltrering extends BaseEntitet {
     @Id
-    @SequenceGenerator(name = "my_seq", sequenceName = "SEQ_OPPGAVE_FILTRERING", allocationSize = 200)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     private Long id;
 
     @Column(name = "navn")

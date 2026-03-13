@@ -37,7 +37,7 @@ import no.nav.vedtak.felles.jpa.converters.BooleanToStringConverter;
 public class Oppgave extends BaseEntitet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_OPPGAVE")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GLOBAL_PK")
     protected Long id;
 
     @Embedded
