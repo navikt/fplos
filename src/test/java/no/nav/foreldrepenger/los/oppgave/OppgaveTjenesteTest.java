@@ -187,11 +187,10 @@ class OppgaveTjenesteTest {
             .orElseGet(() -> fail("Ingen oppgave"));
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(2), MINUTES)).isLessThan(2);
 
-        reservasjonTjeneste.forlengReservasjonPåOppgave(førstegangOppgave.getId());
-        assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
+        reservasjonTjeneste.forlengReservasjonMed24timer(førstegangOppgave.getId());
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusHours(26), MINUTES)).isLessThan(2);
 
-        reservasjonTjeneste.endreReservasjonPåOppgave(førstegangOppgave.getId(), LocalDateTime.now().plusDays(3));
+        reservasjonTjeneste.endreReservasjonsdato(førstegangOppgave.getId(), LocalDate.now().plusDays(3));
         assertThat(reservasjon.getReservertTil().until(LocalDateTime.now().plusDays(3), MINUTES)).isLessThan(2);
 
         reservasjonTjeneste.slettReservasjon(førstegangOppgave.getReservasjon());
@@ -199,31 +198,6 @@ class OppgaveTjenesteTest {
         assertThat(reservasjonTjeneste.hentSaksbehandlersReserverteAktiveOppgaver()).isEmpty();
         assertThat(reservasjonTjeneste.hentReservasjonerForAvdeling(AVDELING_DRAMMEN_ENHET)).isEmpty();
     }
-
-    /*
-    TODO: oppdater test før merging
-    @Test
-    void testSisteReserverte() {
-        oppgaveRepository.lagre(førstegangOppgave);
-        oppgaveRepository.lagre(opprettOppgaveEventLogg(førstegangOppgave));
-
-        reservasjonTjeneste.reserverOppgave(førstegangOppgave);
-        var sisteReserverteEtterReservasjon = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(false);
-        assertThat(sisteReserverteEtterReservasjon)
-            .hasSize(1)
-            .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.UNDER_ARBEID);
-
-        oppgaveTjeneste.avsluttOppgaveMedEventLogg(førstegangOppgave, OppgaveEventType.LUKKET);
-        var sisteReserverte = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(false);
-        assertThat(sisteReserverte)
-            .hasSize(1)
-            .first().matches(sr -> sr.status() == OppgaveBehandlingStatus.FERDIG);
-
-        var sisteReserverteAktive = reservasjonTjeneste.hentSaksbehandlersSisteReserverteMedStatus(true);
-        assertThat(sisteReserverteAktive).isEmpty();
-    }
-
-     */
 
     @Test
     void testOppgaverForandret() {

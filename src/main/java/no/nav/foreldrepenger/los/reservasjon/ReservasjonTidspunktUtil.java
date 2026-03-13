@@ -1,37 +1,34 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
-import no.nav.foreldrepenger.los.felles.util.DateAndTimeUtil;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjuster;
 
 public final class ReservasjonTidspunktUtil {
+
+    public static final TemporalAdjuster JUSTER_TIL_GYLDIG_TIDSPUNKT = temporal -> {
+        var justertDateTime = LocalDateTime.from(temporal).withHour(23).withMinute(59).withSecond(59);
+        return switch (justertDateTime.getDayOfWeek()) {
+            case SATURDAY -> justertDateTime.plusDays(2);
+            case SUNDAY -> justertDateTime.plusDays(1);
+            default -> justertDateTime;
+        };
+    };
 
     private ReservasjonTidspunktUtil() {
     }
 
     public static LocalDateTime standardReservasjon() {
-        return LocalDate.now().plusDays(1).with(DateAndTimeUtil.justerTilNesteUkedag).atTime(19, 0);
+        return LocalDateTime.now().plusDays(1).with(JUSTER_TIL_GYLDIG_TIDSPUNKT);
     }
 
-    public static LocalDateTime utvidReservasjon(LocalDateTime eksisterende) {
-        return eksisterende.plusHours(24).with(DateAndTimeUtil.justerTilNesteUkedag);
-    }
-
-    public static LocalDateTime utledReservasjonTidspunkt(LocalDate date) {
-        var localDateTime = date.atTime(23, 59);
-        sjekkGrenseverdier(localDateTime);
-        return localDateTime;
-    }
-
-    private static void sjekkGrenseverdier(LocalDateTime tidspunkt) throws IllegalArgumentException {
-        var now = LocalDateTime.now();
-        if (tidspunkt.isBefore(now)) {
+    public static void validerReservasjonsdato(LocalDate reserverTil) throws IllegalArgumentException {
+        var iDag = LocalDate.now();
+        if (reserverTil.isBefore(iDag)) {
             throw new IllegalArgumentException("Reservasjon kan ikke avsluttes før dagens dato");
         }
-        if (tidspunkt.isAfter(now.plusDays(31))) {
-            throw new IllegalArgumentException(
-                "Reservasjon kan ikke være lenger enn 30 dager"); //Siden vi bruker LocalDateTime med 23:59 for sjekken så justeres der til påfølgende dag
+        if (reserverTil.isAfter(iDag.plusDays(30))) {
+            throw new IllegalArgumentException("Reservasjon kan ikke være lenger enn 30 dager");
         }
     }
 }

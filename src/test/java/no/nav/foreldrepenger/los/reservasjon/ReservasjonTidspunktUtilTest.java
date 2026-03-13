@@ -4,29 +4,35 @@ package no.nav.foreldrepenger.los.reservasjon;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.JUSTER_TIL_GYLDIG_TIDSPUNKT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ReservasjonTidspunktUtilTest {
 
     @Test
-    void testEndreOppgaveReservasjonFeilerUtenforPeriode() {
-        var date = LocalDate.now().plusDays(35);
-        assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.utledReservasjonTidspunkt(date));
+    void skalGodtaGyldigeDatoer() {
+        for (var dagerFraIdag : new long[]{0, 10, 30}) {
+            var date = LocalDate.now().plusDays(dagerFraIdag);
+            assertDoesNotThrow(() -> ReservasjonTidspunktUtil.validerReservasjonsdato(date));
+        }
     }
 
     @Test
-    void testEndreOppgaveReservasjonFeilerTilbakeITid() {
-        var date = LocalDate.now().minusDays(1);
-        assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.utledReservasjonTidspunkt(date));
+    void skalFeileForUgyldigeDatoer() {
+        for (var dagerFraIdag : new long[]{-1, 31}) {
+            var date = LocalDate.now().plusDays(dagerFraIdag);
+            assertThrows(IllegalArgumentException.class, () -> ReservasjonTidspunktUtil.validerReservasjonsdato(date));
+        }
     }
 
     @Test
-    void testEndreOppgaveReservasjonOK() {
-        var localDateTime = ReservasjonTidspunktUtil.utledReservasjonTidspunkt(LocalDate.now().plusDays(30));
-        assertThat(localDateTime.getHour()).isEqualTo(23);
-        assertThat(localDateTime.getMinute()).isEqualTo(59);
+    void skalJustereDatoTilUkedagOgSluttenAvDagen() {
+        var søndag = LocalDateTime.of(2026, 3, 15, 15, 43);
+        var justertTidspunkt = søndag.with(JUSTER_TIL_GYLDIG_TIDSPUNKT);
+        assertThat(justertTidspunkt).isEqualTo(LocalDateTime.of(2026, 3, 16, 23, 59, 59));
     }
-
 }
