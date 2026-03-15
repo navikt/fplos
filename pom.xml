@@ -18,7 +18,7 @@
         <sonar.projectKey>navikt_fplos</sonar.projectKey>
 
         <fp-kontrakter.version>9.4.29</fp-kontrakter.version>
-        <felles.version>7.7.1</felles.version>
+        <felles.version>7.7.2</felles.version>
         <prosesstask.version>5.2.5</prosesstask.version>
         <openapi-spec-utils.version>2.1.0</openapi-spec-utils.version>
     </properties>
@@ -185,8 +185,8 @@
             <artifactId>jersey-container-servlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
+            <groupId>no.nav.foreldrepenger.felles</groupId>
+            <artifactId>felles-openapi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.ext.cdi</groupId>

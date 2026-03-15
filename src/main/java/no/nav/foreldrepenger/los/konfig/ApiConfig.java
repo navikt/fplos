@@ -5,13 +5,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.glassfish.jersey.server.ServerProperties;
 
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
-import io.swagger.v3.oas.models.info.Info;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import no.nav.foreldrepenger.konfig.Environment;
@@ -26,6 +24,8 @@ import no.nav.foreldrepenger.los.tjenester.migrering.MigreringRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.reservasjon.ReservasjonRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.oppgave.OppgaveRestTjeneste;
 import no.nav.foreldrepenger.los.tjenester.saksbehandler.saksliste.SaksbehandlerSakslisteRestTjeneste;
+import no.nav.vedtak.openapi.OpenApiUtils;
+import no.nav.vedtak.server.rest.FpRestJackson2Feature;
 
 @ApplicationPath(ApiConfig.API_URI)
 public class ApiConfig extends Application {
@@ -42,24 +42,19 @@ public class ApiConfig extends Application {
     }
 
     private void registerOpenApi() {
-        var info = new Info().title("FPLOS - specifikasjon for typegenerering frontend")
-            .version(Optional.ofNullable(ENV.imageName()).orElse("1.0"));
         var contextPath = ENV.getProperty("context.path", "/fplos");
-        OpenApiUtils.settOppForTypegenereringFrontend();
-        OpenApiUtils.openApiConfigFor(info, contextPath, this).registerClasses(getAllClasses()).buildOpenApiContext();
+        TypegenereringOpenApiUtils.settOppForTypegenereringFrontend();
+        OpenApiUtils.setupOpenApi("FPLOS - specifikasjon for typegenerering frontend", contextPath, getAllClasses(), this);
     }
 
     @Override
     public Set<Class<?>> getClasses() {
-        // eksponert grensesnitt
         Set<Class<?>> classes = new HashSet<>(getAllClasses());
 
         // Klasser som ikke typegenereres
         classes.add(MigreringRestTjeneste.class);
 
-        // Standard Jakarta RS oppsett for filtre og plugins
-        classes.addAll(FellesConfigClasses.getFellesContainerFilterClasses());
-        classes.addAll(FellesConfigClasses.getFellesRsExtConfigClasses());
+        classes.add(FpRestJackson2Feature.class);
 
         if (!ER_PROD) {
             classes.add(OpenApiResource.class);
