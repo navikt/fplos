@@ -1,18 +1,17 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjuster;
+
+import static java.time.temporal.TemporalAdjusters.next;
 
 public final class ReservasjonTidspunktUtil {
 
     public static final TemporalAdjuster JUSTER_TIL_GYLDIG_TIDSPUNKT = temporal -> {
         var justertDateTime = LocalDateTime.from(temporal).withHour(23).withMinute(59).withSecond(59);
-        return switch (justertDateTime.getDayOfWeek()) {
-            case SATURDAY -> justertDateTime.plusDays(2);
-            case SUNDAY -> justertDateTime.plusDays(1);
-            default -> justertDateTime;
-        };
+        return justertDateTime.getDayOfWeek().compareTo(DayOfWeek.FRIDAY) > 0 ? justertDateTime.with(next(DayOfWeek.MONDAY)) : justertDateTime;
     };
 
     private ReservasjonTidspunktUtil() {

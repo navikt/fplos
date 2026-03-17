@@ -117,14 +117,6 @@ public class ReservasjonTjeneste {
         return reservasjon;
     }
 
-    public Reservasjon forlengReservasjonMed24timer(Long oppgaveId) {
-        var reservasjon = hentReservasjonEllerFeil(oppgaveId);
-        var forlengetTil = reservasjon.getReservertTil().plusDays(1).with(JUSTER_TIL_GYLDIG_TIDSPUNKT);
-        reservasjon.setReservertTil(forlengetTil);
-        reservasjonRepository.lagre(reservasjon);
-        return reservasjon;
-    }
-
     public Reservasjon endreReservasjonsdato(Long oppgaveId, LocalDate reservertTil) {
         var reservasjon = hentReservasjonEllerFeil(oppgaveId);
         var justertReservasjonsTidspunkt = reservertTil.atStartOfDay().with(JUSTER_TIL_GYLDIG_TIDSPUNKT);

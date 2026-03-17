@@ -103,17 +103,6 @@ public class ReservasjonRestTjeneste {
     }
 
     @POST
-    @Path("/forleng")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Forleng reservasjon av oppgave", tags = "Saksbehandler")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public ReservasjonStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = reservasjonTjeneste.forlengReservasjonMed24timer(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagOppgaveStatusUtenPersonoppslag(reservasjon.getOppgave());
-    }
-
-    @POST
     @Path("/endre-varighet")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
