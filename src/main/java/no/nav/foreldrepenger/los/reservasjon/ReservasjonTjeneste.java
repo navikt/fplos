@@ -1,8 +1,9 @@
 package no.nav.foreldrepenger.los.reservasjon;
 
 import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.standardReservasjon;
-import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.utvidReservasjon;
+import static no.nav.foreldrepenger.los.reservasjon.ReservasjonTidspunktUtil.JUSTER_TIL_GYLDIG_TIDSPUNKT;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,6 @@ import no.nav.foreldrepenger.los.tjenester.felles.dto.OppgaveBehandlingStatus;
 public class ReservasjonTjeneste {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReservasjonTjeneste.class);
-    private static final String FANT_IKKE_RESERVASJON_TILKNYTTET_OPPGAVE_ID = "Fant ikke reservasjon tilknyttet oppgaveId ";
 
     private OppgaveRepository oppgaveRepository;
     private ReservasjonRepository reservasjonRepository;
@@ -58,15 +58,7 @@ public class ReservasjonTjeneste {
         return reservasjonRepository.hentAlleReservasjonerForAvdeling(avdelingEnhet);
     }
 
-    public Reservasjon reserverOppgave(Long oppgaveId) {
-        return reserverOppgave(oppgaveRepository.hentOppgave(oppgaveId));
-    }
-
     public Reservasjon reserverOppgave(Oppgave oppgave) {
-        return reserverOppgave(oppgave, BrukerIdent.brukerIdent());
-    }
-
-    public Reservasjon reserverOppgave(Oppgave oppgave, String reservertAv) {
         LOG.info("Reserverer oppgave {}", oppgave.getId());
         var reservasjon = oppgaveRepository.hentReservasjon(oppgave.getId()).map((r -> {
             r.setFlyttetTidspunkt(null);
@@ -79,7 +71,7 @@ public class ReservasjonTjeneste {
         } else {
             LOG.info("Fant ikke aktiv reservasjon for oppgave {}", oppgave.getId());
             reservasjon.setReservertTil(standardReservasjon());
-            reservasjon.setReservertAv(reservertAv);
+            reservasjon.setReservertAv(BrukerIdent.brukerIdent());
             try {
                 oppgaveRepository.lagre(reservasjon);
                 oppgaveRepository.refresh(reservasjon.getOppgave());
@@ -113,30 +105,22 @@ public class ReservasjonTjeneste {
     }
 
     public Reservasjon flyttReservasjon(Long oppgaveId, String brukernavn, String begrunnelse) {
-        return oppgaveRepository.hentReservasjon(oppgaveId).map(res -> {
-            res.setReservertTil(utvidReservasjon(res.getReservertTil()));
-            res.setReservertAv(brukernavn);
-            res.setFlyttetAv(BrukerIdent.brukerIdent());
-            res.setFlyttetTidspunkt(LocalDateTime.now());
-            res.setBegrunnelse(begrunnelse);
-            oppgaveRepository.lagre(res);
-            oppgaveRepository.refresh(res.getOppgave());
-            return res;
-        }).orElseThrow(() -> new IllegalStateException(FANT_IKKE_RESERVASJON_TILKNYTTET_OPPGAVE_ID + oppgaveId));
-    }
-
-    public Reservasjon forlengReservasjonPåOppgave(Long oppgaveId) {
-        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
-            .orElseThrow(() -> new IllegalStateException(FANT_IKKE_RESERVASJON_TILKNYTTET_OPPGAVE_ID + oppgaveId));
-        reservasjon.setReservertTil(utvidReservasjon(reservasjon.getReservertTil()));
-        reservasjonRepository.lagre(reservasjon);
+        var reservasjon = hentReservasjonEllerFeil(oppgaveId);
+        var forlengetTil = reservasjon.getReservertTil().plusDays(1).with(JUSTER_TIL_GYLDIG_TIDSPUNKT);
+        reservasjon.setReservertTil(forlengetTil);
+        reservasjon.setReservertAv(brukernavn);
+        reservasjon.setFlyttetAv(BrukerIdent.brukerIdent());
+        reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
+        reservasjon.setBegrunnelse(begrunnelse);
+        oppgaveRepository.lagre(reservasjon);
+        oppgaveRepository.refresh(reservasjon.getOppgave());
         return reservasjon;
     }
 
-    public Reservasjon endreReservasjonPåOppgave(Long oppgaveId, LocalDateTime reservertTil) {
-        var reservasjon = oppgaveRepository.hentReservasjon(oppgaveId)
-            .orElseThrow(() -> new IllegalStateException(FANT_IKKE_RESERVASJON_TILKNYTTET_OPPGAVE_ID + oppgaveId));
-        reservasjon.setReservertTil(reservertTil);
+    public Reservasjon endreReservasjonsdato(Long oppgaveId, LocalDate reservertTil) {
+        var reservasjon = hentReservasjonEllerFeil(oppgaveId);
+        var justertReservasjonsTidspunkt = reservertTil.atStartOfDay().with(JUSTER_TIL_GYLDIG_TIDSPUNKT);
+        reservasjon.setReservertTil(justertReservasjonsTidspunkt);
         reservasjonRepository.lagre(reservasjon);
         return reservasjon;
     }
@@ -180,6 +164,11 @@ public class ReservasjonTjeneste {
         reservasjon.setFlyttetAv(BrukerIdent.brukerIdent());
         reservasjon.setFlyttetTidspunkt(LocalDateTime.now());
         return reservasjon;
+    }
+
+    private Reservasjon hentReservasjonEllerFeil(Long oppgaveId) {
+        return oppgaveRepository.hentReservasjon(oppgaveId)
+                .orElseThrow(() -> new IllegalStateException("Fant ikke reservasjon tilknyttet oppgaveId " + oppgaveId));
     }
 
 }

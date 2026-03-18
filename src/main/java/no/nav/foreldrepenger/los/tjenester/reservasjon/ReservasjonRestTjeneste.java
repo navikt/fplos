@@ -72,7 +72,8 @@ public class ReservasjonRestTjeneste {
     @Operation(description = "Reserver oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public ReservasjonStatusDto reserverOppgave(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = reservasjonTjeneste.reserverOppgave(oppgaveId.getVerdi());
+        var oppgave = oppgaveTjeneste.hentOppgave(oppgaveId.getVerdi());
+        var reservasjon = reservasjonTjeneste.reserverOppgave(oppgave);
         return oppgaveDtoTjeneste.lagOppgaveStatusUtenPersonoppslag(reservasjon.getOppgave());
     }
 
@@ -102,25 +103,14 @@ public class ReservasjonRestTjeneste {
     }
 
     @POST
-    @Path("/forleng")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(description = "Forleng reservasjon av oppgave", tags = "Saksbehandler")
-    @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public ReservasjonStatusDto forlengOppgaveReservasjon(@NotNull @Parameter(description = "id til oppgaven") @Valid OppgaveIdDto oppgaveId) {
-        var reservasjon = reservasjonTjeneste.forlengReservasjonPåOppgave(oppgaveId.getVerdi());
-        return oppgaveDtoTjeneste.lagOppgaveStatusUtenPersonoppslag(reservasjon.getOppgave());
-    }
-
-    @POST
     @Path("/endre-varighet")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(description = "Endre reservasjon av oppgave", tags = "Saksbehandler")
     @BeskyttetRessurs(actionType = ActionType.CREATE, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public ReservasjonStatusDto endreOppgaveReservasjon(@NotNull @Parameter(description = "forleng til dato") @Valid ReservasjonEndringRequestDto reservasjonsEndring) {
-        var tidspunkt = ReservasjonTidspunktUtil.utledReservasjonTidspunkt(reservasjonsEndring.reserverTil());
-        var reservasjon = reservasjonTjeneste.endreReservasjonPåOppgave(reservasjonsEndring.oppgaveId().getVerdi(), tidspunkt);
+        ReservasjonTidspunktUtil.validerReservasjonsdato(reservasjonsEndring.reserverTil());
+        var reservasjon = reservasjonTjeneste.endreReservasjonsdato(reservasjonsEndring.oppgaveId().getVerdi(), reservasjonsEndring.reserverTil());
         return oppgaveDtoTjeneste.lagOppgaveStatusUtenPersonoppslag(reservasjon.getOppgave());
     }
 
