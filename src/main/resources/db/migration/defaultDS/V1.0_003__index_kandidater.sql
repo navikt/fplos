@@ -51,20 +51,6 @@ CREATE INDEX idx_saksbehandler_gruppe_avdeling_id ON saksbehandler_gruppe (avdel
 
 
 -- -------------------------------------------------------------------------------------
--- 1. oppgave: Erstatt idx_oppgave_enhet_aktiv (aktiv, behandlende_enhet) med reversert
---    kolonnerekkefølge
---
---    behandlende_enhet er alltid med i WHERE (høy kardinalitet).
---    aktiv er valgfri og har lavere kardinalitet (Y/N).
---    Reversert rekkefølge støtter både:
---      - WHERE behandlende_enhet = :enhet AND aktiv = 'Y'
---      - WHERE behandlende_enhet = :enhet  (uten aktiv-filter)
--- -------------------------------------------------------------------------------------
-DROP INDEX IF EXISTS idx_oppgave_enhet_aktiv;
-CREATE INDEX idx_oppgave_enhet_aktiv ON oppgave (behandlende_enhet, aktiv);
-
-
--- -------------------------------------------------------------------------------------
 -- 2. oppgave: Manglende indekser for kolonner brukt i filter og ORDER BY
 -- -------------------------------------------------------------------------------------
 
