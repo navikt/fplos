@@ -52,7 +52,7 @@ jobs:
     secrets: inherit
 
   deploy-dev:
-    name: Deploy dev
+    name: Deploy dev-gcp
     permissions:
       id-token: write
     if: github.ref_name == 'master'
@@ -61,11 +61,11 @@ jobs:
     with:
       gar: true
       image: ${{ needs.build-app.outputs.build-version }}
-      cluster: dev-fss
+      cluster: dev-gcp
     secrets: inherit
 
   deploy-prod:
-    name: Deploy prod
+    name: Deploy prod-gcp
     permissions:
       id-token: write
     if: github.ref_name == 'master'
@@ -74,5 +74,5 @@ jobs:
     with:
       gar: true
       image: ${{ needs.build-app.outputs.build-version }}
-      cluster: prod-fss
+      cluster: prod-gcp
     secrets: inherit
