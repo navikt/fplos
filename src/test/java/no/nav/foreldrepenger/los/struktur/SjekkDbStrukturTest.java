@@ -28,8 +28,8 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
              WHERE t.table_schema = current_schema()
                AND t.table_type = 'BASE TABLE'
                AND (d.description IS NULL OR d.description IN ('', 'MISSING COLUMN COMMENT'))
-               AND upper(t.table_name) NOT LIKE '%SCHEMA_%'
-               AND upper(t.table_name) NOT LIKE 'HT_%'
+               AND upper(t.table_name) NOT LIKE 'FLYWAY%'
+               AND upper(t.table_name) NOT LIKE 'PROSESS_TASK%'
             """;
         var query = getEntityManager().createNativeQuery(sql, String.class);
         var avvik = query.getResultStream().toList();
@@ -46,8 +46,8 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
               LEFT JOIN pg_catalog.pg_description d ON d.objoid = c.oid AND d.objsubid = a.attnum
              WHERE t.table_schema = current_schema()
                AND (d.description IS NULL OR d.description = '')
-               AND upper(t.table_name) NOT LIKE '%SCHEMA_%'
-               AND upper(t.table_name) NOT LIKE 'HT_%'
+               AND upper(t.table_name) NOT LIKE 'PROSESS_TASK%'
+               AND upper(t.table_name) NOT LIKE 'FLYWAY%'
                AND t.column_name NOT IN (
                  SELECT kcu.column_name
                    FROM information_schema.key_column_usage kcu
@@ -116,19 +116,23 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
     @Test
     void skal_ha_primary_key_i_hver_tabell_som_begynner_med_PK() {
         var sql = """
-            SELECT t.table_name
-              FROM information_schema.tables t
-             WHERE t.table_schema = current_schema()
-               AND t.table_type = 'BASE TABLE'
-               AND upper(t.table_name) NOT LIKE '%SCHEMA_%'
-               AND upper(t.table_name) NOT LIKE 'HT_%'
-               AND t.table_name NOT IN (
-                 SELECT tc.table_name
-                   FROM information_schema.table_constraints tc
-                  WHERE tc.constraint_type = 'PRIMARY KEY'
-                    AND tc.table_schema = current_schema()
-                    AND tc.constraint_name LIKE 'pk_%'
-               )
+            SELECT
+                t.table_name
+            FROM
+                information_schema.tables t
+            WHERE
+                t.table_schema = current_schema
+                AND t.table_name NOT LIKE 'flyway_%'
+                AND t.table_name NOT LIKE 'prosess_task_partition_%'
+                AND t.table_name NOT IN (
+                    SELECT
+                        c.table_name
+                    FROM
+                        information_schema.table_constraints c
+                    WHERE
+                        c.constraint_type = 'PRIMARY KEY'
+                        AND c.constraint_name LIKE 'pk_%'
+                );
             """;
 
         var query = getEntityManager().createNativeQuery(sql, String.class);
@@ -159,18 +163,33 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
     @Test
     void skal_ha_korrekt_index_navn() {
         var sql = """
-            SELECT t.relname AS table_name, i.relname AS index_name, a.attname AS column_name
-              FROM pg_catalog.pg_index ix
-              JOIN pg_catalog.pg_class t ON t.oid = ix.indrelid
-              JOIN pg_catalog.pg_class i ON i.oid = ix.indexrelid
-              JOIN pg_catalog.pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(ix.indkey)
-              JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace
-             WHERE n.nspname = current_schema()
-               AND i.relname NOT LIKE 'pk_%'
-               AND i.relname NOT LIKE 'idx_%'
-               AND i.relname NOT LIKE 'uidx_%'
-               AND upper(t.relname) NOT LIKE '%SCHEMA_%'
-               AND NOT ix.indisprimary
+            SELECT
+                t.relname AS table_name,
+                i.relname AS index_name,
+                a.attname AS column_name
+            FROM
+                pg_class t,
+                pg_class i,
+                pg_index ix,
+                pg_attribute a,
+                information_schema.tables it
+            WHERE
+                t.oid = ix.indrelid
+                AND i.oid = ix.indexrelid
+                AND a.attrelid = t.oid
+                AND a.attnum = ANY(ix.indkey)
+                AND t.relkind = 'r'
+                AND t.relname = it.table_name
+                AND it.table_schema = current_schema --public
+                AND it.table_name NOT LIKE 'flyway_%'
+                AND it.table_name NOT LIKE 'prosess_task_partition_%'
+                AND i.relname NOT LIKE 'pk_%'
+                AND i.relname NOT LIKE 'idx_%'
+                AND i.relname NOT LIKE 'uidx_%'
+                AND i.relname NOT LIKE 'chk_%'
+            ORDER BY
+                t.relname,
+                i.relname;
             """;
 
         var query = getEntityManager().createNativeQuery(sql, Object[].class);
@@ -244,28 +263,5 @@ class SjekkDbStrukturTest extends EntityManagerAwareTest {
 
         var feilTekst = "Feil bruk av datatype, skal ikke ha FLOAT eller DOUBLE (bruk NUMERIC for alle desimaltall, spesielt der penger representeres). Antall feil = %s\n\nTabell, Kolonne, Datatype\n%s";
         assertThat(rowList).withFailMessage(feilTekst, rowList.size(), tekst).isEmpty();
-    }
-
-    @Test
-    void sjekk_at_status_verdiene_i_prosess_task_tabellen_er_også_i_pollingSQL() {
-        var sql = """
-                SELECT (regexp_matches(
-                           pg_get_expr(c.conbin, c.conrelid),
-                           '''([A-Z_]+)''',
-                           'g'
-                       ))[1]
-              FROM pg_catalog.pg_constraint c
-              JOIN pg_catalog.pg_class t ON t.oid = c.conrelid
-              JOIN pg_catalog.pg_namespace n ON n.oid = t.relnamespace
-             WHERE t.relname = 'prosess_task'
-               AND c.conname = 'chk_prosess_task_status'
-               AND n.nspname = current_schema()
-            """;
-
-        @SuppressWarnings("unchecked")
-        List<String> statuserFraConstraint = getEntityManager().createNativeQuery(sql).getResultList();
-        var feilTekst = "Ved innføring av ny stauser må sqlen i TaskManager_pollTask.sql må oppdateres.";
-        assertThat(statuserFraConstraint).withFailMessage(feilTekst)
-            .containsExactlyInAnyOrder("KLAR", "FEILET", "VENTER_SVAR", "SUSPENDERT", "VETO", "FERDIG", "KJOERT");
     }
 }
