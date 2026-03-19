@@ -6,12 +6,10 @@ metadata:
   labels:
     team: teamforeldrepenger
 spec:
+  ingresses:
+    - {{ingress}} # for migrering mellom fss og gcp
   image: {{image}}
   port: 8080
-  ingresses:
-{{#each ingresses as |url|}}
-   - {{url}}
-{{/each}}
   liveness:
     path: /fplos/internal/health/isAlive
     initialDelay: 10
@@ -49,23 +47,25 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
-      destinations:
-        - id: "grafana-lgtm"
-        - id: "elastic-apm"
     logging:
       destinations:
         - id: loki
         - id: elastic
-  vault:
-    enabled: true
-    paths:
-      - mountPath: {{vault.mountPath}}/defaultDSconfig
-        kvPath: {{vault.db.configPath}}
-      - mountPath: {{vault.mountPath}}/defaultDS
-        kvPath: {{vault.db.secretsPath}}
-  env:
-    - name: VAULT_MOUNT_PATH
-      value: "{{vault.mountPath}}"
+  gcp:
+    sqlInstances:
+      - type: {{db.dbVersion}}
+        databases:
+          - name: fplos
+            envVarPrefix: DB
+        tier: {{db.dbTier}}
+        diskAutoresize: {{db.dbDiskAutoresize}}
+        highAvailability: {{db.dbHighAvailability}}
+        pointInTimeRecovery: {{db.dbPointInTimeRecovery}}
+        collation: nb_NO.UTF8
+        autoBackupHour: 2
+        maintenance:
+          day: 1
+          hour: 4
   azure:
     application:
       enabled: true
@@ -77,20 +77,27 @@ spec:
           {{#each groups as |group|}}
           - id: "{{group.uuid}}"
           {{/each}}
-  {{#if AZURE_IAC_RULES}}
   accessPolicy:
     inbound:
       rules:
-      {{#each AZURE_IAC_RULES}}
-        - application: {{app}}
-          namespace: {{namespace}}
-          cluster: {{cluster}}
-          {{#if scopes}}
+        - application: fplos
+          cluster: {{environment}}-fss
+        - application: fp-frontend
+        - application: fp-avdelingsleder
+        - application: fp-swagger
           permissions:
             scopes:
-            {{#each scopes}}
-            - "{{this}}"
-            {{/each}}
-          {{/if}}
-      {{/each}}
-  {{/if}}
+              - swagger
+        {{#each extraInboundRules as |rule|}}
+        - application: {{rule.application}}
+          namespace: {{rule.namespace}}
+        {{/each}}
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
+      external:
+        - host: fpsak-api.{{environment}}-fss-pub.nais.io
+        - host: fptilbake.{{environment}}-fss-pub.nais.io
+        - host: fptilgang.{{environment}}-fss-pub.nais.io
+        - host: pdl-api.{{environment}}-fss-pub.nais.io
