@@ -7,6 +7,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import no.nav.foreldrepenger.konfig.Environment;
+import no.nav.foreldrepenger.los.hendelse.behandlinghendelse.BehandlingHendelseConsumer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,15 +31,19 @@ public class ApplicationServiceStarter {
 
     @Inject
     public ApplicationServiceStarter(@Any Instance<Controllable> services) {
-        this(services.stream().collect(Collectors.toSet()));
-    }
-
-    ApplicationServiceStarter(Controllable service) {
-        this(Set.of(service));
+        this(services.stream().filter(ApplicationServiceStarter::skalStarteService).collect(Collectors.toSet()));
     }
 
     ApplicationServiceStarter(Set<Controllable> services) {
         this.services = services;
+    }
+
+    private static boolean skalStarteService(Controllable service) {
+        // filtrerer bort kafka på gcp enn så lenge.
+        if (service instanceof BehandlingHendelseConsumer) {
+            return !Environment.current().isGcp();
+        }
+        return true;
     }
 
     public void startServices() {
