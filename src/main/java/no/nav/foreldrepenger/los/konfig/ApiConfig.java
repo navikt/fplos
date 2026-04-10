@@ -73,6 +73,7 @@ public class ApiConfig extends Application {
         classes.add(AvdelingReservasjonerRestTjeneste.class);
         classes.add(ReservasjonRestTjeneste.class);
         classes.add(NøkkeltallRestTjeneste.class);
+        classes.add(no.nav.foreldrepenger.los.tjenester.saksbehandler.nøkkeltall.NøkkeltallRestTjeneste.class);
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
         return classes;
