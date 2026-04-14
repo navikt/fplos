@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import no.nav.foreldrepenger.los.tjenester.saksbehandler.nøkkeltall.SaksbehandlerNøkkeltallRestTjeneste;
 import org.glassfish.jersey.server.ServerProperties;
 
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
@@ -73,7 +74,7 @@ public class ApiConfig extends Application {
         classes.add(AvdelingReservasjonerRestTjeneste.class);
         classes.add(ReservasjonRestTjeneste.class);
         classes.add(NøkkeltallRestTjeneste.class);
-        classes.add(no.nav.foreldrepenger.los.tjenester.saksbehandler.nøkkeltall.NøkkeltallRestTjeneste.class);
+        classes.add(SaksbehandlerNøkkeltallRestTjeneste.class);
         classes.add(AvdelingslederRestTjeneste.class);
         classes.add(AvdelingslederOppgaveRestTjeneste.class);
         return classes;

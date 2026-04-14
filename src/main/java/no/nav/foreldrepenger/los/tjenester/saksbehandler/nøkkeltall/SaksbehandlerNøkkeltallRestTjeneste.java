@@ -26,16 +26,16 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 @Produces(MediaType.APPLICATION_JSON)
 @ApplicationScoped
 @Transactional
-public class NøkkeltallRestTjeneste {
+public class SaksbehandlerNøkkeltallRestTjeneste {
 
     private StatistikkRepository statistikkRepository;
 
-    public NøkkeltallRestTjeneste() {
+    public SaksbehandlerNøkkeltallRestTjeneste() {
         // For Rest-CDI
     }
 
     @Inject
-    public NøkkeltallRestTjeneste(StatistikkRepository statistikkRepository) {
+    public SaksbehandlerNøkkeltallRestTjeneste(StatistikkRepository statistikkRepository) {
         this.statistikkRepository = statistikkRepository;
     }
 
