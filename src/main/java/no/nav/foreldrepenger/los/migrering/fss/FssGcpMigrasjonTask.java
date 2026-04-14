@@ -83,9 +83,9 @@ public class FssGcpMigrasjonTask implements ProsessTaskHandler {
 
     public enum MigreringSteg {
         DEL1_ORGANISASJON_OG_KØ,
-        DEL2_AKTIVE_OPPGAVER,
-        DEL3_INAKTIVE_OPPGAVER,
-        DEL4_BEHANDLINGER,
+        DEL2_BEHANDLINGER,       // Må komme før oppgaver pga. FK-constraint i GCP (oppgave.behandling_id → behandling.id)
+        DEL3_AKTIVE_OPPGAVER,
+        DEL4_INAKTIVE_OPPGAVER,
         DEL5_STATISTIKK_OF,
         DEL6_STATISTIKK_EYB,
         DEL7_FERDIG;
@@ -93,9 +93,9 @@ public class FssGcpMigrasjonTask implements ProsessTaskHandler {
         BulkDataWrapper hent(FssEksportRepository repo, int currentAntall, int batchSize) {
             return switch (this) {
                 case DEL1_ORGANISASJON_OG_KØ -> repo.hentOrganisasjonOgKøer();
-                case DEL2_AKTIVE_OPPGAVER -> repo.hentAktiveOppgaverOgReservasjoner(currentAntall, batchSize);
-                case DEL3_INAKTIVE_OPPGAVER -> repo.hentInaktiveOppgaverOgReservasjoner(currentAntall, batchSize);
-                case DEL4_BEHANDLINGER -> repo.hentBehandlinger(currentAntall, batchSize);
+                case DEL2_BEHANDLINGER -> repo.hentBehandlinger(currentAntall, batchSize);
+                case DEL3_AKTIVE_OPPGAVER -> repo.hentAktiveOppgaverOgReservasjoner(currentAntall, batchSize);
+                case DEL4_INAKTIVE_OPPGAVER -> repo.hentInaktiveOppgaverOgReservasjoner(currentAntall, batchSize);
                 case DEL5_STATISTIKK_OF -> repo.hentStatistikkOppgaveFilter(currentAntall, batchSize);
                 case DEL6_STATISTIKK_EYB -> repo.hentStatistikkEnhetYtelseBehandling(currentAntall, batchSize);
                 case DEL7_FERDIG -> throw new IllegalStateException("MIGRERING (FSS): Kalt hent() i ferdig tilstand");
@@ -105,17 +105,17 @@ public class FssGcpMigrasjonTask implements ProsessTaskHandler {
         boolean erFerdig(int hentetAntall, int batchSize) {
             return switch (this) {
                 case DEL1_ORGANISASJON_OG_KØ -> true;
-                case DEL2_AKTIVE_OPPGAVER, DEL3_INAKTIVE_OPPGAVER, DEL4_BEHANDLINGER, DEL5_STATISTIKK_OF, DEL6_STATISTIKK_EYB -> hentetAntall < batchSize;
+                case DEL2_BEHANDLINGER, DEL3_AKTIVE_OPPGAVER, DEL4_INAKTIVE_OPPGAVER, DEL5_STATISTIKK_OF, DEL6_STATISTIKK_EYB -> hentetAntall < batchSize;
                 case DEL7_FERDIG -> throw new IllegalStateException("MIGRERING (FSS): Kalt erFerdig() i ferdig tilstand");
             };
         }
 
         MigreringSteg neste() {
             return switch (this) {
-                case DEL1_ORGANISASJON_OG_KØ -> DEL2_AKTIVE_OPPGAVER;
-                case DEL2_AKTIVE_OPPGAVER -> DEL3_INAKTIVE_OPPGAVER;
-                case DEL3_INAKTIVE_OPPGAVER -> DEL4_BEHANDLINGER;
-                case DEL4_BEHANDLINGER -> DEL5_STATISTIKK_OF;
+                case DEL1_ORGANISASJON_OG_KØ -> DEL2_BEHANDLINGER;
+                case DEL2_BEHANDLINGER -> DEL3_AKTIVE_OPPGAVER;
+                case DEL3_AKTIVE_OPPGAVER -> DEL4_INAKTIVE_OPPGAVER;
+                case DEL4_INAKTIVE_OPPGAVER -> DEL5_STATISTIKK_OF;
                 case DEL5_STATISTIKK_OF -> DEL6_STATISTIKK_EYB;
                 case DEL6_STATISTIKK_EYB, DEL7_FERDIG -> DEL7_FERDIG;
             };
@@ -124,9 +124,9 @@ public class FssGcpMigrasjonTask implements ProsessTaskHandler {
         int hentetAntall(BulkDataWrapper bulkData) {
             return switch (this) {
                 case DEL1_ORGANISASJON_OG_KØ -> 1;
-                case DEL2_AKTIVE_OPPGAVER -> bulkData.aktiveOppgaver().size();
-                case DEL3_INAKTIVE_OPPGAVER -> bulkData.inaktiveOppgaver().size();
-                case DEL4_BEHANDLINGER -> bulkData.behandlinger().size();
+                case DEL2_BEHANDLINGER -> bulkData.behandlinger().size();
+                case DEL3_AKTIVE_OPPGAVER -> bulkData.aktiveOppgaver().size();
+                case DEL4_INAKTIVE_OPPGAVER -> bulkData.inaktiveOppgaver().size();
                 case DEL5_STATISTIKK_OF -> bulkData.statistikkOppgaveFilter().size();
                 case DEL6_STATISTIKK_EYB -> bulkData.statistikkEnhetYtelseBehandling().size();
                 case DEL7_FERDIG -> 0;
