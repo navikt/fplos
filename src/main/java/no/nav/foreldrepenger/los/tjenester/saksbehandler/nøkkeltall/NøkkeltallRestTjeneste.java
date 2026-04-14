@@ -28,8 +28,6 @@ import no.nav.vedtak.sikkerhet.abac.beskyttet.ResourceType;
 @Transactional
 public class NøkkeltallRestTjeneste {
 
-    private static final String ENHET_QUERY_NAME = "oppgaveFilterId";
-
     private StatistikkRepository statistikkRepository;
 
     public NøkkeltallRestTjeneste() {
@@ -42,24 +40,14 @@ public class NøkkeltallRestTjeneste {
     }
 
     @GET
-    @Path("/oppgaver")
-    @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
-    public List<KøStatistikkDto> aktiveOgTilgjengligeOppgaverStatistikkForKø(@QueryParam(ENHET_QUERY_NAME) @NotNull @Valid Long oppgaveFilterId) {
-        return statistikkRepository.hentStatistikkOppgaveFilterFraFom(oppgaveFilterId, LocalDate.now().minusMonths(1)).stream()
-            .map(no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste::tilDto)
-            .sorted(Comparator.comparing(KøStatistikkDto::tidspunkt))
-            .toList();
-    }
-
-    @GET
     @Path("/statistikk-oppgave-filter")
     @Operation(description = "Hent køstatistikk for saksbehandlers saksliste den siste måneden")
     @BeskyttetRessurs(actionType = ActionType.READ, resourceType = ResourceType.FAGSAK, sporingslogg = false)
     public List<KøStatistikkDto> køStatistikkForSaksliste(@QueryParam("sakslisteId") @NotNull @Valid SakslisteIdDto sakslisteId) {
         return statistikkRepository.hentStatistikkOppgaveFilterFraFom(sakslisteId.getVerdi(), LocalDate.now().minusMonths(1)).stream()
-            .map(no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste::tilDto)
-            .sorted(Comparator.comparing(KøStatistikkDto::tidspunkt))
-            .toList();
+                .map(no.nav.foreldrepenger.los.tjenester.avdelingsleder.nøkkeltall.NøkkeltallRestTjeneste::tilDto)
+                .sorted(Comparator.comparing(KøStatistikkDto::tidspunkt))
+                .toList();
     }
 
 }
