@@ -161,6 +161,59 @@ class FssEksportRepositoryTest {
     }
 
     @Test
+    void hentBehandlinger_inkludererNyligAvsluttetBehandling() {
+        var nyligAvsluttet = lagBehandling(BehandlingTilstand.AVSLUTTET, LocalDateTime.now().minusHours(6));
+        entityManager.persist(nyligAvsluttet);
+        entityManager.flush();
+
+        var result = repository.hentBehandlinger(0, 100);
+
+        assertThat(result.behandlinger()).hasSize(1);
+        assertThat(result.behandlinger().getFirst().id()).isEqualTo(nyligAvsluttet.getId());
+    }
+
+    @Test
+    void hentBehandlinger_ekskludererGammelAvsluttetBehandling() {
+        var gammelAvsluttet = lagBehandling(BehandlingTilstand.AVSLUTTET, LocalDateTime.now().minusDays(3));
+        entityManager.persist(gammelAvsluttet);
+        entityManager.flush();
+
+        var result = repository.hentBehandlinger(0, 100);
+
+        assertThat(result.behandlinger()).isEmpty();
+    }
+
+    @Test
+    void hentInaktiveOppgaver_inkludererNyligAvsluttetBehandling() {
+        var behandling = lagBehandling(BehandlingTilstand.AVSLUTTET, LocalDateTime.now().minusHours(6));
+        entityManager.persist(behandling);
+
+        var oppgave = Oppgave.builder()
+            .medBehandlingId(new BehandlingId(behandling.getId()))
+            .medSaksnummer(new Saksnummer(String.valueOf(System.nanoTime())))
+            .medAktørId(AktørId.dummy())
+            .medBehandlendeEnhet(ENHET)
+            .medAktiv(false)
+            .medFagsakYtelseType(FagsakYtelseType.FORELDREPENGER)
+            .medBehandlingType(BehandlingType.FØRSTEGANGSSØKNAD)
+            .medSystem(Fagsystem.FPSAK)
+            .medBehandlingsfrist(LocalDateTime.now())
+            .medBehandlingOpprettet(LocalDateTime.now())
+            .build();
+        entityManager.persist(oppgave);
+
+        var reservasjon = new Reservasjon(oppgave);
+        reservasjon.setReservertAv("Z999999");
+        reservasjon.setReservertTil(LocalDateTime.now().plusDays(1));
+        entityManager.persist(reservasjon);
+        entityManager.flush();
+
+        var result = repository.hentInaktiveOppgaverOgReservasjoner(0, 100);
+
+        assertThat(result.inaktiveOppgaver()).hasSize(1);
+    }
+
+    @Test
     void hentInaktiveOppgaver_ekskludererAvsluttetBehandling() {
         var behandling = lagBehandling(BehandlingTilstand.AVSLUTTET);
         entityManager.persist(behandling);
@@ -237,6 +290,10 @@ class FssEksportRepositoryTest {
     }
 
     private Behandling lagBehandling(BehandlingTilstand tilstand) {
+        return lagBehandling(tilstand, null);
+    }
+
+    private Behandling lagBehandling(BehandlingTilstand tilstand, LocalDateTime avsluttet) {
         return Behandling.builder(Optional.empty())
             .medId(UUID.randomUUID())
             .medSaksnummer(new Saksnummer(String.valueOf(System.nanoTime())))
@@ -247,6 +304,7 @@ class FssEksportRepositoryTest {
             .medBehandlingTilstand(tilstand)
             .medBehandlendeEnhet(ENHET)
             .medOpprettet(LocalDateTime.now())
+            .medAvsluttet(avsluttet)
             .medBehandlingsfrist(LocalDate.now().plusDays(7))
             .build();
     }

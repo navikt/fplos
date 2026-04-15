@@ -90,12 +90,13 @@ public class FssEksportRepository {
                 JOIN o.reservasjon r
                 WHERE o.aktiv = false
                 AND coalesce(r.endretTidspunkt, r.opprettetTidspunkt) > :fra
-                AND EXISTS (SELECT 1 FROM Behandling b WHERE b.id = o.behandlingId.value AND b.behandlingTilstand != :avsluttet)
+                AND EXISTS (SELECT 1 FROM Behandling b WHERE b.id = o.behandlingId.value AND (b.behandlingTilstand != :avsluttet OR b.avsluttet > :avsluttetTid))
                 ORDER BY r.id ASC
             """, Oppgave.class)
             .setHint(HibernateHints.HINT_READ_ONLY, true)
             .setParameter("fra", LocalDate.now().minusDays(21).atStartOfDay())
             .setParameter("avsluttet", BehandlingTilstand.AVSLUTTET)
+            .setParameter("avsluttetTid", LocalDate.now().minusDays(1).atStartOfDay())
             .setFirstResult(startPosisjon)
             .setMaxResults(batchSize)
             .getResultStream()
@@ -109,11 +110,12 @@ public class FssEksportRepository {
     public BulkDataWrapper hentBehandlinger(int startPosisjon, int batchSize) {
         var behandlinger = entityManager.createQuery("""
                 FROM Behandling
-                WHERE behandlingTilstand != :avsluttet
+                WHERE (behandlingTilstand != :avsluttet OR avsluttet > :avsluttetTid)
                 ORDER BY id ASC
             """, Behandling.class)
             .setHint(HibernateHints.HINT_READ_ONLY, true)
             .setParameter("avsluttet", BehandlingTilstand.AVSLUTTET)
+            .setParameter("avsluttetTid", LocalDate.now().minusDays(1).atStartOfDay())
             .setFirstResult(startPosisjon)
             .setMaxResults(batchSize)
             .getResultList();
