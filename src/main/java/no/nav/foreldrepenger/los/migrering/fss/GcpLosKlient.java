@@ -11,6 +11,7 @@ import no.nav.vedtak.felles.integrasjon.rest.RestClientConfig;
 import no.nav.vedtak.felles.integrasjon.rest.RestConfig;
 import no.nav.vedtak.felles.integrasjon.rest.RestRequest;
 import no.nav.vedtak.felles.integrasjon.rest.TokenFlow;
+import no.nav.vedtak.hendelser.behandling.los.LosBehandlingDto;
 
 
 @ApplicationScoped
@@ -33,6 +34,14 @@ public class GcpLosKlient {
             .build();
 
         klient.send(RestRequest.newPOSTJson(bulkData, target, restConfig), String.class);
+    }
+
+    public void sendTaskDto(LosBehandlingDto dto) {
+        var target = UriBuilder.fromUri(baseUri)
+            .path("/api/migrering/lagrehendelse")
+            .build();
+
+        klient.send(RestRequest.newPOSTJson(dto, target, restConfig), String.class);
     }
 
     @Override
