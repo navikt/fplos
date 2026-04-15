@@ -124,8 +124,8 @@ public class JettyServer {
         // Servlets
         registerDefaultServlet(ctx);
         registerServlet(ctx, 0, InternalApiConfig.API_URI, InternalApiConfig.class);
-        registerServlet(ctx, 1, ApiConfig.API_URI, ApiConfig.class);
-        registerServlet(ctx, 2, ForvaltningApiConfig.API_URL, ForvaltningApiConfig.class);
+        //registerServlet(ctx, 1, ApiConfig.API_URI, ApiConfig.class);
+        registerServlet(ctx, 1, ForvaltningApiConfig.API_URL, ForvaltningApiConfig.class);
 
         // Starter tjenester
         ctx.addEventListener(new ServiceStarterListener());
@@ -156,7 +156,7 @@ public class JettyServer {
         // Slipp gjennom kall fra plattform til JaxRs. Foreløpig kun behov for GET
         handler.addConstraintMapping(pathConstraint(Constraint.ALLOWED, InternalApiConfig.API_URI + "/*"));
         // Slipp gjennom til autentisering i JaxRs / auth-filter
-        handler.addConstraintMapping(pathConstraint(Constraint.ALLOWED, ApiConfig.API_URI + "/*"));
+        //handler.addConstraintMapping(pathConstraint(Constraint.ALLOWED, ApiConfig.API_URI + "/*"));
         // Slipp gjennom til autentisering i JaxRs / auth-filter
         handler.addConstraintMapping(pathConstraint(Constraint.ALLOWED, ForvaltningApiConfig.API_URL + "/*"));
         // Alt annet av paths og metoder forbudt - 403
