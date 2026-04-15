@@ -10,6 +10,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import no.nav.foreldrepenger.konfig.Environment;
+import no.nav.foreldrepenger.los.migrering.fss.GcpLosKlient;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,19 +56,24 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
     private final ReservasjonRepository reservasjonRepository;
     private final Beskyttelsesbehov beskyttelsesbehov;
 
+    private final GcpLosKlient gcpLosKlient;
+    private static final Environment ENV = Environment.current();
+
     @Inject
     BehandlingHendelseTask(FpsakBehandlingKlient fpsakKlient,
                            FptilbakeBehandlingKlient fptilbakeKlient,
                            BehandlingTjeneste behandlingTjeneste,
                            OppgaveRepository oppgaveRepository,
                            ReservasjonRepository reservasjonRepository,
-                           Beskyttelsesbehov beskyttelsesbehov) {
+                           Beskyttelsesbehov beskyttelsesbehov,
+                           GcpLosKlient gcpLosKlient) {
         this.fpsakKlient = fpsakKlient;
         this.fptilbakeKlient = fptilbakeKlient;
         this.behandlingTjeneste = behandlingTjeneste;
         this.oppgaveRepository = oppgaveRepository;
         this.reservasjonRepository = reservasjonRepository;
         this.beskyttelsesbehov = beskyttelsesbehov;
+        this.gcpLosKlient = gcpLosKlient;
     }
 
     @Override
@@ -106,6 +114,9 @@ public class BehandlingHendelseTask implements ProsessTaskHandler {
         }
 
         behandlingTjeneste.lagreBehandling(dto, kilde, eksisterendeBehandling, kriterier);
+        if (ENV.isDev()) {
+            gcpLosKlient.sendTaskDto(dto);
+        }
     }
 
     private static boolean skalBeholdeEksisterendeOppgave(Optional<Oppgave> eksisterendeOppgave,
