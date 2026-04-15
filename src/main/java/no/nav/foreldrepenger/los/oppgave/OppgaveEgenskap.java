@@ -52,6 +52,10 @@ public class OppgaveEgenskap extends BaseEntitet {
         return andreKriterierType;
     }
 
+    public String getSisteSaksbehandlerForTotrinn() {
+        return sisteSaksbehandlerForTotrinn;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
