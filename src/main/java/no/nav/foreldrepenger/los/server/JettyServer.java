@@ -125,7 +125,7 @@ public class JettyServer {
         registerDefaultServlet(ctx);
         registerServlet(ctx, 0, InternalApiConfig.API_URI, InternalApiConfig.class);
         registerServlet(ctx, 1, ApiConfig.API_URI, ApiConfig.class);
-        registerServlet(ctx, 1, ForvaltningApiConfig.API_URL, ForvaltningApiConfig.class);
+        registerServlet(ctx, 2, ForvaltningApiConfig.API_URL, ForvaltningApiConfig.class);
 
         // Starter tjenester
         ctx.addEventListener(new ServiceStarterListener());
