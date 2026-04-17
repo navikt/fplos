@@ -75,7 +75,8 @@ public class FssEksportRepository {
             .setHint(HibernateHints.HINT_READ_ONLY, true)
             .setFirstResult(startPosisjon)
             .setMaxResults(batchSize)
-            .getResultStream()
+            .getResultList()
+            .stream()
             .map(FssExportMapper::mapToOppgaveDataDto)
             .toList();
 
@@ -99,7 +100,8 @@ public class FssEksportRepository {
             .setParameter("avsluttetTid", LocalDate.now().minusDays(1).atStartOfDay())
             .setFirstResult(startPosisjon)
             .setMaxResults(batchSize)
-            .getResultStream()
+            .getResultList()
+            .stream()
             .map(FssExportMapper::mapToOppgaveDataDto)
             .toList();
         var dto = BulkDataWrapper.inaktiveOppgaver(oppgaver);
@@ -129,7 +131,8 @@ public class FssEksportRepository {
                 "FROM BehandlingEgenskap WHERE behandlingId IN :ids", BehandlingEgenskap.class)
             .setHint(HibernateHints.HINT_READ_ONLY, true)
             .setParameter("ids", behandlingIds)
-            .getResultStream()
+            .getResultList()
+            .stream()
             .collect(groupingBy(BehandlingEgenskap::getBehandlingId,
                 mapping(BehandlingEgenskap::getAndreKriterierType, toSet())));
 
@@ -189,7 +192,8 @@ public class FssEksportRepository {
                 .setHint(HibernateHints.HINT_READ_ONLY, true)
                 .setFirstResult(startPosisjon)
                 .setMaxResults(batchSize)
-                .getResultStream()
+                .getResultList()
+                .stream()
                 .map(FssExportMapper::mapToStatEnhetYtelseBehandlingDataDto)
                 .toList();
 
@@ -202,7 +206,8 @@ public class FssEksportRepository {
             .setParameter("fra", LocalDate.now().minusWeeks(4))
             .setFirstResult(startPosisjon)
             .setMaxResults(batchSize)
-            .getResultStream()
+            .getResultList()
+            .stream()
             .map(FssExportMapper::mapToStatOppgaveFilterDataDto)
             .toList();
         return BulkDataWrapper.statistikkOppgaveFilter(oppgaveFilter);
@@ -212,13 +217,15 @@ public class FssEksportRepository {
         var oppgaveFiltreringSaksbehandleridenter = entityManager.createQuery("FROM FiltreringSaksbehandlerRelasjon",
                 FiltreringSaksbehandlerRelasjon.class)
             .setHint(HibernateHints.HINT_READ_ONLY, true)
-            .getResultStream()
+            .getResultList()
+            .stream()
             .collect(Collectors.groupingBy(fsr -> fsr.getOppgaveFiltrering().getId(),
                 mapping(fsr -> fsr.getSaksbehandler().getSaksbehandlerIdent(), toSet())));
 
         return entityManager.createQuery("FROM OppgaveFiltrering", OppgaveFiltrering.class)
             .setHint(HibernateHints.HINT_READ_ONLY, true)
-            .getResultStream()
+            .getResultList()
+            .stream()
             .map(of -> FssExportMapper.mapToOppgaveFiltreringDataDto(of, oppgaveFiltreringSaksbehandleridenter))
             .toList();
     }
