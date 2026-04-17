@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
-import no.nav.foreldrepenger.konfig.Environment;
 import no.nav.foreldrepenger.los.migrering.dto.BulkDataWrapper;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTask;
 import no.nav.vedtak.felles.prosesstask.api.ProsessTaskData;
@@ -18,9 +17,14 @@ import no.nav.vedtak.felles.prosesstask.api.ProsessTaskTjeneste;
 @ProsessTask(value = "vedlikehold.migrerfssgcp", maxFailedRuns = 1)
 public class FssGcpMigrasjonTask implements ProsessTaskHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FssGcpMigrasjonTask.class);
+
+    private static final int ITERASJON_BULK_STØRRELSE = 100;
+    private static final int PROSESSTASK_MAKS_ANTALL = 2_000;
+
+    public static final String START_POSISJON = "START_POSISJON";
     public static final String STEG = "CURRENT_MIGRASJONSTEG";
 
-    private static final Logger LOG = LoggerFactory.getLogger(FssGcpMigrasjonTask.class);
 
     private final FssEksportRepository fssEksportRepository;
     private final GcpLosKlient gcpLosKlient;
@@ -36,42 +40,53 @@ public class FssGcpMigrasjonTask implements ProsessTaskHandler {
 
     @Override
     public void doTask(ProsessTaskData prosessTaskData) {
-        if (Environment.current().isGcp()) {
-            throw new IllegalStateException("MIGRERING: FSS-task startet i GCP!");
-        }
-
-        var currentSteg = Optional.ofNullable(prosessTaskData.getPropertyValue(STEG))
+        var currentMigreringSteg = Optional.ofNullable(prosessTaskData.getPropertyValue(STEG))
             .map(MigreringSteg::valueOf)
             .orElse(MigreringSteg.DEL1_ORGANISASJON_OG_KØ);
-        int batchSize = 100;
 
-        LOG.info("MIGRERING (FSS): steg {} starter", currentSteg);
+        int startPosisjon = Optional.ofNullable(prosessTaskData.getPropertyValue(START_POSISJON))
+            .map(Integer::parseInt)
+            .orElse(0);
+        int antallHentetDenneTasken = 0;
 
-        int startPosisjon = 0;
+        LOG.info("MIGRERING (FSS): steg {} starter fra startPosisjon {}", currentMigreringSteg, startPosisjon);
 
-        // Gjør dette enkelt med én taskkjøring per relaterte entiteter
         while (true) {
-            var bulkData = currentSteg.hent(fssEksportRepository, startPosisjon, batchSize);
+            var bulkData = currentMigreringSteg.hent(fssEksportRepository, startPosisjon, ITERASJON_BULK_STØRRELSE);
+
             gcpLosKlient.lagreBulkData(bulkData);
 
-            var antallHentet = currentSteg.hentetAntall(bulkData);
-            logg(currentSteg, startPosisjon, antallHentet, batchSize);
+            int antallHentetIterasjon = currentMigreringSteg.hentetAntall(bulkData);
+            startPosisjon += antallHentetIterasjon;
+            antallHentetDenneTasken += antallHentetIterasjon;
 
-            if (currentSteg.erFerdig(antallHentet, batchSize)) {
-                lagNesteSteg(currentSteg);
+            logg(currentMigreringSteg, startPosisjon, antallHentetDenneTasken);
+
+            if (currentMigreringSteg.erFerdig(antallHentetIterasjon, ITERASJON_BULK_STØRRELSE)) {
+                lagTaskNesteSteg(currentMigreringSteg);
                 break;
-            } else {
-                startPosisjon += antallHentet;
+            }
+
+            if (antallHentetDenneTasken >= PROSESSTASK_MAKS_ANTALL) {
+                lagTaskFortsetterSammeSteg(currentMigreringSteg, startPosisjon);
+                break;
             }
         }
     }
 
-    private void logg(MigreringSteg currentSteg, int startPosisjon, int antallHentet, int batchSize) {
-        LOG.info("MIGRERING (FSS): steg {}, startPosisjon {}, antallHentet {}, batchSize {}",
-            currentSteg, startPosisjon, antallHentet, batchSize);
+    private void logg(MigreringSteg currentSteg, int startPosisjon, int antallHentetDenneTasken) {
+        LOG.info("MIGRERING (FSS): steg {}, neste startPosisjon {}, antallHentetDenneTasken {}", currentSteg, startPosisjon, antallHentetDenneTasken);
     }
 
-    private void lagNesteSteg(MigreringSteg currentSteg) {
+    private void lagTaskFortsetterSammeSteg(MigreringSteg currentSteg, int startPosisjon) {
+        LOG.info("MIGRERING (FSS): steg {} ikke ferdig, lagrer task for samme steg med startPosisjon {}", currentSteg, startPosisjon);
+        var t = ProsessTaskData.forProsessTask(FssGcpMigrasjonTask.class);
+        t.setProperty(STEG, currentSteg.name());
+        t.setProperty(START_POSISJON, String.valueOf(startPosisjon));
+        prosessTaskTjeneste.lagre(t);
+    }
+
+    private void lagTaskNesteSteg(MigreringSteg currentSteg) {
         var nesteSteg = currentSteg.neste();
         LOG.info("MIGRERING (FSS): steg {} ferdig, neste steg {}", currentSteg, nesteSteg);
         if (nesteSteg != MigreringSteg.DEL7_FERDIG) {
